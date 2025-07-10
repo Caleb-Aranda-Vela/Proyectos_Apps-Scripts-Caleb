@@ -1,0 +1,376 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <title>Formulario de Registro de Equipo</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top to prevent jumping issues */
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 800px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #2d3748;
+            background-color: #f7fafc;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6366f1; /* Indigo-500 */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Indigo-200 */
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-primary {
+            background-color: #4f46e5; /* Indigo-600 */
+            color: #ffffff;
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+        }
+        .btn-primary:hover {
+            background-color: #4338ca; /* Indigo-700 */
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* Gray-500 */
+            color: #ffffff;
+            box-shadow: 0 4px 6px rgba(107, 114, 128, 0.2);
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* Gray-600 */
+        }
+        .btn-tertiary {
+            background-color: #10b981; /* Emerald-500 */
+            color: #ffffff;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+        .btn-tertiary:hover {
+            background-color: #059669; /* Emerald-600 */
+        }
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4f46e5; /* Indigo-600 */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .message-box.show {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Registro de Equipo</h1>
+        
+        <form id="equipoForm" class="space-y-6">
+            <!-- Costo_Equipo -->
+            <div class="form-group">
+                <label for="costoEquipo">Costo del Equipo (MXN)</label>
+                <input type="number" id="costoEquipo" name="costoEquipo" step="0.01" min="0" class="w-full" required>
+            </div>
+
+            <!-- Fecha_Compra -->
+            <div class="form-group">
+                <label for="fechaCompra">Fecha de Compra</label>
+                <input type="date" id="fechaCompra" name="fechaCompra" class="w-full" required>
+            </div>
+
+            <!-- Fecha_Recoleccion -->
+            <div class="form-group">
+                <label for="fechaRecoleccion">Fecha de Recolección</label>
+                <input type="date" id="fechaRecoleccion" name="fechaRecoleccion" class="w-full">
+            </div>
+
+            <!-- Fecha_Reasignacion -->
+            <div class="form-group">
+                <label for="fechaReasignacion">Fecha de Reasignación</label>
+                <input type="date" id="fechaReasignacion" name="fechaReasignacion" class="w-full">
+            </div>
+
+            <!-- Estado -->
+            <div class="form-group">
+                <label for="estado">Estado del Equipo</label>
+                <select id="estado" name="estado" class="w-full" required>
+                    <option value="">Selecciona un estado</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                    <option value="En Mantenimiento">En Mantenimiento</option>
+                    <option value="Desecho">Desecho</option>
+                </select>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="form-group">
+                <label for="observaciones">Observaciones</label>
+                <textarea id="observaciones" name="observaciones" rows="3" maxlength="125" class="w-full"></textarea>
+            </div>
+
+            <!-- Marca -->
+            <div class="form-group">
+                <label for="marca">Marca</label>
+                <select id="marca" name="marca" class="w-full" required>
+                    <option value="">Selecciona una marca</option>
+                    <option value="Dell">Dell</option>
+                    <option value="HP">HP</option>
+                    <option value="Lenovo">Lenovo</option>
+                    <option value="Acer">Acer</option>
+                    <option value="Asus">Asus</option>
+                    <option value="Apple">Apple</option>
+                    <option value="Samsung">Samsung</option>
+                    <option value="Huawei">Huawei</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <!-- Modelo -->
+            <div class="form-group">
+                <label for="modelo">Modelo</label>
+                <select id="modelo" name="modelo" class="w-full" required>
+                    <option value="">Selecciona un modelo</option>
+                    <option value="Laptop">Laptop</option>
+                    <option value="Desktop">Desktop</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Smartphone">Smartphone</option>
+                    <option value="Monitor">Monitor</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <!-- RAM -->
+            <div class="form-group">
+                <label for="ram">RAM</label>
+                <select id="ram" name="ram" class="w-full" required>
+                    <option value="">Selecciona RAM</option>
+                    <option value="4GB">4GB</option>
+                    <option value="8GB">8GB</option>
+                    <option value="16GB">16GB</option>
+                    <option value="32GB">32GB</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <!-- ROM -->
+            <div class="form-group">
+                <label for="rom">Almacenamiento (ROM)</label>
+                <select id="rom" name="rom" class="w-full" required>
+                    <option value="">Selecciona Almacenamiento</option>
+                    <option value="128GB">128GB</option>
+                    <option value="256GB">256GB</option>
+                    <option value="512GB">512GB</option>
+                    <option value="1TB">1TB</option>
+                    <option value="2TB">2TB</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <!-- IMEI -->
+            <div class="form-group">
+                <label for="imei">IMEI</label>
+                <input type="text" id="imei" name="imei" maxlength="50" class="w-full" required>
+                <p id="imeiError" class="text-red-500 text-sm mt-1 hidden">IMEI ya existe o formato inválido.</p>
+            </div>
+
+            <!-- IDSUCURSAL -->
+            <div class="form-group">
+                <label for="idSucursal">Sucursal</label>
+                <select id="idSucursal" name="idSucursal" class="w-full" required>
+                    <option value="">Selecciona una sucursal</option>
+                    <option value="ADM">ADM</option>
+                    <option value="GDL">GDL</option>
+                    <option value="MXL">MXL</option>
+                    <option value="MEX">MEX</option>
+                    <option value="TIJ">TIJ</option>
+                    <option value="CAN">CAN</option>
+                    <option value="SJD">SJD</option>
+                    <option value="MTY">MTY</option>
+                </select>
+            </div>
+
+            <!-- Comentarios -->
+            <div class="form-group">
+                <label for="comentarios">Comentarios</label>
+                <textarea id="comentarios" name="comentarios" rows="3" maxlength="125" class="w-full"></textarea>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    Enviar Información
+                </button>
+                <button type="button" class="btn btn-secondary" id="clearBtn">
+                    Limpiar Formulario
+                </button>
+                <button type="button" class="btn btn-tertiary" id="redirectBtn">
+                    Ir a Otra Aplicación
+                </button>
+            </div>
+            <div id="loading" class="hidden text-center mt-4 text-blue-600 font-semibold">
+                Cargando... Por favor, espere.
+            </div>
+        </form>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('equipoForm');
+            const clearBtn = document.getElementById('clearBtn');
+            const redirectBtn = document.getElementById('redirectBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const messageBox = document.getElementById('messageBox');
+            const imeiInput = document.getElementById('imei');
+            const imeiError = document.getElementById('imeiError');
+
+            // --- Funciones de Utilidad ---
+            function showMessageBox(message, type = 'success', duration = 3000) {
+                messageBox.textContent = message;
+                if (type === 'success') {
+                    messageBox.style.backgroundColor = '#10b981'; // Emerald-500
+                } else if (type === 'error') {
+                    messageBox.style.backgroundColor = '#ef4444'; // Red-500
+                }
+                messageBox.classList.add('show');
+                setTimeout(() => {
+                    messageBox.classList.remove('show');
+                }, duration);
+            }
+
+            function setFormEnabled(enabled) {
+                const elements = form.elements;
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].disabled = !enabled;
+                }
+                submitBtn.disabled = !enabled;
+                clearBtn.disabled = !enabled;
+                redirectBtn.disabled = !enabled;
+                if (enabled) {
+                    loading.classList.add('hidden');
+                } else {
+                    loading.classList.remove('hidden');
+                }
+            }
+
+            // --- Event Listeners ---
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Previene el envío estándar del formulario
+                setFormEnabled(false); // Deshabilita el formulario y muestra "Cargando..."
+
+                const formData = {
+                    costoEquipo: document.getElementById('costoEquipo').value,
+                    fechaCompra: document.getElementById('fechaCompra').value,
+                    fechaRecoleccion: document.getElementById('fechaRecoleccion').value,
+                    fechaReasignacion: document.getElementById('fechaReasignacion').value,
+                    estado: document.getElementById('estado').value,
+                    observaciones: document.getElementById('observaciones').value,
+                    marca: document.getElementById('marca').value,
+                    modelo: document.getElementById('modelo').value,
+                    ram: document.getElementById('ram').value,
+                    rom: document.getElementById('rom').value,
+                    imei: document.getElementById('imei').value,
+                    idSucursal: document.getElementById('idSucursal').value,
+                    comentarios: document.getElementById('comentarios').value,
+                };
+
+                // Llama a la función de Apps Script para procesar el formulario
+                google.script.run
+                    .withSuccessHandler(function(response) {
+                        setFormEnabled(true);
+                        if (response.success) {
+                            showMessageBox('Datos enviados correctamente: ' + response.message, 'success');
+                            form.reset(); // Limpia el formulario después de un envío exitoso
+                        } else {
+                            showMessageBox('Error al enviar datos: ' + response.message, 'error');
+                            if (response.message.includes("IMEI duplicado")) {
+                                imeiError.classList.remove('hidden');
+                            }
+                        }
+                    })
+                    .withFailureHandler(function(error) {
+                        setFormEnabled(true);
+                        showMessageBox('Error de conexión o script: ' + error.message, 'error');
+                    })
+                    .procesarFormulario(formData);
+            });
+
+            clearBtn.addEventListener('click', function() {
+                form.reset();
+                imeiError.classList.add('hidden'); // Oculta el error de IMEI al limpiar
+                showMessageBox('Formulario limpiado.', 'success', 2000);
+            });
+
+            redirectBtn.addEventListener('click', function() {
+                setFormEnabled(false); // Muestra "Cargando..." antes de la redirección
+                google.script.run
+                    .withSuccessHandler(function(url) {
+                        window.top.location.href = url; // Redirige a la URL obtenida
+                    })
+                    .withFailureHandler(function(error) {
+                        setFormEnabled(true);
+                        showMessageBox('Error al obtener URL de redirección: ' + error.message, 'error');
+                    })
+                    .redirigirOtraApp();
+            });
+
+            imeiInput.addEventListener('input', function() {
+                imeiError.classList.add('hidden'); // Oculta el mensaje de error de IMEI mientras el usuario escribe
+            });
+
+            // Set today's date as default for Fecha_Compra (optional, but good UX)
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months start at 0!
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('fechaCompra').value = `${yyyy}-${mm}-${dd}`;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!-- FormStyles.html -->
+<style>
+    /* Base reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Body and overall background - Adjusted for form context */
+    body {
+        font-family: 'Inter', sans-serif; /* Usando Inter como habíamos acordado */
+        background-color: #f3f4f6; /* Fondo más neutro para el formulario */
+        display: flex;
+        justify-content: center;
+        align-items: flex-start; /* Alineación superior para evitar saltos */
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* Main container for the form */
+    .container {
+        background-color: #ffffff;
+        padding: 32px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 800px; /* Ancho máximo para formularios */
+    }
+
+    /* Form group styling */
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #4a5568;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 16px;
+        color: #2d3748;
+        background-color: #f7fafc;
+        transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #6366f1; /* Indigo-500 */
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Indigo-200 */
+    }
+
+    /* Buttons styling - adapted from main styles */
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s, box-shadow 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+    .btn-primary {
+        background-color: #4f46e5; /* Indigo-600 */
+        color: #ffffff;
+        box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+    }
+    .btn-primary:hover {
+        background-color: #4338ca; /* Indigo-700 */
+    }
+    .btn-secondary {
+        background-color: #6b7280; /* Gray-500 */
+        color: #ffffff;
+        box-shadow: 0 4px 6px rgba(107, 114, 128, 0.2);
+    }
+    .btn-secondary:hover {
+        background-color: #4b5563; /* Gray-600 */
+    }
+    .btn-tertiary {
+        background-color: #10b981; /* Emerald-500 */
+        color: #ffffff;
+        box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+    }
+    .btn-tertiary:hover {
+        background-color: #059669; /* Emerald-600 */
+    }
+
+    /* Message box / Toast styling - adapted from main styles */
+    .message-box {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #4f46e5; /* Indigo-600 */
+        color: white;
+        padding: 15px 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        display: none; /* Hidden by default */
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    .message-box.show {
+        display: block;
+        opacity: 1;
+    }
+
+    /* Loading indicator */
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4facfe;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 15px;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive adjustments for forms */
+    @media (max-width: 768px) {
+        body {
+            padding: 10px;
+        }
+        .container {
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .btn {
+            padding: 10px 15px;
+            font-size: 0.85rem;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            font-size: 14px;
+        }
+    }
+</style>
