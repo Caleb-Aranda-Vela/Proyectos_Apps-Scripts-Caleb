@@ -4,20 +4,442 @@
 <head>
     <base target="_top">
     <title>Formulario: Dar de Alta Línea y Equipo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <?!= HtmlService.createHtmlOutputFromFile('FormStyles').getContent(); ?>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .container { background-color: #ffffff; padding: 32px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); width: 100%; max-width: 600px; text-align: center; }
-        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, box-shadow 0.2s; background-color: #10b981; color: #ffffff; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2); }
-        .btn:hover { background-color: #059669; }
-    </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">Formulario: Dar de Alta Línea y Equipo</h1>
-        <p class="text-gray-600 mb-6">Contenido de este formulario se desarrollará en el futuro.</p>
-        <button type="button" class="btn" onclick="google.script.run.withSuccessHandler(function(url){window.top.location.href=url;}).redirigirOtraApp()">Volver al Menú</button>
+        <div class="section">
+            <h2 class="section-title">Dar de alta Línea Celular Nueva y Equipo Celular Nuevo</h2>
+            <form id="altaLineaEquipoForm" class="space-y-6">
+                <!-- No es necesario un input hidden para el correo, se obtiene en el Code.gs -->
+
+                <fieldset>
+                    <legend>Datos de Línea Celular (Telefonia_Telcel)</legend>
+                    <div class="form-grid">
+                        <div>
+                            <label for="region">Región</label>
+                            <input type="text" id="region" name="region" required>
+                        </div>
+                        <div>
+                            <label for="cuenta_padre">Cuenta Padre</label>
+                            <input type="text" id="cuenta_padre" name="cuenta_padre" required>
+                        </div>
+                        <div>
+                            <label for="cuenta">Cuenta</label>
+                            <input type="text" id="cuenta" name="cuenta" required>
+                        </div>
+                        <div>
+                            <label for="telefono">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono" required>
+                        </div>
+                        <div>
+                            <label for="clave_plan">Clave Plan</label>
+                            <input type="text" id="clave_plan" name="clave_plan">
+                        </div>
+                        <div>
+                            <label for="nombre_plan">Nombre Plan</label>
+                            <input type="text" id="nombre_plan" name="nombre_plan">
+                        </div>
+                        <div>
+                            <label for="minutos">Minutos</label>
+                            <input type="text" id="minutos" name="minutos">
+                        </div>
+                        <div>
+                            <label for="mensajes">Mensajes</label>
+                            <input type="text" id="mensajes" name="mensajes">
+                        </div>
+                        <div>
+                            <label for="monto_renta">Monto Renta</label>
+                            <input type="number" step="0.01" id="monto_renta" name="monto_renta" required>
+                        </div>
+                        <div>
+                            <label for="equipo_ilimitado">Costo Equipo Ilimitado</label>
+                            <input type="number" step="0.01" id="equipo_ilimitado" name="equipo_ilimitado" required>
+                        </div>
+                        <div>
+                            <label for="servicio_a_la_carta">Servicio a la Carta</label>
+                            <input type="number" step="0.01" id="servicio_a_la_carta" name="servicio_a_la_carta">
+                        </div>
+                        <div>
+                            <label for="servicio_blackberry">Servicio Blackberry</label>
+                            <input type="number" step="0.01" id="servicio_blackberry" name="servicio_blackberry">
+                        </div>
+                        <div>
+                            <label for="duracion_plan">Duración Plan</label>
+                            <input type="text" id="duracion_plan" name="duracion_plan">
+                        </div>
+                        <div>
+                            <label for="fecha_inicio">Fecha Inicio</label>
+                            <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+                        </div>
+                        <div>
+                            <label for="fecha_termino">Fecha Término</label>
+                            <input type="date" id="fecha_termino" name="fecha_termino">
+                        </div>
+                        <div>
+                            <label for="estatus_adendum">Estatus Adendum</label>
+                            <input type="text" id="estatus_adendum" name="estatus_adendum">
+                        </div>
+                        <div>
+                            <label for="meses_restantes">Meses Restantes</label>
+                            <input type="text" id="meses_restantes" name="meses_restantes">
+                        </div>
+                        <div>
+                            <label for="sim">SIM</label>
+                            <input type="text" id="sim" name="sim">
+                        </div>
+                        <div>
+                            <label for="tipo">Tipo</label>
+                            <input type="text" id="tipo" name="tipo">
+                        </div>
+                        <div>
+                            <label for="datos">Datos (GB)</label>
+                            <input type="number" id="datos" name="datos">
+                        </div>
+                        <div>
+                            <label for="extension">Extensión</label>
+                            <input type="text" id="extension" name="extension">
+                        </div>
+                        <div>
+                            <label for="idsucursal">Sucursal</label>
+                            <select id="idsucursal" name="idsucursal" required>
+                                <option value="">Cargando sucursales...</option>
+                            </select>
+                        </div>
+                        <div class="full-width">
+                            <label for="notas">Notas</label>
+                            <textarea id="notas" name="notas" rows="3"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Datos de Equipo Celular Nuevo (Equipo_Nuevo)</legend>
+                    <div class="form-grid">
+                        <div>
+                            <label for="marca">Marca</label>
+                            <select id="marca" name="marca" required>
+                                <option value="">Cargando marcas...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="modelo">Modelo</label>
+                            <select id="modelo" name="modelo" required>
+                                <option value="">Cargando modelos...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="ram">RAM</label>
+                            <select id="ram" name="ram">
+                                <option value="">Cargando RAM...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="rom">ROM</label>
+                            <select id="rom" name="rom">
+                                <option value="">Cargando ROM...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="imei_equipo_nuevo">IMEI</label>
+                            <input type="text" id="imei_equipo_nuevo" name="imei_equipo_nuevo" required>
+                            <p id="imeiEquipoNuevoError" style="color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: none;">IMEI ya existe o formato inválido.</p>
+                        </div>
+                        <div class="full-width">
+                            <label for="observaciones_equipo_nuevo">Observaciones Equipo Nuevo</label>
+                            <textarea id="observaciones_equipo_nuevo" name="observaciones_equipo_nuevo" rows="3"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Registrar Línea y Equipo</button>
+                    <button type="button" class="btn btn-secondary" id="clearBtn">Limpiar Formulario</button>
+                    <button type="button" class="btn btn-tertiary" id="redirectBtn">Volver al Menú</button>
+                </div>
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Cargando... Por favor, espere.</p>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+        function initForm() {
+            // Check if google.script.run is available. If not, retry after a short delay.
+            if (typeof google === 'undefined' || typeof google.script === 'undefined' || typeof google.script.run === 'undefined') {
+                console.error("google.script.run is not defined. Retrying form initialization...");
+                setTimeout(initForm, 100); // Retry after 100ms
+                return;
+            }
+
+            const form = document.getElementById('altaLineaEquipoForm');
+            const clearBtn = document.getElementById('clearBtn');
+            const redirectBtn = document.getElementById('redirectBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const messageBox = document.getElementById('messageBox');
+
+            // Specific error message for IMEI in Equipo Nuevo section
+            const imeiEquipoNuevoInput = document.getElementById('imei_equipo_nuevo');
+            const imeiEquipoNuevoError = document.getElementById('imeiEquipoNuevoError');
+
+            // Dropdown elements
+            const marcaSelect = document.getElementById('marca');
+            const modeloSelect = document.getElementById('modelo');
+            const ramSelect = document.getElementById('ram');
+            const romSelect = document.getElementById('rom');
+            const sucursalSelect = document.getElementById('idsucursal'); // Use idsucursal for consistency
+
+            // --- Utility Functions ---
+            function showMessageBox(message, type = 'success', duration = 3000) {
+                messageBox.textContent = message;
+                if (type === 'success') {
+                    messageBox.style.backgroundColor = '#10b981';
+                } else if (type === 'error') {
+                    messageBox.style.backgroundColor = '#ef4444';
+                }
+                messageBox.classList.add('show');
+                setTimeout(() => {
+                    messageBox.classList.remove('show');
+                }, duration);
+            }
+
+            function setFormEnabled(enabled) {
+                const elements = form.elements;
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].disabled = !enabled;
+                }
+                submitBtn.disabled = !enabled;
+                clearBtn.disabled = !enabled;
+                redirectBtn.disabled = !enabled;
+                if (enabled) {
+                    loading.style.display = 'none';
+                } else {
+                    loading.style.display = 'block';
+                }
+            }
+
+            /**
+             * Populates a <select> element with options.
+             * @param {HTMLElement} selectElement The <select> element to populate.
+             * @param {Array<string>} optionsData An array of strings with the options.
+             * @param {string} placeholderText The initial placeholder text.
+             */
+            function populateSelect(selectElement, optionsData, placeholderText) {
+                selectElement.innerHTML = ''; // Clear existing options
+
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = placeholderText;
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                selectElement.appendChild(defaultOption);
+
+                optionsData.forEach(optionText => {
+                    if (optionText && String(optionText).trim() !== '') {
+                        const option = document.createElement('option');
+                        option.value = optionText;
+                        option.textContent = optionText;
+                        selectElement.appendChild(option);
+                    }
+                });
+            }
+
+            // --- Load Dropdown Options on Initialization ---
+            // Load Marcas from Listas2!A2:A
+            google.script.run
+                .withSuccessHandler(function(response) {
+                    if (response.success) {
+                        populateSelect(marcaSelect, response.data, 'Selecciona una marca');
+                    } else {
+                        showMessageBox('Error al cargar marcas: ' + response.message, 'error');
+                        marcaSelect.innerHTML = '<option value="">Error al cargar</option>';
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar marcas: ' + error.message, 'error');
+                    marcaSelect.innerHTML = '<option value="">Error de red</option>';
+                })
+                .getDropdownOptions('Listas2', 'A2:A');
+
+            // Load Modelos from Listas2!B2:B
+            google.script.run
+                .withSuccessHandler(function(response) {
+                    if (response.success) {
+                        populateSelect(modeloSelect, response.data, 'Selecciona un modelo');
+                    } else {
+                        showMessageBox('Error al cargar modelos: ' + response.message, 'error');
+                        modeloSelect.innerHTML = '<option value="">Error al cargar</option>';
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar modelos: ' + error.message, 'error');
+                    modeloSelect.innerHTML = '<option value="">Error de red</option>';
+                })
+                .getDropdownOptions('Listas2', 'B2:B');
+
+            // Load RAM from Listas2!C2:C
+            google.script.run
+                .withSuccessHandler(function(response) {
+                    if (response.success) {
+                        populateSelect(ramSelect, response.data, 'Selecciona RAM');
+                    } else {
+                        showMessageBox('Error al cargar RAM: ' + response.message, 'error');
+                        ramSelect.innerHTML = '<option value="">Error al cargar</option>';
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar RAM: ' + error.message, 'error');
+                    ramSelect.innerHTML = '<option value="">Error de red</option>';
+                })
+                .getDropdownOptions('Listas2', 'C2:C');
+
+            // Load ROM from Listas2!D2:D
+            google.script.run
+                .withSuccessHandler(function(response) {
+                    if (response.success) {
+                        populateSelect(romSelect, response.data, 'Selecciona ROM');
+                    } else {
+                        showMessageBox('Error al cargar ROM: ' + response.message, 'error');
+                        romSelect.innerHTML = '<option value="">Error al cargar</option>';
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar ROM: ' + error.message, 'error');
+                    romSelect.innerHTML = '<option value="">Error de red</option>';
+                })
+                .getDropdownOptions('Listas2', 'D2:D');
+
+            // Load Sucursales from Listas2!E2:E (assuming new column for dynamic sucursales)
+            google.script.run
+                .withSuccessHandler(function(response) {
+                    if (response.success) {
+                        populateSelect(sucursalSelect, response.data, 'Selecciona una sucursal');
+                    } else {
+                        showMessageBox('Error al cargar sucursales: ' + response.message, 'error');
+                        sucursalSelect.innerHTML = '<option value="">Error al cargar</option>';
+                    }
+                })
+                .withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar sucursales: ' + error.message, 'error');
+                    sucursalSelect.innerHTML = '<option value="">Error de red</option>';
+                })
+                .getDropdownOptions('Listas2', 'E2:E');
+
+
+            // --- Event Listeners ---
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                setFormEnabled(false);
+
+                const formData = {
+                    region: document.getElementById('region').value,
+                    cuenta_padre: document.getElementById('cuenta_padre').value,
+                    cuenta: document.getElementById('cuenta').value,
+                    telefono: document.getElementById('telefono').value,
+                    clave_plan: document.getElementById('clave_plan').value,
+                    nombre_plan: document.getElementById('nombre_plan').value,
+                    minutos: document.getElementById('minutos').value,
+                    mensajes: document.getElementById('mensajes').value,
+                    monto_renta: document.getElementById('monto_renta').value,
+                    equipo_ilimitado: document.getElementById('equipo_ilimitado').value,
+                    servicio_a_la_carta: document.getElementById('servicio_a_la_carta').value,
+                    servicio_blackberry: document.getElementById('servicio_blackberry').value,
+                    duracion_plan: document.getElementById('duracion_plan').value,
+                    fecha_inicio: document.getElementById('fecha_inicio').value,
+                    fecha_termino: document.getElementById('fecha_termino').value,
+                    estatus_adendum: document.getElementById('estatus_adendum').value,
+                    meses_restantes: document.getElementById('meses_restantes').value,
+                    sim: document.getElementById('sim').value,
+                    tipo: document.getElementById('tipo').value,
+                    datos: document.getElementById('datos').value,
+                    extension: document.getElementById('extension').value,
+                    idsucursal: document.getElementById('idsucursal').value,
+                    notas: document.getElementById('notas').value,
+                    
+                    // Equipo Nuevo Fields
+                    marca: document.getElementById('marca').value,
+                    modelo: document.getElementById('modelo').value,
+                    ram: document.getElementById('ram').value,
+                    rom: document.getElementById('rom').value,
+                    imei_equipo_nuevo: document.getElementById('imei_equipo_nuevo').value,
+                    observaciones_equipo_nuevo: document.getElementById('observaciones_equipo_nuevo').value
+                };
+
+                google.script.run
+                    .withSuccessHandler(function(response) {
+                        setFormEnabled(true);
+                        if (response.success) {
+                            showMessageBox('Datos enviados correctamente: ' + response.message, 'success');
+                            form.reset();
+                            imeiEquipoNuevoError.style.display = 'none';
+                            // Re-populate dynamic dropdowns after reset
+                            google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(marcaSelect, res.data, 'Selecciona una marca'); }).getDropdownOptions('Listas2', 'A2:A');
+                            google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(modeloSelect, res.data, 'Selecciona un modelo'); }).getDropdownOptions('Listas2', 'B2:B');
+                            google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(ramSelect, res.data, 'Selecciona RAM'); }).getDropdownOptions('Listas2', 'C2:C');
+                            google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(romSelect, res.data, 'Selecciona ROM'); }).getDropdownOptions('Listas2', 'D2:D');
+                            google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(sucursalSelect, res.data, 'Selecciona una sucursal'); }).getDropdownOptions('Listas2', 'E2:E');
+                        } else {
+                            showMessageBox('Error al enviar datos: ' + response.message, 'error');
+                            if (response.message.includes("IMEI duplicado")) {
+                                imeiEquipoNuevoError.style.display = 'block';
+                            } else {
+                                imeiEquipoNuevoError.style.display = 'none';
+                            }
+                        }
+                    })
+                    .withFailureHandler(function(error) {
+                        setFormEnabled(true);
+                        showMessageBox('Error de conexión o script: ' + error.message, 'error');
+                        imeiEquipoNuevoError.style.display = 'none';
+                    })
+                    .procesarALyEFormulario(formData); // This function needs to be implemented in Code.gs
+            });
+
+            clearBtn.addEventListener('click', function() {
+                form.reset();
+                imeiEquipoNuevoError.style.display = 'none';
+                showMessageBox('Formulario limpiado.', 'success', 2000);
+                // Re-populate dynamic dropdowns after clear
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(marcaSelect, res.data, 'Selecciona una marca'); }).getDropdownOptions('Listas2', 'A2:A');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(modeloSelect, res.data, 'Selecciona un modelo'); }).getDropdownOptions('Listas2', 'B2:B');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(ramSelect, res.data, 'Selecciona RAM'); }).getDropdownOptions('Listas2', 'C2:C');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(romSelect, res.data, 'Selecciona ROM'); }).getDropdownOptions('Listas2', 'D2:D');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(sucursalSelect, res.data, 'Selecciona una sucursal'); }).getDropdownOptions('Listas2', 'E2:E');
+            });
+
+            redirectBtn.addEventListener('click', function() {
+                setFormEnabled(false);
+                google.script.run
+                    .withSuccessHandler(function(url) {
+                        window.top.location.href = url;
+                    })
+                    .withFailureHandler(function(error) {
+                        setFormEnabled(true);
+                        showMessageBox('Error al obtener URL de redirección: ' + error.message, 'error');
+                    })
+                    .redirigirOtraApp();
+            });
+
+            imeiEquipoNuevoInput.addEventListener('input', function() {
+                imeiEquipoNuevoError.style.display = 'none';
+            });
+
+            // Set today's date as default for Fecha Inicio
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('fecha_inicio').value = `${year}-${month}-${day}`;
+        }
+
+        // Call the initialization function when the window loads
+        window.onload = initForm;
+    </script>
 </body>
 </html>
