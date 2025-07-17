@@ -59,46 +59,56 @@ const RECU_SHEET_HEADERS = [
     "Comentarios"                  
 ];
 
-
 // Encabezados para la hoja "ALyE" (Dar de Alta Línea y Equipo)
 const ALyE_SHEET_HEADERS = [
-    "Marca temporal",
-    "Dirección de correo electrónico",
-    "ID_Tel", // ID generado por SQL para Telefonía_Telcel
-    "Región",
-    "Cuenta_padre",
-    "Cuenta",
-    "Teléfono",
-    "Clave_plan",
-    "Nombre_plan",
-    "Minutos",
-    "Mensajes",
-    "Monto_renta",
-    "Equipo_ilimitado",
-    "Servicio_a_la_carta",
-    "Servicio_blackberry",
-    "Duracion_plan",
-    "Fecha_inicio",
-    "Fecha_termino",
-    "Estatus_adendum",
-    "Meses_restantes",
-    "SIM",
-    "Tipo",
-    "Datos",
-    "Extensión",
-    "Notas",
-    "IDEMPLEADO_Telcel", // ID Empleado de Telefonía_Telcel
-    "Responsable_Telcel", // Responsable de Telefonía_Telcel
-    "IDSUCURSAL_Telcel", // ID Sucursal de Telefonía_Telcel
-    "ID_Equipo_Nuevo", // ID generado por Apps Script para Equipo_Nuevo
-    "Marca_Equipo_Nuevo",
-    "Modelo_Equipo_Nuevo",
-    "RAM_Equipo_Nuevo",
-    "ROM_Equipo_Nuevo",
-    "IMEI_Equipo_Nuevo",
-    "Observaciones_Equipo_Nuevo",
-    "Error",
-    "EJECUTADO"
+    "Marca temporal",              
+    "Dirección de correo electrónico", 
+    "Id_tel",                       
+    "Región",                       
+    "Cuenta_padre",                
+    "Cuenta",                      
+    "Teléfono",                   
+    "Clave_plan",                  
+    "Nombre_plan",              
+    "Minutos",                     
+    "Mensajes",                  
+    "Monto_renta",                 
+    "Equipo_ilimitado",           
+    "Duracion_plan",              
+    "Fecha_inicio",               
+    "Fecha_termino",               
+    "Marca_linea",
+    "Modelo_linea",
+    "IMEI_linea",
+    "SIM",                         
+    "Tipo",                        
+    "Responsable_Linea",                  
+    "Notas",                       
+    "IDEMPLEADO_Telcel",            
+    "Sucursal_Linea",
+    "IDSUCURSAL_Telcel",            
+    "Datos",                        
+    "Extensión",                    
+    "ID_Equipo_Nuevo",             
+    "Error_Linea",                      
+    "EJECUTADO_Linea",                  
+    "",
+    "ID_Equipo",
+    "Costo_Equipo",                 
+    "Fecha_Compra_Equipo",         
+    "Estado_Equipo",               
+    "Observaciones_Equipo_Nuevo",   
+    "Marca_Equipo_Nuevo",           
+    "Modelo_Equipo_Nuevo",         
+    "RAM_Equipo_Nuevo",             
+    "ROM_Equipo_Nuevo",             
+    "IMEI_Equipo_Nuevo",            
+    "IDEMPLEADO_Equipo",            
+    "Responsable_Equipo",                 
+    "Sucursal_Equipo",
+    "IDSUCURSAL_Equipo",            
+    "Error_Equipo",                        
+    "EJECUTADO_Equipo"                     
 ];
 
 
@@ -162,12 +172,11 @@ function doGet(e) {
                 break;
             default:
                 logMessage(`Acción no reconocida: ${action}`);
-                // Retorna una página de error con estilo
+                // Retorna una página de error con estilo simple
                 htmlOutput = generateConfirmationPage(
                     'Error de Acción',
                     'Acción no reconocida o inválida.',
-                    REDIRECTION_URL,
-                    true
+                    true // isError
                 );
                 break;
         }
@@ -192,7 +201,7 @@ function doGet(e) {
             htmlFileToServe = 'modificarLinea';
             break;
         case 'modificarEquipoUsado':
-            htmlFileToServe = 'modificarEquipoUsado';
+            htmlFileToserve = 'modificarEquipoUsado';
             break;
         case 'aprobarVentaForm': // Nuevo caso para el formulario de aprobación de venta
             htmlFileToServe = 'aprobarVentaForm';
@@ -363,24 +372,61 @@ function sendEmailWithButtons(recipient, subject, body, buttons) {
  * Genera una página de confirmación HTML usando reemplazo de cadenas.
  * @param {string} title El título de la página.
  * @param {string} message El mensaje a mostrar.
- * @param {string} redirectUrl La URL a la que redirigir.
  * @param {boolean} isError Si la página es para un error.
  * @returns {GoogleAppsScript.HTML.HtmlOutput} El objeto HtmlOutput.
  */
-function generateConfirmationPage(title, message, redirectUrl, isError) {
-    const htmlTemplate = HtmlService.createHtmlOutputFromFile('confirmationPage').getContent();
-    let finalHtml = htmlTemplate.replace(/<?!= title ?>/g, title)
-                                .replace(/<?!= message ?>/g, message)
-                                .replace(/<?!= redirectUrl ?>/g, redirectUrl)
-                                .replace(/<?!= isError \? 'error-state' : '' ?>/g, isError ? 'error-state' : '');
-    
-    // Para las variables que están dentro de atributos (como el class), necesitamos una lógica diferente
-    // para asegurar que el reemplazo sea seguro y no rompa el HTML.
-    // En este caso, el `<?!= isError ? 'error-state' : '' ?>` está en el body class.
-    // La forma más segura es usar un marcador de posición específico para el class.
-    finalHtml = finalHtml.replace('class="__ERROR_CLASS__"', isError ? 'class="error-state"' : 'class=""');
+function generateConfirmationPage(title, message, isError) {
+    const messageStyle = isError ? 'color: #dc3545;' : 'color: #5cb85c;';
+    const titleStyle = isError ? 'color: #dc3545;' : 'color: #2d3748;';
+    const containerClass = isError ? 'error-state' : '';
 
-    return HtmlService.createHtmlOutput(finalHtml)
+    let htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <base target="_top">
+            <title>${title}</title>
+            <style>
+                body {
+                    font-family: sans-serif;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 100vh;
+                    background-color: #f0f0f0;
+                    margin: 0;
+                }
+                .container {
+                    background-color: #ffffff;
+                    padding: 30px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    text-align: center;
+                    max-width: 500px;
+                    width: 90%;
+                }
+                h1 {
+                    font-size: 1.8em;
+                    margin-bottom: 15px;
+                    ${titleStyle}
+                }
+                p {
+                    font-size: 1.1em;
+                    line-height: 1.5;
+                    margin-bottom: 0;
+                    ${messageStyle}
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container ${containerClass}">
+                <h1>${title}</h1>
+                <p>${message}</p>
+            </div>
+        </body>
+        </html>
+    `;
+    return HtmlService.createHtmlOutput(htmlContent)
         .setTitle(title)
         .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
@@ -491,7 +537,7 @@ function validarIMEIUnicoSQL(imei, conn) {
 }
 
 /**
- * Valida si un IMEI ya existe en la tabla Equipo_Nuevo o Telefonía_Telcel.
+ * Valida si un IMEI ya existe en la tabla Equipo_Nuevo, Equipo_Usado o Telefonía_Telcel.
  * @param {string} imei El IMEI a validar.
  * @param {JdbcConnection} conn La conexión JDBC ya establecida.
  * @returns {boolean} True si el IMEI es único, false si ya existe.
@@ -518,6 +564,21 @@ function validarIMEINuevoUnicoSQL(imei, conn) {
             return false;
         }
 
+
+        //verificar en Equipo_Usado
+        query = "SELECT COUNT(*) AS CountIMEI FROM Equipo_Usado WHERE IMEI = ?";
+        pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, imei);
+        results = pstmt.executeQuery();
+        if (results.next() && results.getInt("CountIMEI") > 0) {
+            isUnique = false;
+        }
+
+        if (!isUnique) {
+            logMessage(`IMEI ${imei} ya existe en Equipo_Usado.`);
+            return false;
+        }
+
         // Verificar en Telefonía_Telcel
         query = "SELECT COUNT(*) AS CountIMEI FROM Telefonía_Telcel WHERE IMEI = ?";
         pstmt = conn.prepareStatement(query);
@@ -526,7 +587,7 @@ function validarIMEINuevoUnicoSQL(imei, conn) {
         if (results.next() && results.getInt("CountIMEI") > 0) {
             isUnique = false;
         }
-        logMessage(`IMEI ${imei} es único en Equipo_Nuevo y Telefonía_Telcel: ${isUnique}`);
+        logMessage(`IMEI ${imei} es único en Equipo_Nuevo, Equipo_Usado y Telefonía_Telcel: ${isUnique}`);
         return isUnique;
     } catch (e) {
         logMessage("Error al validar IMEI en SQL Server (Equipo_Nuevo/Telefonía_Telcel): " + e.message);
@@ -582,7 +643,6 @@ function getResponsableID(responsableName) {
         const range = sheetBD.getDataRange();
         const values = range.getValues(); // Obtiene todos los valores de la hoja
 
-        // Asumiendo que la columna A es Nombre y la columna B es ID Empleado
         const nombreColIndex = 0; // Columna A (0-indexed)
         const idEmpleadoColIndex = 1; // Columna B (0-indexed)
 
@@ -1044,12 +1104,11 @@ function procesarALyEFormulario(formData) {
             pstmtEquipoNuevo = conn.prepareStatement(insertEquipoNuevoQuery);
             
             // Campos de Equipo_Nuevo no presentes en este formulario, se envían como NULL o valores por defecto si la DB lo permite
-            const costoEquipoNuevo = null; // No en este formulario
-            const fechaCompraEquipoNuevo = null; // No en este formulario
-            const estadoEquipoNuevo = null; // No en este formulario
+            const fechaCompraEquipoNuevo = formatDateForSql(formData.fecha_inicio); 
+            const estadoEquipoNuevo = 'Asignado'; 
 
             pstmtEquipoNuevo.setInt(1, idEquipoNuevo);
-            pstmtEquipoNuevo.setObject(2, costoEquipoNuevo); // MONEY, puede ser NULL
+            pstmtEquipoNuevo.setObject(2, parseFloat(formData.costoEquipoNuevo) || null); 
             pstmtEquipoNuevo.setString(3, fechaCompraEquipoNuevo); // DATETIME2, puede ser NULL
             pstmtEquipoNuevo.setString(4, estadoEquipoNuevo); // NVARCHAR(50), puede ser NULL
             pstmtEquipoNuevo.setString(5, formData.observaciones_equipo_nuevo || null);
@@ -1142,7 +1201,7 @@ function procesarALyEFormulario(formData) {
             switch (header) {
                 case "Marca temporal": rowData.push(fechaFormulario); break;
                 case "Dirección de correo electrónico": rowData.push(Session.getActiveUser().getEmail()); break;
-                case "ID_Tel": rowData.push("Generado por DB"); break; // id_tel es IDENTITY
+                case "Id_tel": rowData.push("Generado por DB"); break; // id_tel es IDENTITY
                 case "Región": rowData.push(formData.region || ''); break;
                 case "Cuenta_padre": rowData.push(formData.cuenta_padre || ''); break;
                 case "Cuenta": rowData.push(formData.cuenta || ''); break;
@@ -1152,31 +1211,42 @@ function procesarALyEFormulario(formData) {
                 case "Minutos": rowData.push(formData.minutos || ''); break;
                 case "Mensajes": rowData.push(formData.mensajes || ''); break;
                 case "Monto_renta": rowData.push(parseFloat(formData.monto_renta) || ''); break;
-                case "Equipo_ilimitado": rowData.push(parseFloat(formData.equipo_ilimitado) || ''); break;
-                case "Servicio_a_la_carta": rowData.push(parseFloat(formData.servicio_a_la_carta) || ''); break;
-                case "Servicio_blackberry": rowData.push(parseFloat(formData.servicio_blackberry) || ''); break;
+                case "Equipo_ilimitado": rowData.push(parseFloat(formData.costoEquipoNuevo) || ''); break;
                 case "Duracion_plan": rowData.push(formData.duracion_plan || ''); break;
                 case "Fecha_inicio": rowData.push(formData.fecha_inicio ? new Date(formData.fecha_inicio) : ''); break;
                 case "Fecha_termino": rowData.push(formData.fecha_termino ? new Date(formData.fecha_termino) : ''); break;
-                case "Estatus_adendum": rowData.push(formData.estatus_adendum || ''); break;
-                case "Meses_restantes": rowData.push(formData.meses_restantes || ''); break;
+                case "Marca_linea": rowData.push(formData.marca || ''); break;
+                case "Modelo_linea": rowData.push(formData.modelo || ''); break;
+                case "IMEI_linea": rowData.push(formData.imeiEquipoNuevo || ''); break;
                 case "SIM": rowData.push(formData.sim || ''); break;
                 case "Tipo": rowData.push(formData.tipo || ''); break;
+                case "Responsable_Linea": rowData.push(formData.responsable || ''); break;
+                case "Notas": rowData.push(formData.notas || '')
+                case "IDEMPLEADO_Telcel": rowData.push(idEmpleadoInt || ''); break;
+                case "Sucursal_Linea" : rowData.push (formData.idsucursal || ''); break;
+                case "IDSUCURSAL_Telcel": rowData.push(idSucursalInt || ''); break;
                 case "Datos": rowData.push(parseInt(formData.datos) || ''); break;
                 case "Extensión": rowData.push(formData.extension || ''); break;
-                case "Notas": rowData.push(formData.notas || ''); break;
-                case "IDEMPLEADO_Telcel": rowData.push(idEmpleadoInt || ''); break;
-                case "Responsable_Telcel": rowData.push(formData.responsable || ''); break;
-                case "IDSUCURSAL_Telcel": rowData.push(idSucursalInt || ''); break;
                 case "ID_Equipo_Nuevo": rowData.push(idEquipoNuevo); break;
+                case "Error_Linea": rowData.push(""); break;
+                case "EJECUTADO_Linea": rowData.push("SI"); break;
+
+                case "ID_Equipo": rowData.push(idEquipoNuevo); break;
+                case "Costo_Equipo": rowData.push(parseFloat(formData.costoEquipoNuevo) || ''); break;
+                case "Fecha_Compra_Equipo": rowData.push(formData.fecha_inicio ? new Date(formData.fecha_inicio) : ''); break;
+                case "Estado_Equipo": rowData.push(estadoEquipoNuevo || '');break;
+                case "Observaciones_Equipo_Nuevo": rowData.push(formData.observaciones_equipo_nuevo || ''); break;
                 case "Marca_Equipo_Nuevo": rowData.push(formData.marca || ''); break;
                 case "Modelo_Equipo_Nuevo": rowData.push(formData.modelo || ''); break;
                 case "RAM_Equipo_Nuevo": rowData.push(formData.ram || ''); break;
                 case "ROM_Equipo_Nuevo": rowData.push(formData.rom || ''); break;
                 case "IMEI_Equipo_Nuevo": rowData.push(imeiEquipoNuevo); break;
-                case "Observaciones_Equipo_Nuevo": rowData.push(formData.observaciones_equipo_nuevo || ''); break;
-                case "Error": rowData.push(""); break;
-                case "EJECUTADO": rowData.push("SI"); break;
+                case "IDEMPLEADO_Equipo": rowData.push(idEmpleadoInt || ''); break;
+                case "Responsable_Equipo": rowData.push(formData.responsable || ''); break;
+                case "Sucursal_Equipo" : rowData.push (formData.idsucursal || ''); break;
+                case "IDSUCURSAL_Equipo": rowData.push(idSucursalInt || ''); break;
+                case "Error_Equipo": rowData.push(""); break;
+                case "EJECUTADO_Equipo": rowData.push("SI"); break;
                 default: rowData.push(""); 
             }
         });
@@ -1195,6 +1265,7 @@ function procesarALyEFormulario(formData) {
     }
     return response;
 }
+
 
 // --- 4.3. Formulario: Renovación de Línea y Equipo (RLyE) ---
 /**
@@ -1554,7 +1625,7 @@ function aprobarBajaEquipo(idEquipo, solicitanteEmail, razonBaja, sucursal, imei
         if (conn) conn.close();
     }
 
-    return generateConfirmationPage(confirmationTitle, confirmationMessage, REDIRECTION_URL, !success);
+    return generateConfirmationPage(confirmationTitle, confirmationMessage, !success);
 }
 
 /**
@@ -1589,7 +1660,7 @@ function denegarBajaEquipo(idEquipo, solicitanteEmail, sucursal, imei) {
         success = false;
     }
 
-    return generateConfirmationPage(confirmationTitle, confirmationMessage, REDIRECTION_URL, !success);
+    return generateConfirmationPage(confirmationTitle, confirmationMessage, !success);
 }
 
 /**
@@ -1687,7 +1758,7 @@ function aprobarVentaEquipoStep2(formData) {
         if (conn) conn.close();
     }
 
-    return generateConfirmationPage(confirmationTitle, confirmationMessage, REDIRECTION_URL, !success);
+    return generateConfirmationPage(confirmationTitle, confirmationMessage, !success);
 }
 
 /**
@@ -1722,5 +1793,5 @@ function denegarVentaEquipo(idEquipo, solicitanteEmail, sucursal, imei) {
         success = false;
     }
 
-    return generateConfirmationPage(confirmationTitle, confirmationMessage, REDIRECTION_URL, !success);
+    return generateConfirmationPage(confirmationTitle, confirmationMessage, !success);
 }
