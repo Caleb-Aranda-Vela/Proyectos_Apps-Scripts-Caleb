@@ -49,19 +49,22 @@
                         </div>
                         <div>
                             <label for="clave_plan">Clave Plan</label>
-                            <input type="text" id="clave_plan" name="clave_plan" maxlength="12" required>
+                            <input type="text" id="clave_plan" name="clave_plan" maxlength="10" required>
                         </div>
                         <div>
                             <label for="nombre_plan">Nombre Plan</label>
                             <input type="text" id="nombre_plan" name="nombre_plan" maxlength="12" required>
                         </div>
-                        <div>
+                        <div class="full-width">
                             <label for="minutos">Minutos</label>
                             <input type="text" id="minutos" name="minutos" maxlength="50" required>
+                            <p id="minutosError" class="error-message">Este campo es obligatorio.</p>
                         </div>
-                        <div>
+                        <div class="full-width">
                             <label for="mensajes">Mensajes</label>
                             <input type="text" id="mensajes" name="mensajes" maxlength="50" required>
+                            <p id="mensajesError" class="error-message">Este campo es obligatorio.</p>
+                            
                         </div>
                         <div>
                             <label for="monto_renta">Monto Renta</label>
@@ -106,19 +109,16 @@
                                 <option value="">Cargando sucursales...</option>
                             </select>
                         </div>
-                        <div>
-                            <label for="datos">Datos (GB)</label>
-                            <input type="number" id="datos" name="datos">
+                        <div class="full-width">
+                            <label for="notas">Datos (GB)</label>
+                            <input type="text" id="notas" name="notas" required>
+                            <p id="notasError" class="error-message">Este campo es obligatorio.</p>
                         </div>
                         <div>
                             <label for="extension">Extensión</label>
-                            <input type="number" id="extension" name="extension">
+                            <input type="text" id="extension" name="extension">
                         </div>
-                        <div class="full-width">
-                            <label for="notas">Notas (Obligatorio)</label>
-                            <textarea id="notas" name="notas" rows="3" required></textarea>
-                            <p id="notasError" class="error-message">Este campo es obligatorio.</p>
-                        </div>
+                        
                     </div>
                 </fieldset>
 
@@ -161,7 +161,7 @@
                         </div>
                         <div class="full-width">
                             <label for="observaciones_equipo_nuevo">Observaciones Equipo Nuevo</label>
-                            <textarea id="observaciones_equipo_nuevo" name="observaciones_equipo_nuevo" rows="3" maxlength="100"></textarea>
+                            <textarea id="observaciones_equipo_nuevo" name="observaciones_equipo_nuevo" maxlength="100"></textarea>
                             <p class="char-counter"><span id="observaciones_equipo_nuevoCharCount">0</span>/100</p>
                         </div>
                     </div>
@@ -220,11 +220,13 @@
             const imeiEquipoNuevoError = document.getElementById('imei_equipo_nuevoError');
             const observacionesEquipoNuevoTextarea = document.getElementById('observaciones_equipo_nuevo');
             const observacionesEquipoNuevoCharCount = document.getElementById('observaciones_equipo_nuevoCharCount');
-            const datosInput = document.getElementById('datos');
+            //const datosInput = document.getElementById('datos');
             const extensionInput = document.getElementById('extension');
             const duracionPlanInput = document.getElementById('duracion_plan');
-            const minutosInput = document.getElementById('minutos');
-            const mensajesInput = document.getElementById('mensajes');
+            const minutosTextarea = document.getElementById('minutos');
+            const minutosError = document.getElementById('minutosError');
+            const mensajesTextarea = document.getElementById('mensajes');
+            const mensajeError = document.getElementById('mensajesError');
             const regionInput = document.getElementById('region');
             const clavePlanInput = document.getElementById('clave_plan');
             const nombrePlanInput = document.getElementById('nombre_plan');
@@ -340,11 +342,9 @@
             allowOnlyNumbers(cuentaPadreInput);
             allowOnlyNumbers(cuentaInput);
             allowOnlyNumbers(telefonoInput);
-            allowOnlyNumbers(datosInput);
+            //allowOnlyNumbers(datosInput);
             allowOnlyNumbers(extensionInput);
             allowOnlyNumbers(duracionPlanInput);
-            allowOnlyNumbers(minutosInput);
-            allowOnlyNumbers(mensajesInput);
             allowOnlyNumbers(simInput);
             allowOnlyNumbers(imeiEquipoNuevoInput);
             
@@ -353,13 +353,34 @@
 
             // --- Load Dropdown Options on Initialization ---
             function loadDropdowns() {
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(marcaSelect, res.data, 'Selecciona una marca'); }).getDropdownOptions('Listas2', 'A2:A');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(modeloSelect, res.data, 'Selecciona un modelo'); }).getDropdownOptions('Listas2', 'B2:B');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(ramSelect, res.data, 'Selecciona RAM'); }).getDropdownOptions('Listas2', 'C2:C');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(romSelect, res.data, 'Selecciona ROM'); }).getDropdownOptions('Listas2', 'D2:D');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(sucursalSelect, res.data, 'Cargando sucursales...'); }).getDropdownOptions('Listas2', 'E2:E');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(tipoSelect, res.data, 'Selecciona un tipo'); }).getDropdownOptions('Listas2', 'F2:F');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(responsableSelect, res.data, 'Cargando responsables...'); }).getDropdownOptions('BD', 'A2:A');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(marcaSelect, res.data, 'Selecciona una marca'); }).withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar marca: ' + error.message, 'error');
+                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
+                }).getDropdownOptions('Listas2', 'A2:A');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(modeloSelect, res.data, 'Selecciona un modelo'); }).withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar modelo: ' + error.message, 'error');
+                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
+                }).getDropdownOptions('Listas2', 'B2:B');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(ramSelect, res.data, 'Selecciona RAM'); }).withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar RAM: ' + error.message, 'error');
+                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
+                }).getDropdownOptions('Listas2', 'C2:C');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(romSelect, res.data, 'Selecciona ROM'); }).withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar ROM: ' + error.message, 'error');
+                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
+                }).getDropdownOptions('Listas2', 'D2:D');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(sucursalSelect, res.data, 'Cargando sucursales...'); }).withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar sucursales: ' + error.message, 'error');
+                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
+                }).getDropdownOptions('Listas2', 'E2:E');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(tipoSelect, res.data, 'Selecciona un tipo'); }).withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar tipo: ' + error.message, 'error');
+                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
+                }).getDropdownOptions('Listas2', 'F2:F');
+                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(responsableSelect, res.data, 'Cargando responsables...'); }).withFailureHandler(function(error) {
+                    showMessageBox('Error de conexión al cargar responsables: ' + error.message, 'error');
+                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
+                }).getDropdownOptions('BD', 'A2:A');
             }
 
             // --- Form-level Validation ---
@@ -426,8 +447,8 @@
                     telefono: telefonoInput.value,
                     clave_plan: clavePlanInput.value,
                     nombre_plan: nombrePlanInput.value,
-                    minutos: minutosInput.value,
-                    mensajes: mensajesInput.value,
+                    minutos: minutosTextarea.value,
+                    mensajes: mensajesTextarea.value,
                     monto_renta: parseFloat(montoRentaInput.value.replace(/[^0-9.]/g, '')),
                     equipo_ilimitado: parseFloat(costoEquipoNuevoInput.value.replace(/[^0-9.]/g, '')), // As per spec
                     duracion_plan: duracionPlanInput.value,
@@ -437,7 +458,7 @@
                     tipo: tipoSelect.value,
                     responsable: responsableSelect.value,
                     idsucursal: sucursalSelect.value,
-                    datos: datosInput.value,
+                    //datos: datosInput.value,
                     extension: extensionInput.value,
                     notas: notasTextarea.value,
 

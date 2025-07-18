@@ -840,6 +840,7 @@ function procesarRECUFormulario(formData) {
                 break;
 
             case 'Stock':
+            
             case 'Robado':
                 // Numero_Telefono y Responsable se envían como NULL desde el formulario (disabled)
                 // IDRESGUARDO se queda en NULL para estos casos (no se obtiene por sucursal)
@@ -1043,6 +1044,8 @@ function procesarALyEFormulario(formData) {
     let pstmtTelcel = null;
     let pstmtEquipoNuevo = null;
     let idEquipoNuevo = null; // Declarar aquí e inicializar a null
+    let idEmpleadoInt = null;
+    const estadoEquipoNuevo = 'Asignado';
 
     try {
         const sheet = getSheet("ALyE"); // Hoja específica para ALyE
@@ -1082,11 +1085,14 @@ function procesarALyEFormulario(formData) {
             return response;
         }
 
-        const idEmpleadoInt = parseInt(formData.idEmpleado) || null; // Convertir a INT, o null si no es un número válido
-        if (formData.idEmpleado && isNaN(parseInt(formData.idEmpleado))) { // Si se proporcionó pero no es número
-             response.message = "ID Empleado debe ser un número válido.";
-             logMessage("Error: " + response.message);
-             return response;
+        
+        if (formData.responsable) {
+            idEmpleadoInt = getResponsableID(formData.responsable);
+            if (!idEmpleadoInt) {
+                response.message = `No se encontró ID de Empleado para el responsable '${formData.responsable}'.`;
+                logMessage("Error: " + response.message);
+                return response;
+            }
         }
 
 
@@ -1105,17 +1111,16 @@ function procesarALyEFormulario(formData) {
             
             // Campos de Equipo_Nuevo no presentes en este formulario, se envían como NULL o valores por defecto si la DB lo permite
             const fechaCompraEquipoNuevo = formatDateForSql(formData.fecha_inicio); 
-            const estadoEquipoNuevo = 'Asignado'; 
 
             pstmtEquipoNuevo.setInt(1, idEquipoNuevo);
-            pstmtEquipoNuevo.setObject(2, parseFloat(formData.costoEquipoNuevo) || null); 
+            pstmtEquipoNuevo.setObject(2, parseFloat(formData.equipo_ilimitado) || null); 
             pstmtEquipoNuevo.setString(3, fechaCompraEquipoNuevo); // DATETIME2, puede ser NULL
             pstmtEquipoNuevo.setString(4, estadoEquipoNuevo); // NVARCHAR(50), puede ser NULL
             pstmtEquipoNuevo.setString(5, formData.observaciones_equipo_nuevo || null);
-            pstmtEquipoNuevo.setString(6, formData.marca || null);
-            pstmtEquipoNuevo.setString(7, formData.modelo || null);
-            pstmtEquipoNuevo.setString(8, formData.ram || null);
-            pstmtEquipoNuevo.setString(9, formData.rom || null);
+            pstmtEquipoNuevo.setString(6, formData.marca_nuevo || null);
+            pstmtEquipoNuevo.setString(7, formData.modelo_nuevo || null);
+            pstmtEquipoNuevo.setString(8, formData.ram_nuevo || null);
+            pstmtEquipoNuevo.setString(9, formData.rom_nuevo || null);
             pstmtEquipoNuevo.setString(10, imeiEquipoNuevo);
             pstmtEquipoNuevo.setObject(11, idEmpleadoInt); // IDEMPLEADO de Equipo_Nuevo (asumo INT)
             pstmtEquipoNuevo.setString(12, formData.responsable || null); // Responsable de Equipo_Nuevo
@@ -1164,8 +1169,8 @@ function procesarALyEFormulario(formData) {
             pstmtTelcel.setString(15, formatDateForSql(formData.fecha_termino));
             pstmtTelcel.setString(16, formData.estatus_adendum || null);
             pstmtTelcel.setString(17, formData.meses_restantes || null);
-            pstmtTelcel.setString(18, formData.marca || null); // Marca del equipo nuevo
-            pstmtTelcel.setString(19, formData.modelo || null); // Modelo del equipo nuevo
+            pstmtTelcel.setString(18, formData.marca_nuevo); // Marca del equipo nuevo
+            pstmtTelcel.setString(19, formData.modelo_nuevo); // Modelo del equipo nuevo
             pstmtTelcel.setString(20, imeiEquipoNuevo); // IMEI del equipo nuevo
             pstmtTelcel.setString(21, formData.sim || null);
             pstmtTelcel.setString(22, formData.tipo || null);
