@@ -84,7 +84,7 @@ const ALyE_SHEET_HEADERS = [
     "Tipo",                        
     "Responsable_Linea",                  
     "Notas",                       
-    "IDEMPLEADO_Telcel",            
+    "IDEMPLEADO_Linea",            
     "Sucursal_Linea",
     "IDSUCURSAL_Telcel",            
     "Datos",                        
@@ -92,7 +92,7 @@ const ALyE_SHEET_HEADERS = [
     "ID_Equipo_Nuevo",             
     "Error_Linea",                      
     "EJECUTADO_Linea",                  
-    "",
+
     "ID_Equipo",
     "Costo_Equipo",                 
     "Fecha_Compra_Equipo",         
@@ -1046,6 +1046,8 @@ function procesarALyEFormulario(formData) {
     let idEquipoNuevo = null; // Declarar aquí e inicializar a null
     let idEmpleadoInt = null;
     const estadoEquipoNuevo = 'Asignado';
+    const imeiEquipoNuevo = formData.imei_equipo_nuevo ? formData.imei_equipo_nuevo.trim() : '';
+    const idSucursalInt = SUCURSAL_MAP[formData.idsucursal] || null;
 
     try {
         const sheet = getSheet("ALyE"); // Hoja específica para ALyE
@@ -1066,7 +1068,7 @@ function procesarALyEFormulario(formData) {
             return response;
         }
 
-        const imeiEquipoNuevo = formData.imei_equipo_nuevo ? formData.imei_equipo_nuevo.trim() : '';
+        
         if (!imeiEquipoNuevo) {
             response.message = "El campo IMEI del Equipo Nuevo es obligatorio.";
             logMessage("Error: " + response.message);
@@ -1078,7 +1080,7 @@ function procesarALyEFormulario(formData) {
             return response;
         }
 
-        const idSucursalInt = SUCURSAL_MAP[formData.idsucursal] || null;
+        
         if (idSucursalInt === null) {
             response.message = "ID de Sucursal inválido.";
             logMessage("Error: " + response.message);
@@ -1216,18 +1218,18 @@ function procesarALyEFormulario(formData) {
                 case "Minutos": rowData.push(formData.minutos || ''); break;
                 case "Mensajes": rowData.push(formData.mensajes || ''); break;
                 case "Monto_renta": rowData.push(parseFloat(formData.monto_renta) || ''); break;
-                case "Equipo_ilimitado": rowData.push(parseFloat(formData.costoEquipoNuevo) || ''); break;
+                case "Equipo_ilimitado": rowData.push(parseFloat(formData.equipo_ilimitado) || ''); break;
                 case "Duracion_plan": rowData.push(formData.duracion_plan || ''); break;
                 case "Fecha_inicio": rowData.push(formData.fecha_inicio ? new Date(formData.fecha_inicio) : ''); break;
                 case "Fecha_termino": rowData.push(formData.fecha_termino ? new Date(formData.fecha_termino) : ''); break;
-                case "Marca_linea": rowData.push(formData.marca || ''); break;
-                case "Modelo_linea": rowData.push(formData.modelo || ''); break;
+                case "Marca_linea": rowData.push(formData.marca_nuevo || ''); break;
+                case "Modelo_linea": rowData.push(formData.modelo_nuevo || ''); break;
                 case "IMEI_linea": rowData.push(formData.imeiEquipoNuevo || ''); break;
                 case "SIM": rowData.push(formData.sim || ''); break;
                 case "Tipo": rowData.push(formData.tipo || ''); break;
                 case "Responsable_Linea": rowData.push(formData.responsable || ''); break;
                 case "Notas": rowData.push(formData.notas || '')
-                case "IDEMPLEADO_Telcel": rowData.push(idEmpleadoInt || ''); break;
+                case "IDEMPLEADO_Linea": rowData.push(idEmpleadoInt || ''); break;
                 case "Sucursal_Linea" : rowData.push (formData.idsucursal || ''); break;
                 case "IDSUCURSAL_Telcel": rowData.push(idSucursalInt || ''); break;
                 case "Datos": rowData.push(parseInt(formData.datos) || ''); break;
@@ -1237,14 +1239,14 @@ function procesarALyEFormulario(formData) {
                 case "EJECUTADO_Linea": rowData.push("SI"); break;
 
                 case "ID_Equipo": rowData.push(idEquipoNuevo); break;
-                case "Costo_Equipo": rowData.push(parseFloat(formData.costoEquipoNuevo) || ''); break;
+                case "Costo_Equipo": rowData.push(parseFloat(formData.equipo_ilimitado) || ''); break;
                 case "Fecha_Compra_Equipo": rowData.push(formData.fecha_inicio ? new Date(formData.fecha_inicio) : ''); break;
                 case "Estado_Equipo": rowData.push(estadoEquipoNuevo || '');break;
                 case "Observaciones_Equipo_Nuevo": rowData.push(formData.observaciones_equipo_nuevo || ''); break;
-                case "Marca_Equipo_Nuevo": rowData.push(formData.marca || ''); break;
-                case "Modelo_Equipo_Nuevo": rowData.push(formData.modelo || ''); break;
-                case "RAM_Equipo_Nuevo": rowData.push(formData.ram || ''); break;
-                case "ROM_Equipo_Nuevo": rowData.push(formData.rom || ''); break;
+                case "Marca_Equipo_Nuevo": rowData.push(formData.marca_nuevo || ''); break;
+                case "Modelo_Equipo_Nuevo": rowData.push(formData.modelo_nuevo || ''); break;
+                case "RAM_Equipo_Nuevo": rowData.push(formData.ram_nuevo || ''); break;
+                case "ROM_Equipo_Nuevo": rowData.push(formData.rom_nuevo || ''); break;
                 case "IMEI_Equipo_Nuevo": rowData.push(imeiEquipoNuevo); break;
                 case "IDEMPLEADO_Equipo": rowData.push(idEmpleadoInt || ''); break;
                 case "Responsable_Equipo": rowData.push(formData.responsable || ''); break;
