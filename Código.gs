@@ -29,6 +29,11 @@ const SUCURSAL_MAP = {
     "MTY": 9
 };
 
+// Mapeo inverso de ID de sucursal a nombre de 3 letras (para mostrar en el formulario)
+const SUCURSAL_ID_TO_NAME_MAP = Object.fromEntries(
+    Object.entries(SUCURSAL_MAP).map(([name, id]) => [id, name])
+);
+
 // Correos de los administradores para validaciones
 const ADMIN_EMAILS = ["caleb.aranda@hemoeco.com"];
 
@@ -111,12 +116,46 @@ const ALyE_SHEET_HEADERS = [
     "EJECUTADO_Equipo"                     
 ];
 
+const MEU_SHEET_HEADERS = [
+    "Marca temporal",
+    "Dirección de correo electrónico",
+    "IMEI del equipo",
+    "Campo Modificado",
+    "Valor Anterior",
+    "Nuevo Valor",
+    "Tipo de Operación",
+    "Costo del Equipo",
+    "Fecha de compra de Equipo",
+    "Fecha de Recolección",
+    "Fecha de Reasignacion",
+    "Estado Anterior",
+    "Nuevo Estado",
+    "Observaciones",
+    "Marca",
+    "Modelo",
+    "Numero_Telefono",
+    "Sucursal Anterior",
+    "Nueva Sucursal",
+    "IDEquipo",
+    "Error",
+    "IDSucursal Anterior",
+    "Nuevo IDSucursal",
+    "IDEMPLEADO Anterior",
+    "Nuevo IDEMPLEADO",
+    "Responsable Anterior",
+    "Nuevo Responsable",
+    "IDRESGUARDO Anterior",
+    "Nuevo IDRESGUARDO",
+    "IDAUTORIZA Anterior",
+    "Nuevo IDAUTORIZA",
+    "Comentarios",
+    "Documentacion",
+    "EJECUTADO"
+];
 
 // Placeholder para los encabezados de las otras hojas.
 const RLyE_SHEET_HEADERS = ["Marca temporal", "Campo1_RLyE", "Campo2_RLyE", "EJECUTADO"];
 const ML_SHEET_HEADERS = ["Marca temporal", "Campo1_ML", "Campo2_ML", "EJECUTADO"];
-const MEU_SHEET_HEADERS = ["Marca temporal", "Campo1_MEU", "Campo2_MEU", "EJECUTADO"];
-
 
 // ====================================================================================================================
 // ====================================== 2. FUNCIONES GENERALES DEL PROYECTO =======================================
@@ -155,10 +194,14 @@ function doGet(e) {
                 );
                 break;
             case 'aprobarVentaEquipoStep1':
-                // Para step1, se redirige a un formulario, no se genera una página de confirmación directa aquí
                 const scriptUrlBase = ScriptApp.getService().getUrl();
+                // CORRECCIÓN: Usar '?form=' en lugar de '?action=' para redirigir a un formulario HTML
+                Logger.log(scriptUrlBase);
                 const redirectUrl = `${scriptUrlBase}?form=aprobarVentaForm&idEquipo=${params.idEquipo}&solicitanteEmail=${encodeURIComponent(params.solicitanteEmail)}&personaVende=${encodeURIComponent(params.personaVende)}&sucursal=${encodeURIComponent(params.sucursal)}&imei=${encodeURIComponent(params.imei)}`;
+                Logger.log(redirectUrl);
+
                 return HtmlService.createHtmlOutput(`<script>window.top.location.href = '${redirectUrl}';</script>`);
+                
             case 'denegarVentaEquipo':
                 htmlOutput = denegarVentaEquipo(
                     parseInt(params.idEquipo), 
@@ -167,20 +210,19 @@ function doGet(e) {
                     params.imei 
                 );
                 break;
-            case 'aprobarVentaEquipoStep2': // Este es llamado por el formulario de monto
+            case 'aprobarVentaEquipoStep2':
                 htmlOutput = aprobarVentaEquipoStep2(params);
                 break;
             default:
                 logMessage(`Acción no reconocida: ${action}`);
-                // Retorna una página de error con estilo simple
                 htmlOutput = generateConfirmationPage(
                     'Error de Acción',
                     'Acción no reconocida o inválida.',
-                    true // isError
+                    true 
                 );
                 break;
         }
-        return htmlOutput; // Retorna el HtmlOutput generado por la función de acción o error
+        return htmlOutput;
     }
 
     // --- Manejo de carga de formularios HTML ---
@@ -201,23 +243,19 @@ function doGet(e) {
             htmlFileToServe = 'modificarLinea';
             break;
         case 'modificarEquipoUsado':
-            htmlFileToserve = 'modificarEquipoUsado';
+            htmlFileToServe = 'modificarEquipoUsado';
             break;
-        case 'aprobarVentaForm': // Nuevo caso para el formulario de aprobación de venta
+        case 'aprobarVentaForm':
             htmlFileToServe = 'aprobarVentaForm';
             break;
         default:
-            // Si el nombre del formulario es inválido, se carga el formulario predeterminado y se registra una advertencia.
             htmlFileToServe = 'registrarEquipoUsado';
             logMessage("Advertencia: Nombre de formulario inválido recibido: '" + formName + "'. Se carga 'registrarEquipoUsado'.");
             break;
     }
 
-    // Importante: Usar createTemplateFromFile().evaluate() para procesar <?!= ... ?>
     const template = HtmlService.createTemplateFromFile(htmlFileToServe);
     
-    // Pasar parámetros del evento 'e' a la plantilla HTML si es necesario
-    // Esto es útil para pasar IDs u otros datos a los formularios de aprobación
     if (e.parameter) {
         for (let param in e.parameter) {
             template[param] = e.parameter[param];
@@ -226,7 +264,7 @@ function doGet(e) {
 
     return template.evaluate()
         .setTitle('Formularios Hemoeco')
-        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL); // Importante para que funcione en un iframe
+        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 /**
@@ -503,6 +541,79 @@ function obtenerUltimoIDEquipoNuevoSQL(conn) {
 }
 
 
+function buscarEquipoIMEI() {
+  buscarEquipoPorIMEI("111111111111131");
+}
+
+/**
+ * Busca un equipo usado por su IMEI y devuelve sus datos.
+ * @param {string} imei El IMEI del equipo a buscar.
+ * @param {JdbcConnection} conn La conexión JDBC ya establecida.
+ * @returns {Object} Un objeto con 'success' (boolean) y 'data' (objeto con los datos del equipo) o 'message' de error.
+ */
+function buscarEquipoPorIMEI(imei) { // Removed 'conn' parameter
+    let conn = null; // Get connection inside the function
+    let pstmt = null;
+    let results = null;
+    try {
+        conn = getJdbcConnection(); // Obtain connection here
+        const query = `
+            SELECT 
+                ID_Equipo, Costo_Equipo, Fecha_Compra, Fecha_Recoleccion, Fecha_Reasignacion, 
+                Estado, Observaciones, Marca, Modelo, Numero_Telefono, IDSUCURSAL, 
+                Responsable, Comentarios, Documentacion 
+            FROM Equipo_Usado 
+            WHERE IMEI = ? AND Estado NOT IN ('Baja','Vendido', 'Validación','Robado')
+            ORDER BY ID_Equipo DESC
+        `;
+        pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, imei);
+        results = pstmt.executeQuery();
+        //logMessage(`La fecha es: ${results.getTimestamp("Fecha_Compra")}`)
+/**
+        for ( const value of results){
+          Logger.log(value);
+        } */
+        Logger.log(results["Costo_Equipo"]);
+
+        if (results.next()) {
+            const idSucursal = results.getInt("IDSUCURSAL");
+            const data = {
+                ID_Equipo: results.getInt("ID_Equipo"),
+                Costo_Equipo: results.getDouble("Costo_Equipo"),
+                Fecha_Compra: getFechaBD(results.getObject("Fecha_Compra")),
+                Fecha_Recoleccion: getFechaBD(results.getObject("Fecha_Recoleccion")),
+                Fecha_Reasignacion: getFechaBD(results.getObject("Fecha_Reasignacion")),
+                Estado: results.getString("Estado"),
+                Observaciones: results.getString("Observaciones"),
+                Marca: results.getString("Marca"),
+                Modelo: results.getString("Modelo"),
+                Numero_Telefono: results.getString("Numero_Telefono"),
+                IDSUCURSAL: idSucursal, // ID numérico
+                IDSUCURSAL_Name: SUCURSAL_ID_TO_NAME_MAP[idSucursal] || String(idSucursal), // Nombre de 3 letras o el ID si no mapea
+                Responsable: results.getString("Responsable"),
+                Comentarios: results.getString("Comentarios"),
+                Documentacion: results.getString("Documentacion")
+            };
+            Logger.log(data);
+            logMessage(`Esta es la informacion que se encontro en base de datos`)
+            logMessage(`Equipo encontrado para IMEI ${imei}: ${JSON.stringify(data)}`);
+            return { success: true, data: data };
+        } else {
+            return { success: false, message: "No se encontró un equipo activo con ese IMEI o su estado no permite modificación." };
+        }
+        
+    } catch (e) {
+        logMessage("Error al buscar equipo por IMEI en SQL Server: " + e.message);
+        return { success: false, message: "Error al buscar equipo: " + e.message };
+    } finally {
+        if (results) results.close();
+        if (pstmt) pstmt.close();
+        if (conn) conn.close(); // Close connection here
+    }
+}
+
+
 /**
  * Valida si un IMEI ya existe en la tabla Equipo_Usado.
  * @param {string} imei El IMEI a validar.
@@ -536,7 +647,7 @@ function validarIMEIUnicoSQL(imei, conn) {
     }
 }
 
-/**
+/**}
  * Valida si un IMEI ya existe en la tabla Equipo_Nuevo, Equipo_Usado o Telefonía_Telcel.
  * @param {string} imei El IMEI a validar.
  * @param {JdbcConnection} conn La conexión JDBC ya establecida.
@@ -660,38 +771,230 @@ function getResponsableID(responsableName) {
 }
 
 /**
- * Obtiene el valor de IDRESGUARDO de la base de datos basado en el IDSUCURSAL.
- * ESTA ES UNA FUNCIÓN PLACEHOLDER.
- * DEBERÁS IMPLEMENTAR LA LÓGICA PARA CONSULTAR TU BD Y OBTENER EL IDRESGUARDO.
- * Ejemplo: Podrías tener una tabla de configuración o mapeo en tu SQL Server.
- * @param {number} idSucursal El ID de la sucursal (INT).
- * @param {JdbcConnection} conn La conexión JDBC.
- * @returns {string|null} El ID de resguardo (NVARCHAR) o null si no se encuentra.
+ * Obtiene el nombre y ID de empleado de la hoja "BD" basado en IDPUESTO y SUCURSALNOMINA.
+ * Esto es para el caso de "Stock" en Modificar Equipo Usado.
+ * @param {number} idSucursalBD El ID numérico de la sucursal.
+ * @param {JdbcConnection} conn La conexión JDBC ya establecida.
+ * @returns {Object|null} Un objeto {nombre: string, id: string} o null si no se encuentra.
  */
-function getResguardoPorSucursalSQL(idSucursal, conn) {
-    let pstmt = null;
-    let results = null;
+function getResponsableAndIdFromBDByPuesto(idSucursalBD, conn) {
     try {
-        // Ejemplo de consulta (AJUSTA ESTO A TU ESQUEMA REAL DE DB)
-        // Asumo una tabla 'ConfiguracionSucursales' con 'IDSUCURSAL' (INT) y 'IDRESGUARDO' (NVARCHAR)
-        const query = "SELECT IDRESGUARDO FROM ConfiguracionSucursales WHERE IDSUCURSAL = ?";
-        pstmt = conn.prepareStatement(query);
-        pstmt.setInt(1, idSucursal); // idSucursal es INT
-        results = pstmt.executeQuery();
-        if (results.next()) {
-            return results.getString("IDRESGUARDO");
+        const sheetBD = getSheet("BD"); // Hoja "BD"
+        const range = sheetBD.getDataRange();
+        const values = range.getValues(); // Obtiene todos los valores de la hoja
+
+        // Columnas en la hoja "BD"
+        const nombreColIndex = 0; // NOMBRECOMPLETO (Col A)
+        const idEmpleadoColIndex = 1; // IDEMPLEADO (Col B)
+        const idPuestoColIndex = 2; // IDPUESTO (Col C)
+        const sucursalNominaColIndex = 5; // SUCURSALNOMINA (Col F)
+        const idSucursalColIndex = 6; // IDSUCURSAL (Col G) - Esto es el ID numérico de la sucursal
+
+        let matchingRecords = [];
+
+        for (let i = 1; i < values.length; i++) { // Empezar desde la fila 1 (después de encabezados)
+            const row = values[i];
+            const currentIdPuesto = row[idPuestoColIndex] ? String(row[idPuestoColIndex]).trim() : '';
+            const currentSucursalNomina = row[sucursalNominaColIndex] ? String(row[sucursalNominaColIndex]).trim() : '';
+            const currentIdSucursal = row[idSucursalColIndex]; // El ID numérico de la sucursal en la hoja BD
+
+            // Verificar si IDPUESTO es '6' o '47' y si SUCURSALNOMINA coincide con el nombre de la sucursal
+            // Y si el IDSUCURSAL en la hoja BD coincide con el ID numérico de la sucursal del equipo
+            if ((currentIdPuesto === '6' || currentIdPuesto === '47') && currentIdSucursal == idSucursalBD) {
+                matchingRecords.push({
+                    nombre: row[nombreColIndex] ? String(row[nombreColIndex]).trim() : null,
+                    id: row[idEmpleadoColIndex] ? String(row[idEmpleadoColIndex]).trim() : null,
+                    idEmpleadoNum: parseInt(row[idEmpleadoColIndex]) || Infinity // Para ordenar por IDEMPLEADO menor
+                });
+            }else if((currentIdPuesto === '1') && currentIdSucursal == idSucursalBD){
+                matchingRecords.push({
+                    nombre: row[nombreColIndex] ? String(row[nombreColIndex]).trim() : null,
+                    id: row[idEmpleadoColIndex] ? String(row[idEmpleadoColIndex]).trim() : null,
+                    idEmpleadoNum: parseInt(row[idEmpleadoColIndex]) || Infinity // Para ordenar por IDEMPLEADO menor
+                });
+            }
         }
-        logMessage(`ID de Resguardo no encontrado en DB para IDSUCURSAL: ${idSucursal}`);
+
+        if (matchingRecords.length > 0) {
+            // Ordenar por IDEMPLEADO menor
+            matchingRecords.sort((a, b) => a.idEmpleadoNum - b.idEmpleadoNum);
+            logMessage(`Responsable encontrado para Stock: ${matchingRecords[0].nombre} (ID: ${matchingRecords[0].id})`);
+            return { nombre: matchingRecords[0].nombre, id: matchingRecords[0].id };
+        }
+
+        logMessage(`No se encontró un responsable con IDPUESTO '6' o '47' para la sucursal ID: ${idSucursalBD}.`);
         return null;
     } catch (e) {
-        logMessage("Error al obtener ID de Resguardo por Sucursal de SQL Server: " + e.message);
+        logMessage("Error al obtener Responsable por Puesto y Sucursal de la hoja 'BD': " + e.message);
         return null;
-    } finally {
-        if (results) results.close();
-        if (pstmt) pstmt.close();
     }
 }
 
+/**
+ * Extraer la consulta de base de datos de manera correcta
+ * @param {string} imei El IMEI a validar.
+ * @param {JdbcConnection} conn La conexión JDBC ya establecida.
+ * @returns {boolean} True si el IMEI es único, false si ya existe.
+ */
+
+function getFechaBD(fecha_bd) {
+  if(fecha_bd) {
+    const fecha = new Date(fecha_bd);
+    if (isNaN(fecha.getTime())) {
+      return ''; // Devuelve vacío si la fecha es inválida
+    }
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Los meses son de 0 a 11
+    const anio = fecha.getFullYear();
+
+    // CORRECCIÓN: Devolver en formato YYYY-MM-DD
+    return `${anio}-${mes}-${dia}`;
+  }
+  return fecha_bd;
+}
+/**
+function getFechaBD(fecha_bd) {
+  // 1. Crear un objeto Date a partir de la cadena.
+  // JavaScript's Date constructor es bastante bueno para parsear formatos ISO.
+  // Aunque tu cadena tiene más precisión de la que Date maneja (microsegundos),
+  // New Date() debería ignorar los dígitos extra después de los milisegundos.
+  const fechaCompleta = new Date(fecha_bd);
+  Logger.log(fecha_bd)
+  
+
+  // Verificar si la fecha es válida
+  if (isNaN(fechaCompleta.getTime())) {
+    Logger.log('Error: La cadena de fecha proporcionada no es válida: ' + fecha_bd);
+    // Puedes lanzar un error o devolver un valor específico si la fecha es inválida
+    throw new Error('Formato de fecha inválido.');
+  }
+
+  // 2. Obtener la zona horaria del script para Utilities.formatDate.
+  // Es importante especificar la zona horaria para asegurar un formato consistente.
+  // Si no especificas, usará la zona horaria por defecto del script/proyecto.
+  const zonaHorariaScript = Session.getScriptTimeZone();
+
+  // 3. Formatear el objeto Date a la cadena "DD/MM/AAAA".
+  // Utilities.formatDate es la forma recomendada en Apps Script para formatear fechas.
+  const fechaFormateadaStr = Utilities.formatDate(fechaCompleta, zonaHorariaScript, 'dd/MM/yyyy');
+
+  // 4. Crear un nuevo objeto Date SOLO con la fecha (sin la hora)
+  // Aunque el formato de salida es 'DD/MM/AAAA', el requisito es "almacenar como un tipo date".
+  // Para que el objeto Date resultante solo contenga la información de la fecha
+  // y la hora se establezca a medianoche (00:00:00), podemos crear un nuevo objeto Date
+  // usando los componentes de año, mes y día del objeto original.
+  const anio = fechaCompleta.getFullYear();
+  const mes = fechaCompleta.getMonth(); // getMonth() es base 0
+  const dia = fechaCompleta.getDate();
+
+  // new Date(año, mes, día) creará un objeto Date a medianoche en la zona horaria local.
+  const fechaSoloDia = new Date(anio, mes, dia);
+
+  Logger.log('Cadena original: ' + fecha_bd);
+  Logger.log('Objeto Date parseado (completo): ' + fechaCompleta);
+  Logger.log('Fecha formateada (string DD/MM/AAAA): ' + fechaFormateadaStr);
+  Logger.log('Objeto Date solo con la fecha (00:00:00): ' + fechaSoloDia);
+
+  return fechaSoloDia; // Retornamos el objeto Date que representa solo el día
+} */
+/**
+ * Busca una línea telefónica por su número y el equipo vinculado.
+ * @param {string} telefono El número de 10 dígitos a buscar.
+ * @returns {object} Un objeto con el resultado de la búsqueda.
+ */
+function buscarLineaPorTelefono(telefono) {
+    let conn;
+    try {
+        conn = getJdbcConnection();
+        const stmt = conn.prepareStatement("SELECT * FROM Telefonía_Telcel WHERE Teléfono = ? AND Tipo = 'SmartPhone'");
+        stmt.setString(1, telefono);
+        const results = stmt.executeQuery();
+
+        if (results.next()) {
+            const idSucursal = results.getInt("IDSUCURSAL");
+            const sucursalNombre = SUCURSAL_ID_TO_NAME_MAP[idSucursal] || '';
+            const linea = {
+                Region: results.getString("Región"),
+                Cuenta_padre: results.getString("Cuenta_padre"),
+                Cuenta: results.getString("Cuenta"),
+                Teléfono: results.getString("Teléfono"),
+                Clave_plan: results.getString("Clave_plan"),
+                Nombre_plan: results.getString("Nombre_plan"),
+                Minutos: results.getString("Minutos"),
+                Mensajes: results.getString("Mensajes"),
+                Monto_renta: results.getDouble("Monto_renta"),
+                Duracion_plan: results.getString("Duracion_plan"),
+                Fecha_inicio: getFechaBD(results.getObject("Fecha_inicio")),
+                Fecha_termino: getFechaBD(results.getObject("Fecha_termino")),
+                SIM: results.getString("SIM"),
+                Tipo: results.getString("Tipo"),
+                Responsable: results.getString("Responsable"),
+                Sucursal: sucursalNombre, // Enviamos el nombre de 3 letras
+                IDSUCURSAL: idSucursal, // Y también el ID
+                Extensión: results.getString("Extensión"),
+                Datos: results.getInt("Datos"),
+                Notas: results.getString("Notas")
+            };
+
+            const idEquipoNuevo = results.getInt("IDEquipoNuevo");
+            const idEquipoUsado = results.getInt("IDEquipoUsado");
+            let equipoVinculado = null;
+
+            // Lógica para encontrar el equipo vinculado
+            if (idEquipoNuevo && !results.wasNull()) {
+                equipoVinculado = _buscarEquipoPorId('Equipo_Nuevo', idEquipoNuevo, conn);
+            } else if (idEquipoUsado && !results.wasNull()) {
+                equipoVinculado = _buscarEquipoPorId('Equipo_Usado', idEquipoUsado, conn);
+            } else {
+                // Caso 4: No hay ID, se usan los datos de la propia línea
+                equipoVinculado = {
+                    IMEI: results.getString("IMEI"),
+                    Marca: results.getString("Marca"),
+                    Modelo: results.getString("Modelo"),
+                    Estado: "N/A (Línea)",
+                    Fecha_Compra: getFechaBD(results.getObject("Fecha_inicio")),
+                    Costo_Equipo: results.getDouble("Equipo_ilimitado"),
+                    Observaciones: "Datos tomados del registro de la línea."
+                };
+            }
+            
+            return { success: true, data: { linea: linea, equipoVinculado: equipoVinculado } };
+        } else {
+            return { success: false, message: "No se encontró una línea activa de SmartPhone con ese número." };
+        }
+    } catch (e) {
+        logMessage("Error en buscarLineaPorTelefono: " + e.message);
+        return { success: false, message: e.message };
+    } finally {
+        if (conn) conn.close();
+    }
+}
+
+/**
+ * Función de ayuda para buscar un equipo por ID en una tabla específica.
+ * @private
+ */
+function _buscarEquipoPorId(tabla, id, conn) {
+    let equipo = {};
+    const query = `SELECT IMEI, Marca, Modelo, Estado, Fecha_Compra, Costo_Equipo, Observaciones FROM ${tabla} WHERE ID_Equipo = ?`;
+    const stmt = conn.prepareStatement(query);
+    stmt.setInt(1, id);
+    const rs = stmt.executeQuery();
+    if (rs.next()) {
+        equipo = {
+            IMEI: rs.getString("IMEI"),
+            Marca: rs.getString("Marca"),
+            Modelo: rs.getString("Modelo"),
+            Estado: rs.getString("Estado"),
+            Fecha_Compra: getFechaBD(rs.getObject("Fecha_Compra")),
+            Costo_Equipo: rs.getDouble("Costo_Equipo"),
+            Observaciones: rs.getString("Observaciones")
+        };
+    }
+    rs.close();
+    stmt.close();
+    return equipo;
+}
 
 // ====================================================================================================================
 // ====================================== 4. FUNCIONES DE PROCESAMIENTO DE FORMULARIOS ==============================
@@ -776,7 +1079,7 @@ function procesarRECUFormulario(formData) {
         }
         const sucursalCodigo3Letras = formData.idSucursal; // Para el asunto del correo
 
-        const responsableName = formData.responsable || null;
+        let responsableName = formData.responsable || null;
         let idEmpleado = null;
         if (responsableName) {
             idEmpleado = getResponsableID(responsableName);
@@ -807,6 +1110,11 @@ function procesarRECUFormulario(formData) {
         switch (formData.estado) {
             case 'Baja':
                 estadoFinalDB = "Validación"; // Se guarda como "Validación" en BD/Hoja
+
+                responsableName = null;
+                idEmpleado = null;
+                idResguardo = null;
+
                 const nombreSolicitanteBaja = formData.nombreSolicitanteBaja || '';
                 const razonBaja = formData.razonBaja || '';
 
@@ -840,10 +1148,28 @@ function procesarRECUFormulario(formData) {
                 break;
 
             case 'Stock':
+                const sucursalDBID = idSucursalBD; 
+                const resguardoInfo = getResponsableAndIdFromBDByPuesto(sucursalDBID, conn); 
+                
+                if (resguardoInfo && resguardoInfo.nombre && resguardoInfo.id) {
+                    // CORRECCIÓN: Se usan las variables correctas (responsableName, idEmpleado, etc.)
+                    responsableName = resguardoInfo.nombre;
+                    idEmpleado = resguardoInfo.id;
+                    idResguardo = resguardoInfo.id; 
+                } else {
+                    response.message = `No se encontró un responsable válido (puesto 6 o 47) para Stock en la sucursal ID: ${sucursalDBID}.`;
+                    logMessage("Error: " + response.message);
+                    return response;
+                }
+                break;
             
             case 'Robado':
                 // Numero_Telefono y Responsable se envían como NULL desde el formulario (disabled)
                 // IDRESGUARDO se queda en NULL para estos casos (no se obtiene por sucursal)
+                responsableName = null;
+                idEmpleado = null;
+                idResguardo = null;
+
                 idResguardo = null; 
                 if (formData.estado === 'Robado' && !comentariosFinal) {
                     comentariosFinal = "Favor de agregar anotaciones del Robo";
@@ -854,6 +1180,11 @@ function procesarRECUFormulario(formData) {
 
             case 'Vendido':
                 estadoFinalDB = "Validación"; // Se guarda como "Validación" en BD/Hoja
+
+                responsableName = null;
+                idEmpleado = null;
+                idResguardo = null;
+
                 const nombreSolicitanteVenta = formData.nombreSolicitanteVenta || '';
                 const personaVende = formData.personaVende || '';
 
@@ -904,16 +1235,7 @@ function procesarRECUFormulario(formData) {
                 idEquipo = obtenerUltimoIDEquipoSQL(conn); 
                 break;
 
-            default: // Activo, En Mantenimiento, Desecho (y cualquier otro estado no manejado específicamente)
-                // Si Responsable está vacío, obtener Resguardo por Sucursal
-                if (!responsableName) { 
-                    idResguardo = getResguardoPorSucursalSQL(idSucursalBD, conn);
-                    if (!idResguardo) {
-                        response.message = `No se pudo obtener el ID de Resguardo para la sucursal '${formData.idSucursal}'.`;
-                        logMessage("Error: " + response.message);
-                        return response;
-                    }
-                }
+            default: 
                 // Obtener el ID de Equipo_Usado para la inserción
                 idEquipo = obtenerUltimoIDEquipoSQL(conn); 
                 break;
@@ -965,6 +1287,7 @@ function procesarRECUFormulario(formData) {
             logMessage(`Equipo con ID ${idEquipo} insertado exitosamente en SQL Server.`);
             
             // Si la inserción en SQL es exitosa, la respuesta ya es success, solo se actualiza el mensaje si no es validación
+            response.success = true;
             if (estadoFinalDB !== "Validación") {
                 response.message = `Equipo con ID ${idEquipo} insertado en SQL y registrado en hoja de cálculo.`;
             }
@@ -1115,7 +1438,7 @@ function procesarALyEFormulario(formData) {
             const fechaCompraEquipoNuevo = formatDateForSql(formData.fecha_inicio); 
 
             pstmtEquipoNuevo.setInt(1, idEquipoNuevo);
-            pstmtEquipoNuevo.setObject(2, parseFloat(formData.equipo_ilimitado) || null); 
+            pstmtEquipoNuevo.setObject(2, parseFloat(formData.costo_equipo_nuevo) || null); 
             pstmtEquipoNuevo.setString(3, fechaCompraEquipoNuevo); // DATETIME2, puede ser NULL
             pstmtEquipoNuevo.setString(4, estadoEquipoNuevo); // NVARCHAR(50), puede ser NULL
             pstmtEquipoNuevo.setString(5, formData.observaciones_equipo_nuevo || null);
@@ -1163,7 +1486,7 @@ function procesarALyEFormulario(formData) {
             pstmtTelcel.setString(7, formData.minutos || null);
             pstmtTelcel.setString(8, formData.mensajes || null);
             pstmtTelcel.setObject(9, parseFloat(formData.monto_renta) || null); // MONEY
-            pstmtTelcel.setObject(10, parseFloat(formData.equipo_ilimitado) || null); // MONEY
+            pstmtTelcel.setObject(10, parseFloat(formData.costo_equipo_nuevo) || null); // MONEY
             pstmtTelcel.setObject(11, parseFloat(formData.servicio_a_la_carta) || null); // MONEY
             pstmtTelcel.setObject(12, parseFloat(formData.servicio_blackberry) || null); // MONEY
             pstmtTelcel.setString(13, formData.duracion_plan || null);
@@ -1177,10 +1500,10 @@ function procesarALyEFormulario(formData) {
             pstmtTelcel.setString(21, formData.sim || null);
             pstmtTelcel.setString(22, formData.tipo || null);
             pstmtTelcel.setString(23, formData.responsable || null); // Responsable de Telefonía_Telcel
-            pstmtTelcel.setString(24, formData.notas || null);
-            pstmtTelcel.setObject(25, idEmpleadoInt); // IDEMPLEADO de Telefonía_Telcel (asumo INT)
-            pstmtTelcel.setObject(26, idSucursalInt); // IDSUCURSAL de Telefonía_Telcel (asumo INT)
-            pstmtTelcel.setObject(27, parseInt(formData.datos) || null); // Datos (GB) (asumo INT)
+            pstmtTelcel.setString(24, null);
+            pstmtTelcel.setObject(25, idEmpleadoInt);
+            pstmtTelcel.setObject(26, idSucursalInt);
+            pstmtTelcel.setObject(27, parseFloat( formData.datos) || null);
             pstmtTelcel.setString(28, formData.extension || null);
             pstmtTelcel.setString(29, null); // IDEquipoUSado (omitido en este formulario)
             pstmtTelcel.setObject(30, idEquipoNuevo); // IDEquipoNuevo (vinculado al ID generado)
@@ -1218,7 +1541,7 @@ function procesarALyEFormulario(formData) {
                 case "Minutos": rowData.push(formData.minutos || ''); break;
                 case "Mensajes": rowData.push(formData.mensajes || ''); break;
                 case "Monto_renta": rowData.push(parseFloat(formData.monto_renta) || ''); break;
-                case "Equipo_ilimitado": rowData.push(parseFloat(formData.equipo_ilimitado) || ''); break;
+                case "Equipo_ilimitado": rowData.push(parseFloat(formData.costo_equipo_nuevo) || ''); break;
                 case "Duracion_plan": rowData.push(formData.duracion_plan || ''); break;
                 case "Fecha_inicio": rowData.push(formData.fecha_inicio ? new Date(formData.fecha_inicio) : ''); break;
                 case "Fecha_termino": rowData.push(formData.fecha_termino ? new Date(formData.fecha_termino) : ''); break;
@@ -1239,7 +1562,7 @@ function procesarALyEFormulario(formData) {
                 case "EJECUTADO_Linea": rowData.push("SI"); break;
 
                 case "ID_Equipo": rowData.push(idEquipoNuevo); break;
-                case "Costo_Equipo": rowData.push(parseFloat(formData.equipo_ilimitado) || ''); break;
+                case "Costo_Equipo": rowData.push(parseFloat(formData.costo_equipo_nuevo) || ''); break;
                 case "Fecha_Compra_Equipo": rowData.push(formData.fecha_inicio ? new Date(formData.fecha_inicio) : ''); break;
                 case "Estado_Equipo": rowData.push(estadoEquipoNuevo || '');break;
                 case "Observaciones_Equipo_Nuevo": rowData.push(formData.observaciones_equipo_nuevo || ''); break;
@@ -1340,35 +1663,220 @@ function procesarMLFormulario(formData) {
 
 // --- 4.5. Formulario: Modificar Equipo Usado (MEU) ---
 /**
- * Placeholder para procesar el formulario "Modificar Equipo Usado".
- * DEBERÁS IMPLEMENTAR LA LÓGICA ESPECÍFICA PARA ESTE FORMULARIO, INCLUYENDO INTERACCIÓN CON SQL SI ES NECESARIO.
- * Asegúrate de usar `getSheet("MEU")` y `MEU_SHEET_HEADERS`.
+ * Procesa los datos enviados desde el formulario "Modificar Equipo Usado".
+ * Inicia flujos de aprobación o actualiza directamente el registro en la BD.
+ * @param {Object} formData Los datos del formulario como un objeto JavaScript.
+ * @returns {Object} Un objeto con 'success' (boolean) y 'message' (string).
  */
 function procesarMEUFormulario(formData) {
     let response = { success: false, message: "" };
     logMessage("Datos recibidos del formulario MEU: " + JSON.stringify(formData));
+
+    let conn = null;
+
     try {
-        const sheet = getSheet("MEU"); // Hoja específica para MEU
-        // Implementa aquí la lógica para guardar en SQL y luego en la hoja "MEU"
-        // Ejemplo simplificado para demostración:
-        const rowData = [];
-        MEU_SHEET_HEADERS.forEach(header => {
-            switch (header) {
-                case "Marca temporal": rowData.push(new Date()); break;
-                case "EJECUTADO": rowData.push("SI"); break;
-                default: rowData.push(`Valor para ${header}: ${formData[header] || ''}`); // Ajusta según tus campos reales
-            }
-        });
-        sheet.appendRow(rowData);
+        conn = getJdbcConnection();
+        // --- INICIO DE LA TRANSACCIÓN ---
+        conn.setAutoCommit(false);
+
+        const solicitanteEmail = Session.getActiveUser().getEmail();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // 1. Obtener datos originales del equipo desde la BD
+        const originalEquipoData = buscarEquipoPorIMEI(formData.imei);
+        if (!originalEquipoData.success || !originalEquipoData.data) {
+            throw new Error(originalEquipoData.message || `No se encontró el equipo con IMEI ${formData.imei}.`);
+        }
+        const originalData = originalEquipoData.data;
+        const idEquipo = originalData.ID_Equipo; // El ID del equipo nunca cambia
+
+        // 2. Definir variables finales que se guardarán en la BD, partiendo de los datos originales
+        let estadoFinalDB = formData.nuevoEstado;
+        let idEmpleadoFinal = originalData.IDEMPLEADO || null;
+        let responsableFinal = originalData.Responsable || null;
+        let idResguardoFinal = originalData.IDRESGUARDO || null;
+        let idSucursalFinal = originalData.IDSUCURSAL;
+        let comentariosFinal = formData.comentarios;
+        let marcaFinal = originalData.Marca;
+        let modeloFinal = originalData.Modelo;
+        let numeroTelefonoFinal = formData.numeroTelefono || null;
+        let fechaReasignacionFinal = formData.fechaReasignacion ? new Date(formData.fechaReasignacion) : null;
+
+        // --- 3. LÓGICA CONDICIONAL POR NUEVO ESTADO ---
+        switch (formData.nuevoEstado) {
+            case 'Baja':
+                estadoFinalDB = "Validación";
+                responsableFinal = null;
+                idEmpleadoFinal = null;
+                idResguardoFinal = null;
+                numeroTelefonoFinal = null;
+
+                if (!formData.nombreSolicitanteBaja || !formData.razonBaja) {
+                    throw new Error("El solicitante y la razón son obligatorios para la baja.");
+                }
+                
+                const bajaSubject = `VALIDACIÓN DE BAJA DE EQUIPO (MODIFICACIÓN) - SUC: '${originalData.IDSUCURSAL_Name}'`;
+                const bajaBody = `Buen día.\n\n` +
+                               `${formData.nombreSolicitanteBaja} (${solicitanteEmail}) solicita validar la BAJA del siguiente equipo:\n\n` +
+                               `Marca: ${originalData.Marca}\n` +
+                               `Modelo: ${originalData.Modelo}\n` +
+                               `IMEI: ${formData.imei}\n\n` +
+                               `Razón de la Baja: ${formData.razonBaja}\n\n` +
+                               `Por favor, Acepte o Deniegue la solicitud.`;
+
+                const bajaButtons = [
+                    { text: 'Aceptar', action: 'aprobarBajaEquipo', params: { idEquipo: idEquipo, solicitanteEmail: solicitanteEmail, razonBaja: formData.razonBaja, sucursal: originalData.IDSUCURSAL_Name, imei: formData.imei }, color: '#28a745' },
+                    { text: 'Denegar', action: 'denegarBajaEquipo', params: { idEquipo: idEquipo, solicitanteEmail: solicitanteEmail, sucursal: originalData.IDSUCURSAL_Name, imei: formData.imei }, color: '#dc3545' }
+                ];
+                sendEmailWithButtons(ADMIN_EMAILS, bajaSubject, bajaBody, bajaButtons);
+                response.message = `Solicitud de baja enviada para validación.`;
+                break;
+
+            case 'Vendido':
+                estadoFinalDB = "Validación";
+                responsableFinal = null;
+                idEmpleadoFinal = null;
+                idResguardoFinal = null;
+                numeroTelefonoFinal = null;
+
+                if (!formData.nombreSolicitanteVenta || !formData.personaVende) {
+                    throw new Error("El solicitante y la persona a vender son obligatorios.");
+                }
+
+                const ventaSubject = `VALIDACIÓN DE VENTA DE EQUIPO (MODIFICACIÓN) - SUC: '${originalData.IDSUCURSAL_Name}'`;
+                const ventaBody = `Buen día.\n\n` +
+                                `${formData.nombreSolicitanteVenta} (${solicitanteEmail}) solicita validar la VENTA del siguiente equipo:\n\n` +
+                                `Marca: ${originalData.Marca}\n` +
+                                `Modelo: ${originalData.Modelo}\n` +
+                                `IMEI: ${formData.imei}\n\n` +
+                                `Se propone vender a: ${formData.personaVende}\n\n` +
+                                `Por favor, Acepte o Deniegue la solicitud.`;
+
+                const ventaButtons = [
+                    { text: 'Aceptar', action: 'aprobarVentaEquipoStep1', params: { idEquipo: idEquipo, solicitanteEmail: solicitanteEmail, personaVende: formData.personaVende, sucursal: originalData.IDSUCURSAL_Name, imei: formData.imei }, color: '#28a745' },
+                    { text: 'Denegar', action: 'denegarVentaEquipo', params: { idEquipo: idEquipo, solicitanteEmail: solicitanteEmail, sucursal: originalData.IDSUCURSAL_Name, imei: formData.imei }, color: '#dc3545' }
+                ];
+                sendEmailWithButtons(ADMIN_EMAILS, ventaSubject, ventaBody, ventaButtons);
+                response.message = `Solicitud de venta enviada para validación.`;
+                break;
+
+            case 'Robado':
+                responsableFinal = null;
+                idEmpleadoFinal = null;
+                idResguardoFinal = null;
+                numeroTelefonoFinal = null;
+                if (!comentariosFinal) {
+                    comentariosFinal = "Favor de agregar anotaciones del Robo";
+                }
+                break;
+
+            case 'Stock':
+                responsableFinal = null;
+                idEmpleadoFinal = null;
+                idResguardoFinal = null;
+                numeroTelefonoFinal = null;
+                
+                const resguardoInfo = getResponsableAndIdFromBDByPuesto(idSucursalFinal, conn);
+                if (resguardoInfo && resguardoInfo.id) {
+                    responsableFinal = resguardoInfo.nombre;
+                    idEmpleadoFinal = resguardoInfo.id;
+                    idResguardoFinal = resguardoInfo.id;
+                } else {
+                    throw new Error(`No se encontró un responsable de Stock en la sucursal.`);
+                }
+                
+                if (formData.marca !== originalData.Marca || formData.modelo !== originalData.Modelo) {
+                   if (!formData.comentarios) {
+                     throw new Error("Debe justificar el cambio de marca y/o modelo en los comentarios.");
+                   }
+                   marcaFinal = formData.marca;
+                   modeloFinal = formData.modelo;
+                }
+                break;
+                
+            case 'Reasignado':
+                if (!formData.nuevaSucursal || !formData.nuevoResponsable || !fechaReasignacionFinal || !numeroTelefonoFinal) {
+                    throw new Error("La nueva sucursal, el nuevo responsable, la fecha y el teléfono son obligatorios.");
+                }
+                responsableFinal = formData.nuevoResponsable;
+                idEmpleadoFinal = getResponsableID(responsableFinal);
+                idSucursalFinal = SUCURSAL_MAP[formData.nuevaSucursal];
+                idResguardoFinal = null;
+                if (!idEmpleadoFinal) { throw new Error(`No se encontró ID para el responsable '${responsableFinal}'.`); }
+                if (!idSucursalFinal) { throw new Error(`La sucursal '${formData.nuevaSucursal}' es inválida.`); }
+                if (isNaN(fechaReasignacionFinal.getTime()) || fechaReasignacionFinal > today) {
+                    throw new Error("La fecha de reasignación debe ser válida y no futura.");
+                }
+                break;
+        }
+
+        // --- 4. ACTUALIZACIÓN EN SQL SERVER ---
+        const updateSql = `
+            UPDATE Equipo_Usado SET 
+            Estado = ?, Observaciones = ?, Comentarios = ?, Numero_Telefono = ?, 
+            IDSUCURSAL = ?, IDEMPLEADO = ?, Responsable = ?, IDRESGUARDO = ?,
+            Marca = ?, Modelo = ?, Fecha_Reasignacion = ?
+            WHERE IMEI = ?`;
+        const pstmt = conn.prepareStatement(updateSql);
+        
+        pstmt.setString(1, estadoFinalDB);
+        pstmt.setString(2, formData.observaciones);
+        pstmt.setString(3, comentariosFinal);
+        pstmt.setString(4, numeroTelefonoFinal);
+        pstmt.setObject(5, idSucursalFinal);
+        pstmt.setString(6, idEmpleadoFinal);
+        pstmt.setString(7, responsableFinal);
+        pstmt.setString(8, idResguardoFinal);
+        pstmt.setString(9, marcaFinal);
+        pstmt.setString(10, modeloFinal);
+        pstmt.setString(11, formatDateForSql(fechaReasignacionFinal));
+        pstmt.setString(12, formData.imei);
+
+        pstmt.executeUpdate();
+        
+        conn.commit();
+        logMessage(`Transacción completada. Equipo IMEI ${formData.imei} actualizado en SQL.`);
+
+        // (Aquí puedes añadir la lógica para registrar el cambio en la hoja "MEU")
+
         response.success = true;
-        response.message = "Datos de Modificar Equipo Usado procesados (simulado).";
-        logMessage(response.message);
+        if (!response.message) {
+            response.message = `Registro actualizado exitosamente para IMEI: ${formData.imei}.`;
+        }
+
     } catch (e) {
-        response.message = "Error al procesar formulario MEU: " + e.message;
-        logMessage("Error en procesarMEUFormulario: " + e.message);
+        if (conn) { try { conn.rollback(); } catch (rollError) { logMessage("Error al revertir: " + rollError.message); }}
+        response.message = e.message;
+        logMessage("Error en procesarMEUFormulario: " + e.message + " Stack: " + e.stack);
+        response.success = false;
+    } finally {
+        if (conn) { try { conn.setAutoCommit(true); conn.close(); } catch (finalError) { logMessage("Error al cerrar conexión: " + finalError.message); }}
     }
     return response;
 }
+
+// Helper function to find a row in a sheet by IMEI (for MEU log updates)
+function findSheetRowByIMEI(sheet, imei) {
+    const range = sheet.getDataRange();
+    const values = range.getValues();
+    const headerRow = values[0];
+    const imeiColIndex = headerRow.indexOf("IMEI del equipo"); 
+    
+    if (imeiColIndex === -1) {
+        logMessage("La hoja MEU no tiene la columna 'IMEI del equipo'. No se puede buscar la fila.");
+        return null;
+    }
+
+    for (let i = 1; i < values.length; i++) {
+        if (values[i][imeiColIndex] == imei) {
+            // Return the entire row data and its 1-based index
+            return { data: values[i], rowIndex: i + 1 };
+        }
+    }
+    return null; // Not found
+}
+
 
 
 // ====================================================================================================================
@@ -1679,6 +2187,8 @@ function denegarBajaEquipo(idEquipo, solicitanteEmail, sucursal, imei) {
  * @param {string} sucursal La sucursal del equipo.
  * @param {string} imei El IMEI del equipo (para la actualización en DB).
  */
+
+/**
 function aprobarVentaEquipoStep1(idEquipo, solicitanteEmail, personaVende, sucursal, imei) {
     // Redirige a un formulario HTML simple para pedir el monto de venta
     const scriptUrlBase = ScriptApp.getService().getUrl();
@@ -1686,7 +2196,7 @@ function aprobarVentaEquipoStep1(idEquipo, solicitanteEmail, personaVende, sucur
     const redirectUrl = `${scriptUrlBase}?form=aprobarVentaForm&idEquipo=${idEquipo}&solicitanteEmail=${encodeURIComponent(solicitanteEmail)}&personaVende=${encodeURIComponent(personaVende)}&sucursal=${encodeURIComponent(sucursal)}&imei=${encodeURIComponent(imei)}`;
     
     return HtmlService.createHtmlOutput(`<script>window.top.location.href = '${redirectUrl}';</script>`);
-}
+} */
 
 /**
  * Segunda etapa de aprobación de venta: actualiza el estado, comentarios y notifica al solicitante.
@@ -1694,72 +2204,75 @@ function aprobarVentaEquipoStep1(idEquipo, solicitanteEmail, personaVende, sucur
  * @param {Object} formData Datos del formulario, incluyendo idEquipo, montoVenta, imei, etc.
  */
 function aprobarVentaEquipoStep2(formData) {
+    // Se extraen los parámetros del objeto formData
     const idEquipo = parseInt(formData.idEquipo);
     const montoVenta = parseFloat(formData.montoVenta) || 0;
     const solicitanteEmail = formData.solicitanteEmail;
     const personaVende = formData.personaVende;
     const sucursal = formData.sucursal;
-    const imei = formData.imei; // Recibir IMEI
+    const imei = formData.imei; // CORRECCIÓN: Ahora se recibe el IMEI correctamente
 
     let confirmationTitle = "Venta Aprobada";
-    let confirmationMessage = `El equipo con IMEI ${imei} ha sido marcado como "Vendido" y se ha enviado una notificación al solicitante.`;
+    let confirmationMessage = `El equipo con IMEI ${imei} ha sido marcado como "Vendido" y se ha enviado notificación.`;
     let success = true;
-
-    if (isNaN(montoVenta) || montoVenta <= 0) {
-        // Reconstruir la URL con todos los parámetros para volver al formulario con error
-        const scriptUrlBase = ScriptApp.getService().getUrl();
-        const returnUrl = `${scriptUrlBase}?form=aprobarVentaForm&idEquipo=${idEquipo}&solicitanteEmail=${encodeURIComponent(solicitanteEmail)}&personaVende=${encodeURIComponent(personaVende)}&sucursal=${encodeURIComponent(sucursal)}&imei=${encodeURIComponent(imei)}`;
-        return HtmlService.createHtmlOutput(`<h1>Error</h1><p>Monto de venta inválido. Por favor, ingrese un valor numérico mayor a cero.</p><p><a href="${returnUrl}">Volver al formulario de venta</a></p>`);
-    }
-
     let conn = null;
+
     try {
+        // Validación crucial del IMEI
+        if (!imei) {
+            throw new Error("El IMEI del equipo no fue proporcionado. No se puede procesar la venta.");
+        }
+
+        if (isNaN(montoVenta) || montoVenta <= 0) {
+            throw new Error("Monto de venta inválido. Debe ser un número mayor a cero.");
+        }
+
         conn = getJdbcConnection();
         const sheet = getSheet("RECU");
 
         // 1. Actualizar en SQL Server usando IMEI
-        const updateSql = `UPDATE Equipo_Usado SET Estado = ?, Comentarios = ? WHERE IMEI = ?`;
-        let pstmt = conn.prepareStatement(updateSql);
+        const updateSql = `UPDATE Equipo_Usado SET Estado = ?, Comentarios = ? WHERE IMEI = ? AND Estado = 'Validación'`;
+        const pstmt = conn.prepareStatement(updateSql);
         pstmt.setString(1, "Vendido");
         pstmt.setString(2, `El equipo fue vendido a ${personaVende} con costo de $${montoVenta.toFixed(2)} pesos.`);
-        pstmt.setString(3, imei); // Usar IMEI para el WHERE
-        pstmt.executeUpdate();
+        pstmt.setString(3, imei);
+        
+        const rowsAffected = pstmt.executeUpdate();
         pstmt.close();
-        logMessage(`Venta aprobada en SQL para Equipo IMEI: ${imei}`);
+
+        if (rowsAffected > 0) {
+            logMessage(`Venta aprobada en SQL para Equipo IMEI: ${imei}`);
+        } else {
+            logMessage(`La venta para el IMEI ${imei} ya había sido procesada en la BD o no se encontró en estado 'Validación'.`);
+            confirmationMessage = `La venta para el equipo con IMEI ${imei} ya fue procesada anteriormente.`;
+        }
 
         // 2. Actualizar en Google Sheet
         const range = sheet.getDataRange();
         const values = range.getValues();
         const headerRow = values[0];
-        const imeiColIndex = headerRow.indexOf("IMEI"); // Obtener índice de IMEI
+        const imeiColIndex = headerRow.indexOf("IMEI");
         const estadoColIndex = headerRow.indexOf("Estado del equipo");
         const comentariosColIndex = headerRow.indexOf("Comentarios");
-        const ejecutadoColIndex = headerRow.indexOf("EJECUTADO");
 
         for (let i = 1; i < values.length; i++) {
-            // Buscar por IMEI y por estado "Validación"
             if (values[i][imeiColIndex] == imei && values[i][estadoColIndex] === "Validación") {
                 sheet.getRange(i + 1, estadoColIndex + 1).setValue("Vendido");
                 sheet.getRange(i + 1, comentariosColIndex + 1).setValue(`El equipo fue vendido a ${personaVende} con costo de $${montoVenta.toFixed(2)} pesos.`);
-                sheet.getRange(i + 1, ejecutadoColIndex + 1).setValue("SI"); // Marcar como ejecutado
-                logMessage(`Venta aprobada en Sheet para Equipo IMEI: ${imei}`);
                 break;
             }
         }
 
-        // 3. Enviar correo de confirmación al solicitante
-        const confirmSubject = `Solicitud de Venta de Equipo Celular APROBADA (${sucursal})`;
-        const confirmBody = `Estimado(a) ${solicitanteEmail.split('@')[0]},\n\n` +
-                            `Su solicitud de venta para el equipo con IMEI ${imei} de la sucursal ${sucursal} ha sido APROBADA.\n` +
-                            `El equipo fue vendido a ${personaVende} con un costo de $${montoVenta.toFixed(2)} pesos.\n\n` +
-                            `El estado del equipo ha sido actualizado a "Vendido" en el sistema.\n\n` +
-                            `Saludos cordiales,\nSistema de Gestión de Equipos.`;
+        // 3. Enviar correo de confirmación
+        const confirmSubject = `Solicitud de Venta de Equipo APROBADA (${sucursal})`;
+        const confirmBody = `Su solicitud de venta para el equipo con IMEI ${imei} ha sido APROBADA.\n\n` +
+                          `El equipo fue vendido a ${personaVende} por $${montoVenta.toFixed(2)} pesos.`;
         MailApp.sendEmail(solicitanteEmail, confirmSubject, confirmBody);
-        
+
     } catch (e) {
-        logMessage("Error al aprobar venta de equipo (Step 2): " + e.message + " Stack: " + e.stack);
+        logMessage("Error al aprobar venta (Step 2): " + e.message);
         confirmationTitle = "Error al Aprobar Venta";
-        confirmationMessage = `Ha ocurrido un error al aprobar la venta del equipo con IMEI ${imei}: ${e.message}`;
+        confirmationMessage = `Ha ocurrido un error: ${e.message}`;
         success = false;
     } finally {
         if (conn) conn.close();

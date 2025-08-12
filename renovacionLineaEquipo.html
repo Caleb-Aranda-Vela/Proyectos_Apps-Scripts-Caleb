@@ -4,21 +4,367 @@
 <head>
     <base target="_top">
     <title>Formulario: Renovación de Línea y Equipo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <?!= HtmlService.createHtmlOutputFromFile('FormStyles').getContent(); ?>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .container { background-color: #ffffff; padding: 32px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); width: 100%; max-width: 600px; text-align: center; }
-        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, box-shadow 0.2s; background-color: #10b981; color: #ffffff; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2); }
-        .btn:hover { background-color: #059669; }
+        .error-message { color: #dc3545; font-size: 0.875em; margin-top: 0.25em; display: none; }
+        .char-counter { font-size: 0.75em; color: #6c757d; text-align: right; margin-top: 5px; }
+        .disabled-field { background-color: #e9ecef !important; color: #6c757d !important; cursor: not-allowed; }
+        .readonly-field { background-color: #f7fafc; border: 1px solid #e2e8f0; color: #2d3748; cursor: not-allowed; }
+        .readonly-field:focus { box-shadow: none; border-color: #e2e8f0; }
+        .form-actions-inline { display: flex; gap: 16px; justify-content: center; }
+        .form-actions-inline .btn { width: auto; flex-grow: 1; }
+        details summary { cursor: pointer; font-weight: 600; color: #4a5568; margin-top: 1rem; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">Formulario: Renovación de Línea y Equipo</h1>
-        <p class="text-gray-600 mb-6">Contenido de este formulario se desarrollará en el futuro.</p>
-        <button type="button" class="btn" onclick="google.script.run.withSuccessHandler(function(url){window.top.location.href=url;}).redirigirOtraApp()">Volver al Menú</button>
+        <div class="section">
+            <h2 class="section-title">Renovación de Línea y Equipo Celular</h2>
+            
+            <fieldset id="searchSection">
+                <legend>Buscar Línea a Renovar</legend>
+                <div class="form-grid" style="grid-template-columns: 1fr;">
+                    <div>
+                        <label for="searchTelefono">Número de Teléfono (10 dígitos)</label>
+                        <input type="tel" id="searchTelefono" name="searchTelefono" maxlength="10" required>
+                        <p id="searchTelefonoError" class="error-message"></p>
+                    </div>
+                </div>
+                <div class="form-actions-inline" style="margin-top: 20px;">
+                    <button type="button" class="btn btn-primary" id="searchBtn">Buscar Línea</button>
+                    <button type="button" class="btn btn-secondary" id="clearBtn">Limpiar</button>
+                    <button type="button" class="btn btn-tertiary" id="redirectBtn">Volver al Menú</button>
+                </div>
+                <div id="searchLoading" class="loading" style="display: none;"><div class="spinner"></div><p>Buscando línea...</p></div>
+            </fieldset>
+
+            <form id="renovacionForm" style="display: none;">
+                
+                <fieldset>
+                    <legend>Sección 2: Datos de la Línea Celular (Renovación)</legend>
+                    <div class="form-grid">
+                        <div><label>Región</label><input type="text" id="region" class="readonly-field" readonly></div>
+                        <div><label>Cuenta Padre</label><input type="text" id="cuenta_padre" class="readonly-field" readonly></div>
+                        <div><label>Cuenta</label><input type="text" id="cuenta" class="readonly-field" readonly></div>
+                        <div><label>Teléfono</label><input type="text" id="telefono" class="readonly-field" readonly></div>
+                        <div><label for="clave_plan">Clave Plan</label><input type="text" id="clave_plan" name="clave_plan" maxlength="10" required></div>
+                        <div><label for="nombre_plan">Nombre Plan</label><input type="text" id="nombre_plan" name="nombre_plan" maxlength="12" required></div>
+                        
+                        <div class="full-width" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div><label for="minutos">Minutos</label><input type="text" id="minutos" name="minutos" maxlength="50" required></div>
+                            <div><label for="mensajes">Mensajes (SMS)</label><input type="text" id="mensajes" name="mensajes" maxlength="50" required></div>
+                        </div>
+
+                        <div><label for="monto_renta">Monto Renta</label><input type="text" id="monto_renta" name="monto_renta" placeholder="$0.00" required></div>
+                        <div><label for="duracion_plan">Duración Plan (Meses)</label><input type="text" id="duracion_plan" name="duracion_plan" maxlength="8" required></div>
+                        <div><label for="fecha_inicio">Nueva Fecha Inicio</label><input type="date" id="fecha_inicio" name="fecha_inicio" required></div>
+                        <div><label for="fecha_termino">Nueva Fecha Término</label><input type="date" id="fecha_termino" name="fecha_termino" required></div>
+                        <div><label>SIM</label><input type="text" id="sim" class="readonly-field" readonly></div>
+                        <div><label>Tipo</label><input type="text" id="tipo" class="readonly-field" readonly></div>
+                        <div><label for="responsable">Responsable</label><select id="responsable" name="responsable" required></select></div>
+                        <div><label for="idsucursal">Sucursal</label><select id="idsucursal" name="idsucursal" required></select></div>
+                        <div><label for="extension">Extensión</label><input type="text" id="extension" name="extension" maxlength="4"></div>
+                        <div><label for="datos">Datos (GB)</label><input type="text" id="datos" name="datos" maxlength="8" required></div>
+                        <div class="full-width"><label for="notas">Notas</label><textarea id="notas" name="notas" rows="3" maxlength="125"></textarea></div>
+                    </div>
+                </fieldset>
+
+                <details id="equipoVinculadoSectionContainer">
+                    <summary>Sección 3: Equipo Celular Vinculado Actual (Click para ver)</summary>
+                    <fieldset>
+                        <div id="equipoVinculadoContent" class="form-grid">
+                            <div><label>IMEI</label><input type="text" class="readonly-field" value="123456789012345" readonly></div>
+                            <div><label>Marca</label><input type="text" class="readonly-field" value="Samsung" readonly></div>
+                            <div><label>Modelo</label><input type="text" class="readonly-field" value="Galaxy S23" readonly></div>
+                            <div><label>Estado</label><input type="text" class="readonly-field" value="Asignado" readonly></div>
+                        </div>
+                    </fieldset>
+                </details>
+
+                <fieldset>
+                    <legend>Sección 4: Datos de Equipo Celular Nuevo</legend>
+                    <div class="form-grid">
+                        <div><label for="costo_equipo_nuevo">Costo del Equipo (MXN)</label><input type="text" id="costo_equipo_nuevo" name="costo_equipo_nuevo" placeholder="$0.00" required></div>
+                        <div><label for="marca_nuevo">Marca</label><select id="marca_nuevo" name="marca_nuevo" required></select></div>
+                        <div><label for="modelo_nuevo">Modelo</label><select id="modelo_nuevo" name="modelo_nuevo" required></select></div>
+                        <div><label for="ram_nuevo">RAM</label><select id="ram_nuevo" name="ram_nuevo" required></select></div>
+                        <div><label for="rom_nuevo">ROM</label><select id="rom_nuevo" name="rom_nuevo" required></select></div>
+                        <div><label for="imei_equipo_nuevo">IMEI</label><input type="text" id="imei_equipo_nuevo" name="imei_equipo_nuevo" minlength="15" maxlength="16" required></div>
+                        <div class="full-width"><label for="observaciones_equipo_nuevo">Observaciones</label><textarea id="observaciones_equipo_nuevo" name="observaciones_equipo_nuevo" maxlength="125"></textarea></div>
+                    </div>
+                </fieldset>
+
+                <div class="form-actions" style="margin-top: 30px;">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Registrar Renovación</button>
+                </div>
+                <div id="submitLoading" class="loading" style="display: none;"><div class="spinner"></div><p>Registrando renovación...</p></div>
+
+            </form>
+        </div>
     </div>
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+    (function() {
+        // --- 1. REFERENCIAS A ELEMENTOS DEL DOM ---
+        const searchSection = document.getElementById('searchSection');
+        const searchTelefonoInput = document.getElementById('searchTelefono');
+        const searchBtn = document.getElementById('searchBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const redirectBtn = document.getElementById('redirectBtn');
+        const searchLoading = document.getElementById('searchLoading');
+        const searchTelefonoError = document.getElementById('searchTelefonoError');
+        const renovacionForm = document.getElementById('renovacionForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitLoading = document.getElementById('submitLoading');
+        const regionInput = document.getElementById('region');
+        const cuentaPadreInput = document.getElementById('cuenta_padre');
+        const cuentaInput = document.getElementById('cuenta');
+        const telefonoInput = document.getElementById('telefono');
+        const clavePlanInput = document.getElementById('clave_plan');
+        const nombrePlanInput = document.getElementById('nombre_plan');
+        const minutosInput = document.getElementById('minutos');
+        const mensajesInput = document.getElementById('mensajes');
+        const montoRentaInput = document.getElementById('monto_renta');
+        const duracionPlanInput = document.getElementById('duracion_plan');
+        const fechaInicioInput = document.getElementById('fecha_inicio');
+        const fechaTerminoInput = document.getElementById('fecha_termino');
+        const simInput = document.getElementById('sim');
+        const tipoInput = document.getElementById('tipo');
+        const responsableSelect = document.getElementById('responsable');
+        const sucursalSelect = document.getElementById('idsucursal');
+        const extensionInput = document.getElementById('extension');
+        const datosInput = document.getElementById('datos');
+        const notasTextarea = document.getElementById('notas');
+        const equipoVinculadoSection = document.getElementById('equipoVinculadoSectionContainer');
+        const equipoVinculadoContent = document.getElementById('equipoVinculadoContent');
+        const costoEquipoNuevoInput = document.getElementById('costo_equipo_nuevo');
+        const marcaNuevoSelect = document.getElementById('marca_nuevo');
+        const modeloNuevoSelect = document.getElementById('modelo_nuevo');
+        const ramNuevoSelect = document.getElementById('ram_nuevo');
+        const romNuevoSelect = document.getElementById('rom_nuevo');
+        const imeiEquipoNuevoInput = document.getElementById('imei_equipo_nuevo');
+        const observacionesEquipoNuevoTextarea = document.getElementById('observaciones_equipo_nuevo');
+        const messageBox = document.getElementById('messageBox');
+        
+        // --- 2. FUNCIONES DE UTILIDAD ---
+        function showMessageBox(message, type = 'success', duration = 4000) {
+            messageBox.textContent = message;
+            messageBox.style.backgroundColor = type === 'error' ? '#ef4444' : '#10b981';
+            messageBox.classList.add('show');
+            setTimeout(() => { messageBox.classList.remove('show'); }, duration);
+        }
+
+        function setFormEnabled(formEl, enabled, loadingEl) {
+            const elements = formEl.querySelectorAll('input, select, textarea, button');
+            elements.forEach(el => el.disabled = !enabled);
+            if (loadingEl) loadingEl.style.display = enabled ? 'none' : 'block';
+        }
+
+        function populateSelect(selectEl, data, placeholder) {
+            selectEl.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = placeholder;
+            selectEl.appendChild(defaultOption);
+            data.forEach(optionText => {
+                if (optionText) {
+                    const option = document.createElement('option');
+                    option.value = optionText;
+                    option.textContent = optionText;
+                    selectEl.appendChild(option);
+                }
+            });
+        }
+
+        function allowOnlyNumbers(inputEl) {
+            inputEl.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
+        }
+
+        function formatCurrencyInput(inputEl) {
+            inputEl.addEventListener('input', function(e) {
+                let value = this.value.replace(/[^0-9.]/g, '');
+                this.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            });
+        }
+
+        // --- 3. LÓGICA PRINCIPAL DEL FORMULARIO ---
+        
+        function initForm() {
+            if (typeof google === 'undefined') { setTimeout(initForm, 100); return; }
+            loadDropdowns();
+            setupEventListeners();
+            resetAllForms();
+        }
+
+        function setupEventListeners() {
+            searchBtn.addEventListener('click', handleSearch);
+            clearBtn.addEventListener('click', resetAllForms);
+            redirectBtn.addEventListener('click', handleRedirect);
+            renovacionForm.addEventListener('submit', handleFormSubmit);
+            allowOnlyNumbers(searchTelefonoInput);
+            formatCurrencyInput(montoRentaInput);
+            formatCurrencyInput(costoEquipoNuevoInput);
+            allowOnlyNumbers(duracionPlanInput);
+            allowOnlyNumbers(extensionInput);
+            allowOnlyNumbers(imeiEquipoNuevoInput);
+        }
+
+        function loadDropdowns() {
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(responsableSelect, res.data, 'Selecciona Responsable'); }).getDropdownOptions('BD', 'A2:A');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(sucursalSelect, res.data, 'Selecciona Sucursal'); }).getDropdownOptions('Listados', 'F2:F');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(marcaNuevoSelect, res.data, 'Selecciona Marca'); }).getDropdownOptions('Listas2', 'A2:A');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(modeloNuevoSelect, res.data, 'Selecciona Modelo'); }).getDropdownOptions('Listas2', 'B2:B');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(ramNuevoSelect, res.data, 'Selecciona RAM'); }).getDropdownOptions('Listas2', 'C2:C');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(romNuevoSelect, res.data, 'Selecciona ROM'); }).getDropdownOptions('Listas2', 'D2:D');
+        }
+
+        function handleSearch() {
+            const telefono = searchTelefonoInput.value.trim();
+            if (!/^\d{10}$/.test(telefono)) {
+                searchTelefonoError.textContent = 'Debe ser un número de 10 dígitos.';
+                searchTelefonoError.style.display = 'block';
+                return;
+            }
+            searchTelefonoError.style.display = 'none';
+            setFormEnabled(searchSection, false, searchLoading);
+            google.script.run
+                .withSuccessHandler(onSearchSuccess)
+                .withFailureHandler(onSearchFailure)
+                .buscarLineaPorTelefono(telefono);
+        }
+
+        function onSearchSuccess(response) {
+            setFormEnabled(searchSection, true, searchLoading);
+            if (response.success) {
+                const { linea, equipoVinculado } = response.data;
+                
+                // Llenar Sección 2 con placeholders de valores actuales
+                Object.keys(linea).forEach(key => {
+                    const element = document.getElementById(key.toLowerCase());
+                    if (element) {
+                        if (element.tagName === 'INPUT' && element.type !== 'date') {
+                           if (element.classList.contains('readonly-field')) {
+                               element.value = linea[key] || '';
+                           } else {
+                               element.placeholder = `Actual: ${linea[key] || ''}`;
+                           }
+                        } else if (element.tagName === 'SELECT') {
+                           element.value = linea[key] || '';
+                        } else {
+                           element.value = linea[key] || '';
+                        }
+                    }
+                });
+
+                // Llenar Sección 3 (Equipo Vinculado)
+                if (equipoVinculado && equipoVinculado.IMEI) {
+                    equipoVinculadoContent.innerHTML = `
+                        <div><label>IMEI</label><input type="text" class="readonly-field" value="${equipoVinculado.IMEI || ''}" readonly></div>
+                        <div><label>Marca</label><input type="text" class="readonly-field" value="${equipoVinculado.Marca || ''}" readonly></div>
+                        <div><label>Modelo</label><input type="text" class="readonly-field" value="${equipoVinculado.Modelo || ''}" readonly></div>
+                        <div><label>Estado</label><input type="text" class="readonly-field" value="${equipoVinculado.Estado || ''}" readonly></div>
+                    `;
+                    equipoVinculadoSection.style.display = 'block';
+                } else {
+                    equipoVinculadoSection.style.display = 'none';
+                }
+
+                renovacionForm.style.display = 'block';
+                setFormEnabled(renovacionForm, true);
+            } else {
+                onSearchFailure({ message: response.message });
+            }
+        }
+
+        function onSearchFailure(error) {
+            setFormEnabled(searchSection, true, searchLoading);
+            showMessageBox('Error en la búsqueda: ' + error.message, 'error');
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            if (!validateForm()) {
+                showMessageBox('Por favor, completa todos los campos obligatorios.', 'error');
+                return;
+            }
+            setFormEnabled(renovacionForm, false, submitLoading);
+            
+            const formData = {
+                telefono: telefonoInput.value,
+                clave_plan: clavePlanInput.value,
+                nombre_plan: nombrePlanInput.value,
+                minutos: minutosInput.value,
+                mensajes: mensajesInput.value,
+                monto_renta: montoRentaInput.value.replace(/[^0-9.]/g, ''),
+                duracion_plan: duracionPlanInput.value,
+                fecha_inicio: fechaInicioInput.value,
+                fecha_termino: fechaTerminoInput.value,
+                responsable: responsableSelect.value,
+                idsucursal: sucursalSelect.value,
+                extension: extensionInput.value,
+                datos: datosInput.value,
+                notas: notasTextarea.value,
+                costo_equipo_nuevo: costoEquipoNuevoInput.value.replace(/[^0-9.]/g, ''),
+                marca_nuevo: marcaNuevoSelect.value,
+                modelo_nuevo: modeloNuevoSelect.value,
+                ram_nuevo: ramNuevoSelect.value,
+                rom_nuevo: romNuevoSelect.value,
+                imei_equipo_nuevo: imeiEquipoNuevoInput.value,
+                observaciones_equipo_nuevo: observacionesEquipoNuevoTextarea.value
+            };
+
+            google.script.run
+                .withSuccessHandler(response => {
+                    if (response.success) {
+                        showMessageBox(response.message, 'success');
+                        resetAllForms();
+                    } else {
+                        setFormEnabled(renovacionForm, true, submitLoading);
+                        showMessageBox('Error: ' + response.message, 'error');
+                    }
+                })
+                .withFailureHandler(err => {
+                    setFormEnabled(renovacionForm, true, submitLoading);
+                    showMessageBox('Error de conexión: ' + err.message, 'error');
+                })
+                .procesarRenovacionFormulario(formData);
+        }
+
+        function validateForm() {
+            let isValid = true;
+            const requiredFields = [
+                clavePlanInput, nombrePlanInput, minutosInput, mensajesInput, montoRentaInput, duracionPlanInput, fechaInicioInput, fechaTerminoInput,
+                responsableSelect, sucursalSelect, datosInput, costoEquipoNuevoInput, marcaNuevoSelect, modeloNuevoSelect, ramNuevoSelect, romNuevoSelect, imeiEquipoNuevoInput
+            ];
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    field.style.borderColor = 'red';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#e2e8f0';
+                }
+            });
+            return isValid;
+        }
+
+        function handleRedirect() {
+            setFormEnabled(searchSection, false, searchLoading);
+            google.script.run.withSuccessHandler(url => window.top.location.href = url).redirigirOtraApp();
+        }
+
+        function resetAllForms() {
+            searchTelefonoInput.value = '';
+            searchTelefonoError.style.display = 'none';
+            renovacionForm.reset();
+            renovacionForm.style.display = 'none';
+            setFormEnabled(searchSection, true);
+            setFormEnabled(renovacionForm, false);
+        }
+        
+        window.onload = initForm;
+    })();
+    </script>
 </body>
 </html>
-

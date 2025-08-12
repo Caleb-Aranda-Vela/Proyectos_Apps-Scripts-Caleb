@@ -1,3 +1,5 @@
+<!-- darAltaLineaEquipo.html -->
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,7 +25,7 @@
 <body>
     <div class="container">
         <div class="section">
-            <h2 class="section-title">Dar de alta Línea Celular Nueva y Equipo Celular Nuevo</h2>
+            <h2 class="section-title">Alta Línea Celular Nueva y Equipo Celular Nuevo</h2>
             <form id="altaLineaEquipoForm" class="space-y-6">
                 <fieldset>
                     <legend>Datos de Línea Celular</legend>
@@ -34,12 +36,12 @@
                         </div>
                         <div>
                             <label for="cuenta_padre">Cuenta Padre</label>
-                            <input type="text" id="cuenta_padre" name="cuenta_padre" maxlength="50" required>
+                            <input type="text" id="cuenta_padre" name="cuenta_padre" maxlength="15" required>
                             <p id="cuenta_padreError" class="error-message">Solo números enteros.</p>
                         </div>
                         <div>
                             <label for="cuenta">Cuenta</label>
-                            <input type="text" id="cuenta" name="cuenta" maxlength="50" required>
+                            <input type="text" id="cuenta" name="cuenta" maxlength="15" required>
                             <p id="cuentaError" class="error-message">Solo números enteros.</p>
                         </div>
                         <div>
@@ -61,7 +63,7 @@
                             <p id="minutosError" class="error-message">Este campo es obligatorio.</p>
                         </div>
                         <div class="full-width">
-                            <label for="mensajes">Mensajes</label>
+                            <label for="mensajes">Mensajes (SMS)</label>
                             <input type="text" id="mensajes" name="mensajes" maxlength="50" required>
                             <p id="mensajesError" class="error-message">Este campo es obligatorio.</p>
                             
@@ -92,7 +94,7 @@
                             <p id="simError" class="error-message">SIM inválido (mínimo 19 dígitos numéricos).</p>
                         </div>
                         <div>
-                            <label for="tipo">Tipo</label>
+                            <label for="tipo">Tipo de Servicio</label>
                             <select id="tipo" name="tipo" required>
                                 <option value="">Cargando tipos...</option>
                             </select>
@@ -149,7 +151,7 @@
                             </select>
                         </div>
                         <div>
-                            <label for="rom_nuevo">ROM</label>
+                            <label for="rom_nuevo">ROM (Almacenamiento)</label>
                             <select id="rom_nuevo" name="rom_nuevo" required>
                                 <option value="">Cargando ROM...</option>
                             </select>
@@ -160,7 +162,7 @@
                             <p id="imei_equipo_nuevoError" class="error-message">IMEI inválido (15 o 16 dígitos numéricos) o ya existe.</p>
                         </div>
                         <div class="full-width">
-                            <label for="observaciones_equipo_nuevo">Observaciones Equipo Nuevo</label>
+                            <label for="observaciones_equipo_nuevo">Observaciones del Equipo Nuevo</label>
                             <textarea id="observaciones_equipo_nuevo" name="observaciones_equipo_nuevo" maxlength="100"></textarea>
                             <p class="char-counter"><span id="observaciones_equipo_nuevoCharCount">0</span>/100</p>
                         </div>
@@ -212,7 +214,7 @@
             const fechaTerminoError = document.getElementById('fecha_terminoError');
             const simInput = document.getElementById('sim');
             const simError = document.getElementById('simError');
-            const notasTextarea = document.getElementById('notas');
+            const notasInput = document.getElementById('notas');
             const notasError = document.getElementById('notasError');
             const costoEquipoNuevoInput = document.getElementById('costo_equipo_nuevo');
             const costoEquipoNuevoError = document.getElementById('costo_equipo_nuevoError');
@@ -223,16 +225,16 @@
             //const datosInput = document.getElementById('datos');
             const extensionInput = document.getElementById('extension');
             const duracionPlanInput = document.getElementById('duracion_plan');
-            const minutosTextarea = document.getElementById('minutos');
+            const minutosTextarea  = document.getElementById('minutos');
             const minutosError = document.getElementById('minutosError');
             const mensajesTextarea = document.getElementById('mensajes');
             const mensajeError = document.getElementById('mensajesError');
             const regionInput = document.getElementById('region');
             const clavePlanInput = document.getElementById('clave_plan');
             const nombrePlanInput = document.getElementById('nombre_plan');
-            const equipoIlimitadoInput = document.getElementById('equipo_ilimitado');
-            const servicioCartaInput = document.getElementById('servicio_a_la_carta');
-            const servicioBlackberryInput = document.getElementById('servicio_blackberry');
+            //const equipoIlimitadoInput = document.getElementById('equipo_ilimitado');
+            //const servicioCartaInput = document.getElementById('servicio_a_la_carta');
+            //const servicioBlackberryInput = document.getElementById('servicio_blackberry');
             const responsableSelect = document.getElementById('responsable');
 
             // Dropdown elements
@@ -312,21 +314,44 @@
 
             // --- Real-time Formatting and Validation ---
             function formatCurrencyInput(inputElement) {
+
+                // Evento que se dispara con cada tecla que presionas
                 inputElement.addEventListener('input', function() {
                     let value = this.value.replace(/[^0-9.]/g, '');
+                    const firstPeriodIndex = value.indexOf('.');
+                    if (firstPeriodIndex !== -1) {
+                        let integerPart = value.substring(0, firstPeriodIndex);
+                        let decimalPart = value.substring(firstPeriodIndex + 1).replace(/\./g, ''); // Quita puntos adicionales
+                        value = integerPart + '.' + decimalPart;
+                    }
                     let parts = value.split('.');
                     let integerPart = parts[0];
-                    let decimalPart = parts[1] || '';
+                    let decimalPart = parts[1];
                     integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                    if (decimalPart.length > 2) decimalPart = decimalPart.substring(0, 2);
-                    this.value = '$' + integerPart + (decimalPart ? '.' + decimalPart : '');
+                    if (decimalPart && decimalPart.length > 2) {
+                        decimalPart = decimalPart.substring(0, 2);
+                    }
+                    let finalValue = '$' + integerPart;
+                    if (value.includes('.')) {
+                        finalValue += '.' + (decimalPart || ''); // Añade el punto y la parte decimal (o nada si aún no hay)
+                    }
+                    
+                    this.value = finalValue;
                 });
                 inputElement.addEventListener('blur', function() {
                     let value = this.value.replace(/[^0-9.]/g, '');
-                    if (value && !value.includes('.')) {
-                        this.value = '$' + parseFloat(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    } else if (value && value.split('.')[1].length === 1) {
-                        this.value += '0';
+                    
+                    // Si el valor no está vacío, lo formatea a dos decimales fijos.
+                    if (value) {
+                        // Se asegura de que termine en .00 si no tiene decimales
+                        const number = parseFloat(value);
+                        this.value = '$' + number.toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    } else {
+                        // Si el campo se deja vacío, se limpia
+                        this.value = '';
                     }
                 });
             }
@@ -420,7 +445,7 @@
                 if (!telefonoRegex.test(telefonoValue)) { telefonoError.style.display = 'block'; isValid = false; } else { telefonoError.style.display = 'none'; }
                 
                 // Notas validation (required)
-                if (notasTextarea.value.trim() === '') { notasError.style.display = 'block'; isValid = false; } else { notasError.style.display = 'none'; }
+                if (notasInput.value.trim() === '') { notasError.style.display = 'block'; isValid = false; } else { notasError.style.display = 'none'; }
 
                 // Check other required fields with browser's built-in validation
                 const requiredSelects = [regionInput, sucursalSelect, tipoSelect, marcaSelect, modeloSelect, ramSelect, romSelect, responsableSelect];
@@ -450,7 +475,7 @@
                     minutos: minutosTextarea.value,
                     mensajes: mensajesTextarea.value,
                     monto_renta: parseFloat(montoRentaInput.value.replace(/[^0-9.]/g, '')),
-                    equipo_ilimitado: parseFloat(costoEquipoNuevoInput.value.replace(/[^0-9.]/g, '')), // As per spec
+                    //equipo_ilimitado: parseFloat(costoEquipoNuevoInput.value.replace(/[^0-9.]/g, '')), // As per spec
                     duracion_plan: duracionPlanInput.value,
                     fecha_inicio: fechaInicioInput.value,
                     fecha_termino: fechaTerminoInput.value,
@@ -458,9 +483,9 @@
                     tipo: tipoSelect.value,
                     responsable: responsableSelect.value,
                     idsucursal: sucursalSelect.value,
-                    //datos: datosInput.value,
+                    datos: parseFloat(notasInput.value.replace(/[^0-9.]/g, '')),
                     extension: extensionInput.value,
-                    notas: notasTextarea.value,
+                    //notas: notasTextarea.value,
 
                     // Equipo Nuevo Fields
                     costo_equipo_nuevo: parseFloat(costoEquipoNuevoInput.value.replace(/[^0-9.]/g, '')),

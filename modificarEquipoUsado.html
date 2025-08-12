@@ -4,20 +4,549 @@
 <head>
     <base target="_top">
     <title>Formulario: Modificar Equipo Usado</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <?!= HtmlService.createHtmlOutputFromFile('FormStyles').getContent(); ?>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .container { background-color: #ffffff; padding: 32px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); width: 100%; max-width: 600px; text-align: center; }
-        .btn { padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, box-shadow 0.2s; background-color: #10b981; color: #ffffff; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2); }
-        .btn:hover { background-color: #059669; }
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 0.25em;
+            display: none;
+        }
+        .char-counter {
+            font-size: 0.75em;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .disabled-field {
+            background-color: #e9ecef; /* Un gris más oscuro */
+            color: #6c757d; /* Texto más oscuro */
+            cursor: not-allowed;
+        }
+        /* Estilos para campos de solo lectura que se llenan con la búsqueda */
+        .readonly-field {
+            background-color: #f7fafc; /* Fondo similar al activo pero sin sombra al enfocar */
+            border: 1px solid #e2e8f0;
+            color: #2d3748;
+            cursor: not-allowed;
+        }
+        .readonly-field:focus {
+            box-shadow: none;
+            border-color: #e2e8f0;
+        }
+        /* Estilo para el botón de búsqueda */
+        #searchBtn {
+            background: #343a40; /* Color negro/gris oscuro */
+            color: white;
+        }
+        #searchBtn:hover {
+            background: #23272b;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">Formulario: Modificar Equipo Usado</h1>
-        <p class="text-gray-600 mb-6">Contenido de este formulario se desarrollará en el futuro.</p>
-        <button type="button" class="btn" onclick="google.script.run.withSuccessHandler(function(url){window.top.location.href=url;}).redirigirOtraApp()">Volver al Menú</button>
+        <div class="section">
+            <h2 class="section-title">Modificar Equipo Celular Usado</h2>
+            
+            <!-- SECCIÓN 1: BUSCAR EQUIPO -->
+            <fieldset id="searchSection">
+                <legend>Buscar Equipo a Modificar</legend>
+                <div class="form-grid">
+                    <div>
+                        <label for="searchImei">IMEI del Equipo</label>
+                        <input type="text" id="searchImei" name="searchImei" minlength="15" maxlength="16" required>
+                        <p id="searchImeiError" class="error-message">IMEI inválido (15 o 16 dígitos numéricos).</p>
+                    </div>
+                </div>
+                <div class="form-actions" style="margin-top: 20px;">
+                    <button type="button" class="btn" id="searchBtn" style="background: #343a40; color: white;">BUSCAR EQUIPO</button>
+                    <button type="button" class="btn btn-secondary" id="clearSearchBtn">Limpiar</button>
+                    <button type="button" class="btn btn-tertiary" id="redirectBtn">Volver al Menú</button>
+                </div>
+                <div id="searchLoading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Buscando equipo... Por favor, espere.</p>
+                </div>
+                <p id="searchResultError" class="error-message" style="text-align: center; margin-top: 15px;"></p>
+            </fieldset>
+
+            <!-- SECCIÓN 2: DATOS DEL EQUIPO Y MODIFICACIÓN (Inicialmente deshabilitada) -->
+            <form id="modificarEquipoUsadoForm" style="display: none;">
+                <fieldset id="displaySection">
+                    <legend>Información del Equipo</legend>
+                    <div class="form-grid">
+                        <div><label>Costo del Equipo (MXN)</label><input type="text" id="displayCostoEquipo" class="readonly-field" readonly></div>
+                        <div><label>Fecha de Compra</label><input type="date" id="displayFechaCompra" class="readonly-field" readonly></div>
+                        <div><label>Fecha de Recolección</label><input type="date" id="displayFechaRecoleccion" class="readonly-field" readonly></div>
+                        <div><label>Estado Actual</label><input type="text" id="displayEstadoActual" class="readonly-field" readonly></div>
+
+                        <div id="displayMarcaContainer">
+                            <label>Marca</label>
+                            <input type="text" id="displayMarca" class="readonly-field" readonly>
+                        </div>
+                        <div id="editMarcaContainer" style="display: none;">
+                            <label for="marca">Marca</label>
+                            <select id="marca" name="marca">
+                                <option value="">Cargando marcas...</option>
+                            </select>
+                        </div>
+
+                        <div id="displayModeloContainer">
+                            <label>Modelo</label>
+                            <input type="text" id="displayModelo" class="readonly-field" readonly>
+                        </div>
+                        <div id="editModeloContainer" style="display: none;">
+                            <label for="modelo">Modelo</label>
+                            <select id="modelo" name="modelo">
+                                <option value="">Cargando modelos...</option>
+                            </select>
+                        </div>
+
+                        <div><label>Sucursal Actual</label><input type="text" id="displaySucursal" class="readonly-field" readonly></div>
+                        <div><label>Responsable Actual</label><input type="text" id="displayResponsable" class="readonly-field" readonly></div>
+
+                        <div>
+                            <label for="nuevoEstado">Nuevo Estado</label>
+                            <select id="nuevoEstado" name="nuevoEstado" required></select>
+                        </div>
+                        <div>
+                            <label for="numeroTelefono">Número de Teléfono (10 dígitos)</label>
+                            <input type="tel" id="numeroTelefono" name="numeroTelefono" maxlength="10">
+                            <p id="numeroTelefonoError" class="error-message">Debe ser numérico de 10 dígitos.</p>
+                        </div>
+                        <div class="full-width">
+                            <label for="observaciones">Observaciones (Máx 125 caracteres)</label>
+                            <textarea id="observaciones" name="observaciones" rows="3" maxlength="125"></textarea>
+                            <p class="char-counter"><span id="observacionesCharCount">0</span>/125</p>
+                        </div>
+                        <div class="full-width">
+                            <label for="comentarios">Comentarios (Máx 125 caracteres)</label>
+                            <textarea id="comentarios" name="comentarios" rows="3" maxlength="125"></textarea>
+                            <p class="char-counter"><span id="comentariosCharCount">0</span>/125</p>
+                        </div>
+
+                        <div id="reasignacionFieldsContainer" class="full-width" style="display: none;">
+                            <hr style="margin: 20px 0; border-top: 1px solid #e2e8f0;">
+                            <h3 style="font-size: 1.1rem; font-weight: 600; color: #4a5568; margin-bottom: 15px;">Detalles de Reasignación</h3>
+                            <div class="form-grid">
+                                <div>
+                                    <label for="fechaReasignacion">Fecha de Reasignación</label>
+                                    <input type="date" id="fechaReasignacion" name="fechaReasignacion">
+                                </div>
+                                <div>
+                                    <label for="nuevaSucursal">Nueva Sucursal</label>
+                                    <select id="nuevaSucursal" name="nuevaSucursal"></select>
+                                </div>
+                                <div>
+                                    <label for="nuevoResponsable">Nuevo Responsable</label>
+                                    <select id="nuevoResponsable" name="nuevoResponsable"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="bajaFields" class="full-width" style="display: none;">
+                            <hr style="margin: 20px 0; border-top: 1px solid #e2e8f0;">
+                            <h3 style="font-size: 1.1rem; font-weight: 600; color: #4a5568; margin-bottom: 15px;">Detalles de Baja</h3>
+                            <div class="form-grid">
+                                <div>
+                                    <label for="nombreSolicitanteBaja">Solicitante de Baja</label>
+                                    <select id="nombreSolicitanteBaja" name="nombreSolicitanteBaja"></select>
+                                </div>
+                                <div class="full-width">
+                                    <label for="razonBaja">Razón de la Baja</label>
+                                    <textarea id="razonBaja" name="razonBaja" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="vendidoFields" class="full-width" style="display: none;">
+                            <hr style="margin: 20px 0; border-top: 1px solid #e2e8f0;">
+                            <h3 style="font-size: 1.1rem; font-weight: 600; color: #4a5568; margin-bottom: 15px;">Detalles de Venta</h3>
+                            <div class="form-grid">
+                                <div>
+                                    <label for="nombreSolicitanteVenta">Solicitante de Venta</label>
+                                    <select id="nombreSolicitanteVenta" name="nombreSolicitanteVenta"></select>
+                                </div>
+                                <div>
+                                    <label for="personaVende">Persona a la que se Vende</label>
+                                    <select id="personaVende" name="personaVende"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="form-actions" style="margin-top: 30px;">
+                    <button type="submit" class="btn btn-primary" id="updateBtn" disabled>MODIFICAR REGISTRO DE EQUIPO</button>
+                    <button type="button" class="btn btn-secondary" id="clearFormBtn" disabled>Limpiar Formulario</button>
+                    <button type="button" class="btn btn-tertiary" id="backToMenuBtn">Volver al Menú</button>
+                </div>
+                <div id="updateLoading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Actualizando registro... Por favor, espere.</p>
+                </div>
+                <p id="updateResultError" class="error-message" style="text-align: center; margin-top: 15px;"></p>
+            </form>
+        </div>
     </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+        // IIFE para encapsular todas las variables y funciones del script
+        (function() {
+            // --- Referencias a Elementos del DOM ---
+            const searchSection = document.getElementById('searchSection');
+            const searchImeiInput = document.getElementById('searchImei');
+            const searchBtn = document.getElementById('searchBtn');
+            const clearSearchBtn = document.getElementById('clearSearchBtn');
+            const redirectBtn = document.getElementById('redirectBtn');
+            const searchLoading = document.getElementById('searchLoading');
+            const searchResultError = document.getElementById('searchResultError');
+            const modifyForm = document.getElementById('modificarEquipoUsadoForm');
+            const displayCostoEquipoInput = document.getElementById('displayCostoEquipo');
+            const displayFechaCompraInput = document.getElementById('displayFechaCompra');
+            const displayFechaRecoleccionInput = document.getElementById('displayFechaRecoleccion');
+            const displayEstadoActualInput = document.getElementById('displayEstadoActual');
+            const displaySucursalInput = document.getElementById('displaySucursal');
+            const displayResponsableInput = document.getElementById('displayResponsable');
+            const displayMarcaContainer = document.getElementById('displayMarcaContainer');
+            const displayMarcaInput = document.getElementById('displayMarca');
+            const editMarcaContainer = document.getElementById('editMarcaContainer');
+            const marcaSelect = document.getElementById('marca');
+            const displayModeloContainer = document.getElementById('displayModeloContainer');
+            const displayModeloInput = document.getElementById('displayModelo');
+            const editModeloContainer = document.getElementById('editModeloContainer');
+            const modeloSelect = document.getElementById('modelo');
+            const nuevoEstadoSelect = document.getElementById('nuevoEstado');
+            const numeroTelefonoInput = document.getElementById('numeroTelefono');
+            const numeroTelefonoError = document.getElementById('numeroTelefonoError');
+            const observacionesTextarea = document.getElementById('observaciones');
+            const observacionesCharCount = document.getElementById('observacionesCharCount');
+            const comentariosTextarea = document.getElementById('comentarios');
+            const comentariosCharCount = document.getElementById('comentariosCharCount');
+            const reasignacionFieldsContainer = document.getElementById('reasignacionFieldsContainer');
+            const fechaReasignacionInput = document.getElementById('fechaReasignacion');
+            const nuevaSucursalSelect = document.getElementById('nuevaSucursal');
+            const nuevoResponsableSelect = document.getElementById('nuevoResponsable');
+            const bajaFieldsDiv = document.getElementById('bajaFields');
+            const nombreSolicitanteBajaSelect = document.getElementById('nombreSolicitanteBaja');
+            const razonBajaTextarea = document.getElementById('razonBaja');
+            const vendidoFieldsDiv = document.getElementById('vendidoFields');
+            const nombreSolicitanteVentaSelect = document.getElementById('nombreSolicitanteVenta');
+            const personaVendeSelect = document.getElementById('personaVende');
+            const updateBtn = document.getElementById('updateBtn');
+            const clearFormBtn = document.getElementById('clearFormBtn');
+            const backToMenuBtn = document.getElementById('backToMenuBtn');
+            const updateLoading = document.getElementById('updateLoading');
+            const updateResultError = document.getElementById('updateResultError');
+            const messageBox = document.getElementById('messageBox');
+            let originalData = {};
+
+            // --- Funciones de Utilidad ---
+        function showMessageBox(message, type = 'success', duration = 3000) {
+            messageBox.textContent = message;
+            messageBox.style.backgroundColor = type === 'error' ? '#ef4444' : '#10b981';
+            messageBox.classList.add('show');
+            setTimeout(() => { messageBox.classList.remove('show'); }, duration);
+        }
+
+        function setFormEnabled(formEl, enabled, loadingEl) {
+            const elements = formEl.querySelectorAll('input, select, textarea, button');
+            elements.forEach(el => el.disabled = !enabled);
+            if(loadingEl) loadingEl.style.display = enabled ? 'none' : 'block';
+        }
+
+        function populateSelect(selectEl, data, placeholder) {
+            selectEl.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = placeholder;
+            selectEl.appendChild(defaultOption);
+            data.forEach(optionText => {
+                if (optionText && String(optionText).trim() !== '') {
+                    const option = document.createElement('option');
+                    option.value = optionText;
+                    option.textContent = optionText;
+                    selectEl.appendChild(option);
+                }
+            });
+        }
+
+        function allowOnlyNumbers(inputEl) {
+            inputEl.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
+        }
+        
+        // --- Función Principal de Inicialización ---
+        function initForm() {
+            if (typeof google === 'undefined') { setTimeout(initForm, 100); return; }
+            allowOnlyNumbers(searchImeiInput);
+            allowOnlyNumbers(numeroTelefonoInput);
+            loadDropdowns();
+            resetAllForms();
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            searchBtn.addEventListener('click', handleSearch);
+            clearSearchBtn.addEventListener('click', () => { resetAllForms(); showMessageBox('Formulario limpiado.', 'success', 1500); });
+            redirectBtn.addEventListener('click', handleRedirect);
+            backToMenuBtn.addEventListener('click', handleRedirect); // El botón del segundo form también redirige
+            modifyForm.addEventListener('submit', handleUpdate);
+            nuevoEstadoSelect.addEventListener('change', applyConditionalLogic);
+            marcaSelect.addEventListener('change', handleMarcaModeloChange);
+            modeloSelect.addEventListener('change', handleMarcaModeloChange);
+            observacionesTextarea.addEventListener('input', () => observacionesCharCount.textContent = observacionesTextarea.value.length);
+            comentariosTextarea.addEventListener('input', () => comentariosCharCount.textContent = comentariosTextarea.value.length);
+        }
+
+        function loadDropdowns() {
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(nuevoEstadoSelect, res.data, 'Selecciona Nuevo Estado'); }).getDropdownOptions('Listados', 'B2:B');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(nuevaSucursalSelect, res.data, 'Selecciona Sucursal'); }).getDropdownOptions('Listados', 'F2:F');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(marcaSelect, res.data, 'Selecciona Marca'); }).getDropdownOptions('Listados', 'A2:A');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(modeloSelect, res.data, 'Selecciona Modelo'); }).getDropdownOptions('Listados', 'C2:C');
+            google.script.run.withSuccessHandler(function(res) {
+                if (res.success) {
+                    const employeeList = res.data;
+                    populateSelect(nuevoResponsableSelect, employeeList, 'Selecciona Responsable');
+                    populateSelect(nombreSolicitanteBajaSelect, employeeList, 'Selecciona Solicitante');
+                    populateSelect(nombreSolicitanteVentaSelect, employeeList, 'Selecciona Solicitante');
+                    populateSelect(personaVendeSelect, employeeList, 'Selecciona Comprador');
+                }
+            }).getDropdownOptions('BD', 'A2:A');
+        }
+
+        // --- Manejadores de Lógica y Eventos ---
+        function handleSearch() {
+            if (!/^\d{15,16}$/.test(searchImeiInput.value.trim())) {
+                searchResultError.textContent = 'Por favor, introduce un IMEI válido.';
+                searchResultError.style.display = 'block';
+                return;
+            }
+            searchResultError.style.display = 'none';
+            setFormEnabled(searchSection, false, searchLoading);
+            google.script.run.withSuccessHandler(onSearchSuccess).withFailureHandler(onSearchFailure).buscarEquipoPorIMEI(searchImeiInput.value.trim());
+        }
+
+        function onSearchSuccess(response) {
+            setFormEnabled(searchSection, true, searchLoading);
+            if (response.success && response.data) {
+                originalData = response.data;
+                displayModificationSection(response.data);
+                modifyForm.style.display = 'block';
+                showMessageBox('Equipo encontrado. Puedes modificar los datos.', 'success');
+                
+                // CORRECCIÓN 1: Aplicar lógica basada en el estado inicial cargado de la BD
+                nuevoEstadoSelect.value = originalData.Estado || '';
+                applyConditionalLogic();
+                
+                setFormEnabled(modifyForm, true);
+                updateBtn.disabled = false;
+                clearFormBtn.disabled = false;
+            } else {
+                onSearchFailure({ message: response.message || 'No se encontró un equipo activo con ese IMEI.' });
+            }
+        }
+        
+        function onSearchFailure(error) {
+            setFormEnabled(searchSection, true, searchLoading);
+            searchResultError.textContent = error.message;
+            searchResultError.style.display = 'block';
+        }
+
+        function handleUpdate(e) {
+            e.preventDefault();
+            if (!validateUpdateForm()) {
+                showMessageBox('Por favor, corrige los errores en el formulario.', 'error');
+                return;
+            }
+            setFormEnabled(modifyForm, false, updateLoading);
+            // MEJORA: Objeto de datos completo con todos los nuevos campos
+            const updatedData = {
+                imei: searchImeiInput.value.trim(),
+                nuevoEstado: nuevoEstadoSelect.value,
+                observaciones: observacionesTextarea.value,
+                comentarios: comentariosTextarea.value,
+                numeroTelefono: numeroTelefonoInput.value,
+                fechaReasignacion: fechaReasignacionInput.value,
+                nuevaSucursal: nuevaSucursalSelect.value,
+                nuevoResponsable: nuevoResponsableSelect.value,
+                nombreSolicitanteBaja: nombreSolicitanteBajaSelect.value,
+                razonBaja: razonBajaTextarea.value,
+                nombreSolicitanteVenta: nombreSolicitanteVentaSelect.value,
+                personaVende: personaVendeSelect.value,
+                marca: (nuevoEstadoSelect.value === 'Stock') ? marcaSelect.value : originalData.Marca,
+                modelo: (nuevoEstadoSelect.value === 'Stock') ? modeloSelect.value : originalData.Modelo
+            };
+            google.script.run.withSuccessHandler(onUpdateSuccess).withFailureHandler(onUpdateFailure).procesarMEUFormulario(updatedData);
+        }
+
+        function onUpdateSuccess(response) {
+            if (response.success) {
+                showMessageBox('Registro actualizado correctamente.', 'success');
+                resetAllForms();
+            } else { onUpdateFailure({ message: response.message }); }
+        }
+
+        function onUpdateFailure(error) {
+            setFormEnabled(modifyForm, true, updateLoading);
+            updateResultError.textContent = error.message;
+            updateResultError.style.display = 'block';
+        }
+        
+        function handleRedirect() {
+            setFormEnabled(searchSection, false, searchLoading);
+            setFormEnabled(modifyForm, false, updateLoading);
+            google.script.run.withSuccessHandler(url => window.top.location.href = url)
+            .withFailureHandler(err => {
+                setFormEnabled(searchSection, true);
+                setFormEnabled(modifyForm, true);
+                showMessageBox('Error al obtener URL: ' + err.message, 'error');
+            })
+            .redirigirOtraApp();
+        }
+
+        function applyConditionalLogic() {
+            const selectedState = nuevoEstadoSelect.value;
+            
+            // 1. Resetear todos los campos a un estado neutral
+            [reasignacionFieldsContainer, bajaFieldsDiv, vendidoFieldsDiv].forEach(div => div.style.display = 'none');
+            [fechaReasignacionInput, nuevaSucursalSelect, nuevoResponsableSelect, nombreSolicitanteBajaSelect, razonBajaTextarea, nombreSolicitanteVentaSelect, personaVendeSelect, numeroTelefonoInput, comentariosTextarea].forEach(input => input.required = false);
+            [numeroTelefonoInput, observacionesTextarea, nuevoResponsableSelect, nuevaSucursalSelect].forEach(input => {
+                input.disabled = false;
+                input.classList.remove('disabled-field');
+                input.placeholder = '';
+            });
+            comentariosTextarea.placeholder = '';
+            displayMarcaContainer.style.display = 'block';
+            editMarcaContainer.style.display = 'none';
+            displayModeloContainer.style.display = 'block';
+            editModeloContainer.style.display = 'none';
+            
+            // 2. Aplicar lógica específica para el estado seleccionado
+            switch (selectedState) {
+                case 'Reasignado':
+                    reasignacionFieldsContainer.style.display = 'block';
+                    fechaReasignacionInput.required = true;
+                    nuevaSucursalSelect.required = true;
+                    nuevoResponsableSelect.required = true;
+                    numeroTelefonoInput.required = true; // CORRECCIÓN 2
+                    numeroTelefonoInput.placeholder = 'Teléfono (Obligatorio)';
+                    break;
+
+                case 'Stock':
+                    displayMarcaContainer.style.display = 'none';
+                    editMarcaContainer.style.display = 'block';
+                    displayModeloContainer.style.display = 'none';
+                    editModeloContainer.style.display = 'block';
+                    marcaSelect.value = originalData.Marca || '';
+                    modeloSelect.value = originalData.Modelo || '';
+                    [numeroTelefonoInput, nuevoResponsableSelect, nuevaSucursalSelect].forEach(input => {
+                        input.disabled = true;
+                        input.classList.add('disabled-field');
+                    });
+                    break;
+
+                case 'Baja':
+                case 'Vendido':
+                case 'Robado':
+                    [numeroTelefonoInput, nuevoResponsableSelect, nuevaSucursalSelect, observacionesTextarea].forEach(input => {
+                        input.disabled = true;
+                        input.classList.add('disabled-field');
+                    });
+                    
+                    if (selectedState === 'Baja') {
+                        bajaFieldsDiv.style.display = 'block';
+                        nombreSolicitanteBajaSelect.required = true;
+                        razonBajaTextarea.required = true;
+                    } else if (selectedState === 'Vendido') {
+                        vendidoFieldsDiv.style.display = 'block';
+                        nombreSolicitanteVentaSelect.required = true;
+                        personaVendeSelect.required = true;
+                    }
+                    break;
+            }
+        }
+        
+        function handleMarcaModeloChange() {
+            if (nuevoEstadoSelect.value === 'Stock') {
+                const marcaCambiada = marcaSelect.value !== originalData.Marca;
+                const modeloCambiado = modeloSelect.value !== originalData.Modelo;
+                if (marcaCambiada || modeloCambiado) {
+                    comentariosTextarea.required = true;
+                    comentariosTextarea.placeholder = 'Justifique el cambio de la marca y/o modelo.';
+                } else {
+                    comentariosTextarea.required = false;
+                    comentariosTextarea.placeholder = '';
+                }
+            }
+        }
+
+        function validateUpdateForm() {
+            let isValid = true;
+            const state = nuevoEstadoSelect.value;
+            if (!state) { nuevoEstadoSelect.reportValidity(); return false; }
+
+            if (numeroTelefonoInput.value && !/^\d{10}$/.test(numeroTelefonoInput.value)) {
+                isValid = false;
+                numeroTelefonoError.style.display = 'block';
+            } else {
+                numeroTelefonoError.style.display = 'none';
+            }
+            
+            if (state === 'Reasignado') {
+                if (!fechaReasignacionInput.value) { isValid = false; fechaReasignacionInput.reportValidity(); }
+                if (!nuevaSucursalSelect.value) { isValid = false; nuevaSucursalSelect.reportValidity(); }
+                if (!nuevoResponsableSelect.value) { isValid = false; nuevoResponsableSelect.reportValidity(); }
+                if (!numeroTelefonoInput.value) { isValid = false; numeroTelefonoInput.reportValidity(); }
+            } else if (state === 'Baja') {
+                if (!nombreSolicitanteBajaSelect.value) { isValid = false; nombreSolicitanteBajaSelect.reportValidity(); }
+                if (!razonBajaTextarea.value.trim()) { isValid = false; razonBajaTextarea.reportValidity(); }
+            } else if (state === 'Vendido') {
+                if (!nombreSolicitanteVentaSelect.value) { isValid = false; nombreSolicitanteVentaSelect.reportValidity(); }
+                if (!personaVendeSelect.value) { isValid = false; personaVendeSelect.reportValidity(); }
+            } else if (state === 'Stock' && comentariosTextarea.required && !comentariosTextarea.value.trim()) {
+                 isValid = false; 
+                 showMessageBox('Debe justificar el cambio en los comentarios.', 'error');
+                 comentariosTextarea.reportValidity();
+            }
+            return isValid;
+        }
+
+        function displayModificationSection(data) {
+            displayCostoEquipoInput.value = data.Costo_Equipo ? '$' + parseFloat(data.Costo_Equipo).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
+            displayFechaCompraInput.value = data.Fecha_Compra || '';
+            displayFechaRecoleccionInput.value = data.Fecha_Recoleccion || '';
+            displayEstadoActualInput.value = data.Estado || '';
+            displayMarcaInput.value = data.Marca || '';
+            displayModeloInput.value = data.Modelo || '';
+            displaySucursalInput.value = data.IDSUCURSAL_Name || '';
+            displayResponsableInput.value = data.Responsable || '';
+            numeroTelefonoInput.value = data.Numero_Telefono || '';
+            observacionesTextarea.value = data.Observaciones || '';
+            comentariosTextarea.value = data.Comentarios || '';
+            observacionesCharCount.textContent = observacionesTextarea.value.length;
+            comentariosCharCount.textContent = comentariosTextarea.value.length;
+        }
+
+        function resetAllForms() {
+            modifyForm.style.display = 'none';
+            searchSection.style.display = 'block';
+            searchImeiInput.value = '';
+            [searchImeiError, searchResultError, updateResultError].forEach(el => el.style.display = 'none');
+            modifyForm.reset();
+            applyConditionalLogic();
+            setFormEnabled(searchSection, true);
+            setFormEnabled(modifyForm, false);
+            updateBtn.disabled = true;
+            clearFormBtn.disabled = true;
+        }
+        
+        window.onload = initForm;
+    })();
+    </script>
 </body>
 </html>

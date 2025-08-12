@@ -1,4 +1,4 @@
-<!-- registrarEquipoUsado.html -->
+<!-- registrarEquipoUsado.html-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,48 +30,42 @@
 <body>
     <div class="container">
         <div class="section">
-            <h2 class="section-title">Registrar Equipo Celular Usado (Manual)</h2>
+            <h2 class="section-title">Registro de Equipo Celular Usado (Manual)</h2>
             <form id="altaEquipoUsadoForm" class="space-y-6">
                 <fieldset>
                     <legend>Datos del Equipo Usado</legend>
                     <div class="form-grid">
-                        <!-- Costo_Equipo -->
                         <div>
                             <label for="costoEquipo">Costo del Equipo (MXN)</label>
                             <input type="text" id="costoEquipo" name="costoEquipo" placeholder="$0.00" required>
-                            <p id="costoEquipoError" class="error-message">El costo debe ser numérico y mayor o igual a $1.00.</p>
+                            <p id="costoEquipoError" class="error-message">El costo debe ser mayor a $1.00.</p>
                         </div>
 
-                        <!-- Fecha_Compra -->
                         <div>
                             <label for="fechaCompra">Fecha de Compra</label>
                             <input type="date" id="fechaCompra" name="fechaCompra" required>
                             <p id="fechaCompraError" class="error-message">La fecha de compra no puede ser futura.</p>
                         </div>
 
-                        <!-- Fecha_Recoleccion -->
                         <div>
                             <label for="fechaRecoleccion">Fecha de Recolección</label>
                             <input type="date" id="fechaRecoleccion" name="fechaRecoleccion" required>
                             <p id="fechaRecoleccionError" class="error-message">La fecha de recolección no puede ser futura.</p>
                         </div>
 
-                        <!-- Estado (Dinámico) -->
                         <div>
-                            <label for="estado">Estado del Equipo</label>
+                            <label for="estado">Estado</label>
                             <select id="estado" name="estado" required>
                                 <option value="">Cargando estados...</option>
                             </select>
                         </div>
 
-                        <!-- Observaciones -->
                         <div class="full-width">
-                            <label for="observaciones">Observaciones (Máximo 125 caracteres)</label>
+                            <label for="observaciones">Observaciones</label>
                             <textarea id="observaciones" name="observaciones" rows="3" maxlength="125" placeholder="Describa en qué condiciones se está recolectando el equipo..."></textarea>
                             <p class="char-counter"><span id="observacionesCharCount">0</span>/125</p>
                         </div>
 
-                        <!-- Marca (Dinámica) -->
                         <div>
                             <label for="marca">Marca</label>
                             <select id="marca" name="marca" required>
@@ -79,7 +73,6 @@
                             </select>
                         </div>
 
-                        <!-- Modelo (Dinámico) -->
                         <div>
                             <label for="modelo">Modelo</label>
                             <select id="modelo" name="modelo" required>
@@ -87,7 +80,6 @@
                             </select>
                         </div>
 
-                        <!-- RAM (Dinámica) -->
                         <div>
                             <label for="ram">RAM</label>
                             <select id="ram" name="ram" required>
@@ -95,30 +87,25 @@
                             </select>
                         </div>
 
-                        <!-- ROM (Dinámica) -->
                         <div>
-                            <label for="rom">Almacenamiento (ROM)</label>
+                            <label for="rom">ROM (Almacenamiento)</label>
                             <select id="rom" name="rom" required>
                                 <option value="">Cargando ROM...</option>
-                            </option>
                             </select>
                         </div>
 
-                        <!-- IMEI -->
                         <div>
                             <label for="imei">IMEI</label>
                             <input type="text" id="imei" name="imei" maxlength="16" required>
                             <p id="imeiError" class="error-message">IMEI inválido (debe ser numérico, 15 o 16 dígitos) o ya existe.</p>
                         </div>
                         
-                        <!-- Numero_Telefono -->
                         <div>
-                            <label for="numeroTelefono">Número de Teléfono (10 dígitos)</label>
+                            <label for="numeroTelefono">Número de Teléfono</label>
                             <input type="tel" id="numeroTelefono" name="numeroTelefono" maxlength="10">
                             <p id="numeroTelefonoError" class="error-message">Número de Teléfono inválido (debe ser numérico, 10 dígitos).</p>
                         </div>
 
-                        <!-- Sucursal (Dinámica) -->
                         <div>
                             <label for="idSucursal">Sucursal</label>
                             <select id="idSucursal" name="idSucursal" required>
@@ -126,30 +113,28 @@
                             </select>
                         </div>
 
-                        <!-- Responsable (Dinámico) -->
                         <div>
                             <label for="responsable">Responsable</label>
                             <select id="responsable" name="responsable">
-                                <option value="">Selecciona un responsable (Opcional)</option>
+                                <option value="">Cargando solicitantes...</option>
                             </select>
                             <p id="responsableError" class="error-message" style="display: none;">El campo Responsable es obligatorio para Reasignación.</p>
                         </div>
 
-                        <!-- Comentarios -->
                         <div class="full-width">
                             <label for="comentarios">Comentarios (Máximo 125 caracteres)</label>
                             <textarea id="comentarios" name="comentarios" rows="3" maxlength="125"></textarea>
                             <p class="char-counter"><span id="comentariosCharCount">0</span>/125</p>
                         </div>
 
-                        <!-- CAMPOS CONDICIONALES -->
-                        <!-- Baja Fields -->
                         <div id="bajaFields" class="full-width" style="display: none;">
                             <hr style="margin: 20px 0; border-top: 1px solid #e2e8f0;">
                             <h3 style="font-size: 1.1rem; font-weight: 600; color: #4a5568; margin-bottom: 15px;">Detalles de Baja</h3>
                             <div>
                                 <label for="nombreSolicitanteBaja">Nombre del Solicitante de Baja</label>
-                                <input type="text" id="nombreSolicitanteBaja" name="nombreSolicitanteBaja">
+                                <select id="nombreSolicitanteBaja" name="nombreSolicitanteBaja">
+                                    <option value="">Cargando solicitantes...</option>
+                                </select>
                             </div>
                             <div class="full-width">
                                 <label for="razonBaja">Razón de la Baja</label>
@@ -157,13 +142,14 @@
                             </div>
                         </div>
 
-                        <!-- Vendido Fields -->
                         <div id="vendidoFields" class="full-width" style="display: none;">
                             <hr style="margin: 20px 0; border-top: 1px solid #e2e8f0;">
                             <h3 style="font-size: 1.1rem; font-weight: 600; color: #4a5568; margin-bottom: 15px;">Detalles de Venta</h3>
                             <div>
                                 <label for="nombreSolicitanteVenta">Nombre del Solicitante de Venta</label>
-                                <input type="text" id="nombreSolicitanteVenta" name="nombreSolicitanteVenta">
+                                <select id="nombreSolicitanteVenta" name="nombreSolicitanteVenta">
+                                    <option value="">Cargando solicitantes...</option>
+                                </select>
                             </div>
                             <div>
                                 <label for="personaVende">Persona a la que se Vende</label>
@@ -173,7 +159,6 @@
                             </div>
                         </div>
 
-                        <!-- Reasignacion Field -->
                         <div id="reasignacionField" style="display: none;">
                             <label for="fechaReasignacion">Fecha de Reasignación</label>
                             <input type="date" id="fechaReasignacion" name="fechaReasignacion">
@@ -198,665 +183,432 @@
     <div id="messageBox" class="message-box"></div>
 
     <script>
-        function initForm() {
-            // Check if google.script.run is available. If not, retry after a short delay.
-            if (typeof google === 'undefined' || typeof google.script === 'undefined' || typeof google.script.run === 'undefined') {
-                console.error("google.script.run is not defined. Retrying form initialization...");
-                setTimeout(initForm, 100); // Retry after 100ms
-                return;
-            }
+    function initForm() {
+        if (typeof google === 'undefined' || typeof google.script === 'undefined' || typeof google.script.run === 'undefined') {
+            console.error("google.script.run is not defined. Retrying form initialization...");
+            setTimeout(initForm, 100);
+            return;
+        }
 
-            const form = document.getElementById('altaEquipoUsadoForm');
-            const clearBtn = document.getElementById('clearBtn');
-            const redirectBtn = document.getElementById('redirectBtn');
-            const submitBtn = document.getElementById('submitBtn');
-            const loading = document.getElementById('loading');
-            const messageBox = document.getElementById('messageBox');
+        const form = document.getElementById('altaEquipoUsadoForm');
+        const clearBtn = document.getElementById('clearBtn');
+        const redirectBtn = document.getElementById('redirectBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const messageBox = document.getElementById('messageBox');
+        
+        const costoEquipoInput = document.getElementById('costoEquipo');
+        const costoEquipoError = document.getElementById('costoEquipoError');
+        const fechaCompraInput = document.getElementById('fechaCompra');
+        const fechaCompraError = document.getElementById('fechaCompraError');
+        const fechaRecoleccionInput = document.getElementById('fechaRecoleccion');
+        const fechaRecoleccionError = document.getElementById('fechaRecoleccionError');
+        const observacionesTextarea = document.getElementById('observaciones');
+        const observacionesCharCount = document.getElementById('observacionesCharCount');
+        const comentariosTextarea = document.getElementById('comentarios');
+        const comentariosCharCount = document.getElementById('comentariosCharCount');
+        const imeiInput = document.getElementById('imei');
+        const imeiError = document.getElementById('imeiError');
+        const numeroTelefonoInput = document.getElementById('numeroTelefono');
+        const numeroTelefonoError = document.getElementById('numeroTelefonoError');
 
-            // Form fields and error messages
-            const costoEquipoInput = document.getElementById('costoEquipo');
-            const costoEquipoError = document.getElementById('costoEquipoError');
-            const fechaCompraInput = document.getElementById('fechaCompra');
-            const fechaCompraError = document.getElementById('fechaCompraError');
-            const fechaRecoleccionInput = document.getElementById('fechaRecoleccion');
-            const fechaRecoleccionError = document.getElementById('fechaRecoleccionError');
-            const observacionesTextarea = document.getElementById('observaciones');
-            const observacionesCharCount = document.getElementById('observacionesCharCount');
-            const comentariosTextarea = document.getElementById('comentarios');
-            const comentariosCharCount = document.getElementById('comentariosCharCount');
-            const imeiInput = document.getElementById('imei');
-            const imeiError = document.getElementById('imeiError');
-            const numeroTelefonoInput = document.getElementById('numeroTelefono');
-            const numeroTelefonoError = document.getElementById('numeroTelefonoError');
+        // Dropdown elements
+        const estadoSelect = document.getElementById('estado');
+        const marcaSelect = document.getElementById('marca');
+        const modeloSelect = document.getElementById('modelo');
+        const ramSelect = document.getElementById('ram');
+        const romSelect = document.getElementById('rom');
+        const idSucursalSelect = document.getElementById('idSucursal');
+        const responsableSelect = document.getElementById('responsable');
+        const personaVendeSelect = document.getElementById('personaVende');
 
-            // Dropdown elements
-            const estadoSelect = document.getElementById('estado');
-            const marcaSelect = document.getElementById('marca');
-            const modeloSelect = document.getElementById('modelo');
-            const ramSelect = document.getElementById('ram');
-            const romSelect = document.getElementById('rom');
-            const idSucursalSelect = document.getElementById('idSucursal');
-            const responsableSelect = document.getElementById('responsable');
-            const personaVendeSelect = document.getElementById('personaVende'); // For "Vendido" state
+        // Conditional field containers
+        const bajaFieldsDiv = document.getElementById('bajaFields');
+        const nombreSolicitanteBajaSelect = document.getElementById('nombreSolicitanteBaja');
+        const razonBajaTextarea = document.getElementById('razonBaja');
+        
+        const vendidoFieldsDiv = document.getElementById('vendidoFields');
+        const nombreSolicitanteVentaSelect = document.getElementById('nombreSolicitanteVenta');
 
-            // Conditional field containers
-            const bajaFieldsDiv = document.getElementById('bajaFields');
-            const nombreSolicitanteBajaInput = document.getElementById('nombreSolicitanteBaja');
-            const razonBajaTextarea = document.getElementById('razonBaja');
+        const reasignacionFieldDiv = document.getElementById('reasignacionField');
+        const fechaReasignacionInput = document.getElementById('fechaReasignacion');
+        const fechaReasignacionError = document.getElementById('fechaReasignacionError');
+        const responsableError = document.getElementById('responsableError');
 
-            const vendidoFieldsDiv = document.getElementById('vendidoFields');
-            const nombreSolicitanteVentaInput = document.getElementById('nombreSolicitanteVenta');
+        // --- Utility Functions ---
+        function showMessageBox(message, type = 'success', duration = 3000) {
+            messageBox.textContent = message;
+            if (type === 'success') { messageBox.style.backgroundColor = '#10b981'; } 
+            else if (type === 'error') { messageBox.style.backgroundColor = '#ef4444'; }
+            messageBox.classList.add('show');
+            setTimeout(() => { messageBox.classList.remove('show'); }, duration);
+        }
 
-            const reasignacionFieldDiv = document.getElementById('reasignacionField');
-            const fechaReasignacionInput = document.getElementById('fechaReasignacion');
-            const fechaReasignacionError = document.getElementById('fechaReasignacionError');
-            const responsableError = document.getElementById('responsableError');
+        function setFormEnabled(enabled) {
+            const elements = form.elements;
+            for (let i = 0; i < elements.length; i++) { elements[i].disabled = !enabled; }
+            submitBtn.disabled = !enabled;
+            clearBtn.disabled = !enabled;
+            redirectBtn.disabled = !enabled;
+            loading.style.display = enabled ? 'none' : 'block';
+        }
 
-
-            // --- Utility Functions ---
-            function showMessageBox(message, type = 'success', duration = 3000) {
-                messageBox.textContent = message;
-                if (type === 'success') {
-                    messageBox.style.backgroundColor = '#10b981'; // Emerald-500
-                } else if (type === 'error') {
-                    messageBox.style.backgroundColor = '#ef4444'; // Red-500
+        function populateSelect(selectElement, optionsData, placeholderText) {
+            selectElement.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = placeholderText;
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            selectElement.appendChild(defaultOption);
+            optionsData.forEach(optionText => {
+                if (optionText && String(optionText).trim() !== '') {
+                    const option = document.createElement('option');
+                    option.value = optionText;
+                    option.textContent = optionText;
+                    selectElement.appendChild(option);
                 }
-                messageBox.classList.add('show');
-                setTimeout(() => {
-                    messageBox.classList.remove('show');
-                }, duration);
+            });
+        }
+
+        // --- Real-time Formatting and Validation ---
+        costoEquipoInput.addEventListener('input', function() {
+            let value = this.value.replace(/[^0-9.]/g, '');
+            const firstPeriodIndex = value.indexOf('.');
+            if (firstPeriodIndex !== -1) {
+                let integerPart = value.substring(0, firstPeriodIndex);
+                let decimalPart = value.substring(firstPeriodIndex + 1).replace(/\./g, '');
+                value = integerPart + '.' + decimalPart;
             }
-
-            function setFormEnabled(enabled) {
-                const elements = form.elements;
-                for (let i = 0; i < elements.length; i++) {
-                    elements[i].disabled = !enabled;
-                }
-                submitBtn.disabled = !enabled;
-                clearBtn.disabled = !enabled;
-                redirectBtn.disabled = !enabled;
-                if (enabled) {
-                    loading.style.display = 'none';
-                } else {
-                    loading.style.display = 'block';
-                }
+            let parts = value.split('.');
+            let integerPart = parts[0];
+            let decimalPart = parts[1];
+            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            if (decimalPart && decimalPart.length > 2) {
+                decimalPart = decimalPart.substring(0, 2);
             }
+            let finalValue = '$' + integerPart;
+            if (value.includes('.')) {
+                finalValue += '.' + (decimalPart || '');
+            }
+            this.value = finalValue;
+            validateCostoEquipo();
+        });
 
-            /**
-             * Popula un elemento <select> con opciones.
-             * @param {HTMLElement} selectElement El elemento <select> a poblar.
-             * @param {Array<string>} optionsData Un array de strings con las opciones.
-             * @param {string} placeholderText El texto del placeholder inicial.
-             */
-            function populateSelect(selectElement, optionsData, placeholderText) {
-                selectElement.innerHTML = ''; // Limpiar opciones existentes
-
-                const defaultOption = document.createElement('option');
-                defaultOption.value = '';
-                defaultOption.textContent = placeholderText;
-                defaultOption.disabled = true;
-                defaultOption.selected = true;
-                selectElement.appendChild(defaultOption);
-
-                optionsData.forEach(optionText => {
-                    if (optionText && String(optionText).trim() !== '') { // Asegura que no se añadan opciones vacías
-                        const option = document.createElement('option');
-                        option.value = optionText;
-                        option.textContent = optionText;
-                        selectElement.appendChild(option);
-                    }
+        costoEquipoInput.addEventListener('blur', function() {
+            // ***** LÍNEA CORREGIDA *****
+            // Se eliminó el guion extra en la expresión regular.
+            let value = this.value.replace(/[^0-9.]/g, '');
+            
+            if (value) {
+                const number = parseFloat(value);
+                this.value = '$' + number.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 });
+            } else {
+                this.value = '';
             }
+            validateCostoEquipo();
+        });
 
-            // --- Real-time Formatting and Validation ---
+        observacionesTextarea.addEventListener('input', function() { observacionesCharCount.textContent = this.value.length; });
+        comentariosTextarea.addEventListener('input', function() { comentariosCharCount.textContent = this.value.length; });
+        imeiInput.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); validateIMEI(); });
+        numeroTelefonoInput.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); validateNumeroTelefono(); });
 
-            // Costo_Equipo formatting
-            costoEquipoInput.addEventListener('input', function() {
-                let value = this.value.replace(/[^0-9.]/g, ''); // Remove non-numeric except dot
-                let parts = value.split('.');
-                let integerPart = parts[0];
-                let decimalPart = parts[1] || '';
-
-                integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Add commas for thousands
-
-                if (decimalPart.length > 2) {
-                    decimalPart = decimalPart.substring(0, 2);
-                }
-
-                this.value = '$' + integerPart + (decimalPart ? '.' + decimalPart : '');
-                validateCostoEquipo(); // Validate on input
-            });
-            costoEquipoInput.addEventListener('blur', function() {
-                // Ensure two decimal places on blur if not present
-                let value = this.value.replace(/[^0-9.]/g, '');
-                if (value && !value.includes('.')) {
-                    this.value = '$' + parseFloat(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                } else if (value && value.split('.')[1].length === 1) {
-                    this.value += '0';
-                }
-                validateCostoEquipo(); // Validate on blur
-            });
-
-            // Character counters
-            observacionesTextarea.addEventListener('input', function() {
-                observacionesCharCount.textContent = this.value.length;
-            });
-            comentariosTextarea.addEventListener('input', function() {
-                comentariosCharCount.textContent = this.value.length;
-            });
-
-            // IMEI validation (client-side)
-            imeiInput.addEventListener('input', function() {
-                let value = this.value.replace(/[^0-9]/g, ''); // Only numbers
-                this.value = value;
-                validateIMEI();
-            });
-
-            // Numero_Telefono validation (client-side)
-            numeroTelefonoInput.addEventListener('input', function() {
-                let value = this.value.replace(/[^0-9]/g, ''); // Only numbers
-                this.value = value;
-                validateNumeroTelefono();
-            });
-
-            // --- Client-side Validation Functions ---
-            function validateCostoEquipo() {
-                let value = costoEquipoInput.value.replace(/[^0-9.]/g, ''); // Clean for validation
-                const numValue = parseFloat(value);
-                if (isNaN(numValue) || numValue < 1) {
-                    costoEquipoError.style.display = 'block';
-                    return false;
-                }
-                costoEquipoError.style.display = 'none';
-                return true;
+        // --- Client-side Validation Functions ---
+        function validateCostoEquipo() {
+            let value = costoEquipoInput.value.replace(/[^0-9.]/g, '');
+            const numValue = parseFloat(value);
+            if (isNaN(numValue) || numValue < 1) {
+                costoEquipoError.style.display = 'block';
+                return false;
             }
+            costoEquipoError.style.display = 'none';
+            return true;
+        }
 
-            function validateFechaCompra() {
-                const fechaCompra = new Date(fechaCompraInput.value);
+        function validateFechaCompra() {
+            const fechaCompra = new Date(fechaCompraInput.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (!fechaCompraInput.value || isNaN(fechaCompra.getTime()) || fechaCompra >= today) {
+                fechaCompraError.style.display = 'block';
+                return false;
+            }
+            fechaCompraError.style.display = 'none';
+            return true;
+        }
+
+        function validateFechaRecoleccion() {
+            const fechaRecoleccion = new Date(fechaRecoleccionInput.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (!fechaRecoleccionInput.value || isNaN(fechaRecoleccion.getTime()) || fechaRecoleccion > today) {
+                fechaRecoleccionError.style.display = 'block';
+                return false;
+            }
+            fechaRecoleccionError.style.display = 'none';
+            return true;
+        }
+
+        function validateFechaReasignacion() {
+            if (reasignacionFieldDiv.style.display === 'block') {
+                const fechaReasignacion = new Date(fechaReasignacionInput.value);
                 const today = new Date();
-                today.setHours(0, 0, 0, 0); // Normalize to start of day for comparison
-
-                if (!fechaCompraInput.value || isNaN(fechaCompra.getTime()) || fechaCompra >= today) {
-                    fechaCompraError.style.display = 'block';
+                today.setHours(0, 0, 0, 0);
+                if (!fechaReasignacionInput.value || isNaN(fechaReasignacion.getTime()) || fechaReasignacion > today) {
+                    fechaReasignacionError.style.display = 'block';
                     return false;
                 }
-                fechaCompraError.style.display = 'none';
+                fechaReasignacionError.style.display = 'none';
                 return true;
             }
+            return true;
+        }
 
-            function validateFechaRecoleccion() {
-                const fechaRecoleccion = new Date(fechaRecoleccionInput.value);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0); // Normalize to start of day for comparison
-
-                if (!fechaRecoleccionInput.value || isNaN(fechaRecoleccion.getTime()) || fechaRecoleccion > today) {
-                    fechaRecoleccionError.style.display = 'block';
-                    return false;
-                }
-                fechaRecoleccionError.style.display = 'none';
-                return true;
+        function validateIMEI() {
+            const imei = imeiInput.value.trim();
+            if (!/^\d{15,16}$/.test(imei)) {
+                imeiError.textContent = 'IMEI inválido (debe ser numérico, 15 o 16 dígitos).';
+                imeiError.style.display = 'block';
+                return false;
             }
+            imeiError.style.display = 'none';
+            return true;
+        }
 
-            function validateFechaReasignacion() {
-                // Only validate if visible
-                if (reasignacionFieldDiv.style.display === 'block') {
-                    const fechaReasignacion = new Date(fechaReasignacionInput.value);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-
-                    if (!fechaReasignacionInput.value || isNaN(fechaReasignacion.getTime()) || fechaReasignacion > today) {
-                        fechaReasignacionError.style.display = 'block';
-                        return false;
-                    }
-                    fechaReasignacionError.style.display = 'none';
-                    return true;
-                }
-                return true; // Not visible, so considered valid
-            }
-
-            function validateIMEI() {
-                const imei = imeiInput.value.trim();
-                const isValid = /^\d{15,16}$/.test(imei);
-                if (!isValid) {
-                    imeiError.textContent = 'IMEI inválido (debe ser numérico, 15 o 16 dígitos).';
-                    imeiError.style.display = 'block';
-                    return false;
-                }
-                imeiError.style.display = 'none';
-                return true;
-            }
-
-            function validateNumeroTelefono() {
-                const telefono = numeroTelefonoInput.value.trim();
-                if (numeroTelefonoInput.disabled) { // If disabled, it's valid regardless of content
-                    numeroTelefonoError.style.display = 'none';
-                    return true;
-                }
-                if (telefono === '') { // Optional field when not disabled
-                    numeroTelefonoError.style.display = 'none';
-                    return true;
-                }
-                const isValid = /^\d{10}$/.test(telefono);
-                if (!isValid) {
-                    numeroTelefonoError.style.display = 'block';
-                    return false;
-                }
+        function validateNumeroTelefono() {
+            const telefono = numeroTelefonoInput.value.trim();
+            if (numeroTelefonoInput.disabled || telefono === '') {
                 numeroTelefonoError.style.display = 'none';
                 return true;
             }
-
-            function validateResponsableForReasignacion() {
-                // Only validate if Reasignacion is selected
-                if (estadoSelect.value === 'Reasignado') {
-                    if (!responsableSelect.value) {
-                        responsableError.style.display = 'block';
-                        return false;
-                    }
-                    responsableError.style.display = 'none';
-                    return true;
-                }
-                return true; // Not Reasignado, so valid
+            if (!/^\d{10}$/.test(telefono)) {
+                numeroTelefonoError.style.display = 'block';
+                return false;
             }
-
-
-            function validateForm() {
-                let isValid = true;
-                isValid = validateCostoEquipo() && isValid;
-                isValid = validateFechaCompra() && isValid;
-                isValid = validateFechaRecoleccion() && isValid;
-                isValid = validateIMEI() && isValid;
-                isValid = validateNumeroTelefono() && isValid; // Check even if disabled, to clear errors
-                isValid = validateFechaReasignacion() && isValid; // Check if visible
-                isValid = validateResponsableForReasignacion() && isValid; // Check if Reasignacion
-
-                // Check required selects
-                if (!estadoSelect.value) { estadoSelect.reportValidity(); isValid = false; }
-                if (!marcaSelect.value) { marcaSelect.reportValidity(); isValid = false; }
-                if (!modeloSelect.value) { modeloSelect.reportValidity(); isValid = false; }
-                if (!ramSelect.value) { ramSelect.reportValidity(); isValid = false; }
-                if (!romSelect.value) { romSelect.reportValidity(); isValid = false; }
-                if (!idSucursalSelect.value) { idSucursalSelect.reportValidity(); isValid = false; }
-                
-                // Conditional required fields based on Estado
-                if (estadoSelect.value === 'Baja') {
-                    if (!nombreSolicitanteBajaInput.value.trim()) {
-                        showMessageBox('El nombre del solicitante de baja es obligatorio.', 'error');
-                        nombreSolicitanteBajaInput.focus();
-                        return false;
-                    }
-                    if (!razonBajaTextarea.value.trim()) {
-                        showMessageBox('La razón de la baja es obligatoria.', 'error');
-                        razonBajaTextarea.focus();
-                        return false;
-                    }
-                } else if (estadoSelect.value === 'Vendido') {
-                    if (!nombreSolicitanteVentaInput.value.trim()) {
-                        showMessageBox('El nombre del solicitante de venta es obligatorio.', 'error');
-                        nombreSolicitanteVentaInput.focus();
-                        return false;
-                    }
-                    if (!personaVendeSelect.value) {
-                        showMessageBox('Debe seleccionar la persona a la que se vende.', 'error');
-                        personaVendeSelect.focus();
-                        return false;
-                    }
-                }
-
-                return isValid;
+            numeroTelefonoError.style.display = 'none';
+            return true;
+        }
+        
+        function validateResponsableForReasignacion() {
+            if (estadoSelect.value === 'Reasignado' && !responsableSelect.value) {
+                responsableError.style.display = 'block';
+                return false;
             }
+            responsableError.style.display = 'none';
+            return true;
+        }
 
+        function validateForm() {
+            let isValid = true;
+            isValid = validateCostoEquipo() && isValid;
+            isValid = validateFechaCompra() && isValid;
+            isValid = validateFechaRecoleccion() && isValid;
+            isValid = validateIMEI() && isValid;
+            isValid = validateNumeroTelefono() && isValid;
+            isValid = validateFechaReasignacion() && isValid;
+            isValid = validateResponsableForReasignacion() && isValid;
+            
+            const requiredSelects = [estadoSelect, marcaSelect, modeloSelect, ramSelect, romSelect, idSucursalSelect];
+            requiredSelects.forEach(sel => { if (!sel.value) { sel.reportValidity(); isValid = false; }});
 
-            // --- Cargar opciones de desplegables al inicio ---
-            // Cargar Estados desde Listados!B2:B
-            google.script.run
-                .withSuccessHandler(function(response) {
-                    if (response.success) {
-                        populateSelect(estadoSelect, response.data, 'Selecciona un estado');
-                    } else {
-                        showMessageBox('Error al cargar estados: ' + response.message, 'error');
-                        estadoSelect.innerHTML = '<option value="">Error al cargar</option>';
-                    }
-                })
-                .withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar estados: ' + error.message, 'error');
-                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
-                })
-                .getDropdownOptions('Listados', 'B2:B'); // Hoja "Listados", Columna B
-
-            // Cargar Marcas desde Listados!A2:A
-            google.script.run
-                .withSuccessHandler(function(response) {
-                    if (response.success) {
-                        populateSelect(marcaSelect, response.data, 'Selecciona una marca');
-                    } else {
-                        showMessageBox('Error al cargar marcas: ' + response.message, 'error');
-                        marcaSelect.innerHTML = '<option value="">Error al cargar</option>';
-                    }
-                })
-                .withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar marcas: ' + error.message, 'error');
-                    marcaSelect.innerHTML = '<option value="">Error de red</option>';
-                })
-                .getDropdownOptions('Listados', 'A2:A'); // Hoja "Listados", Columna A
-
-            // Cargar Modelos desde Listados!C2:C
-            google.script.run
-                .withSuccessHandler(function(response) {
-                    if (response.success) {
-                        populateSelect(modeloSelect, response.data, 'Selecciona un modelo');
-                    } else {
-                        showMessageBox('Error al cargar modelos: ' + response.message, 'error');
-                        modeloSelect.innerHTML = '<option value="">Error al cargar</option>';
-                    }
-                })
-                .withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar modelos: ' + error.message, 'error');
-                    modeloSelect.innerHTML = '<option value="">Error de red</option>';
-                })
-                .getDropdownOptions('Listados', 'C2:C'); // Hoja "Listados", Columna C
-
-            // Cargar RAM desde Listados!D2:D
-            google.script.run
-                .withSuccessHandler(function(response) {
-                    if (response.success) {
-                        populateSelect(ramSelect, response.data, 'Selecciona RAM');
-                    } else {
-                        showMessageBox('Error al cargar RAM: ' + response.message, 'error');
-                        ramSelect.innerHTML = '<option value="">Error al cargar</option>';
-                    }
-                })
-                .withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar RAM: ' + error.message, 'error');
-                    ramSelect.innerHTML = '<option value="">Error de red</option>';
-                })
-                .getDropdownOptions('Listados', 'D2:D'); // Hoja "Listados", Columna D
-
-            // Cargar ROM desde Listados!E2:E
-            google.script.run
-                .withSuccessHandler(function(response) {
-                    if (response.success) {
-                        populateSelect(romSelect, response.data, 'Selecciona Almacenamiento');
-                    } else {
-                        showMessageBox('Error al cargar ROM: ' + response.message, 'error');
-                        romSelect.innerHTML = '<option value="">Error al cargar</option>';
-                    }
-                })
-                .withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar ROM: ' + error.message, 'error');
-                    romSelect.innerHTML = '<option value="">Error de red</option>';
-                })
-                .getDropdownOptions('Listados', 'E2:E'); // Hoja "Listados", Columna E
-
-            // Cargar Sucursales desde Listados!F2:F
-            google.script.run
-                .withSuccessHandler(function(response) {
-                    if (response.success) {
-                        populateSelect(idSucursalSelect, response.data, 'Selecciona una sucursal');
-                    } else {
-                        showMessageBox('Error al cargar sucursales: ' + response.message, 'error');
-                        idSucursalSelect.innerHTML = '<option value="">Error al cargar</option>';
-                    }
-                })
-                .withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar sucursales: ' + error.message, 'error');
-                    idSucursalSelect.innerHTML = '<option value="">Error de red</option>';
-                })
-                .getDropdownOptions('Listados', 'F2:F'); // Hoja "Listados", Columna F
-
-            // Cargar Responsables desde BD!A2:A (para Responsable y Persona a Vender)
-            google.script.run
-                .withSuccessHandler(function(response) {
-                    if (response.success) {
-                        populateSelect(responsableSelect, response.data, 'Selecciona un responsable (Opcional)');
-                        populateSelect(personaVendeSelect, response.data, 'Selecciona persona a vender');
-                    } else {
-                        showMessageBox('Error al cargar responsables: ' + response.message, 'error');
-                        responsableSelect.innerHTML = '<option value="">Error al cargar</option>';
-                        personaVendeSelect.innerHTML = '<option value="">Error al cargar</option>';
-                    }
-                })
-                .withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar responsables: ' + error.message, 'error');
-                    responsableSelect.innerHTML = '<option value="">Error de red</option>';
-                    personaVendeSelect.innerHTML = '<option value="">Error de red</option>';
-                })
-                .getDropdownOptions('BD', 'A2:A'); // Hoja "BD", Columna A
-
-
-            // --- Conditional Field Logic based on Estado selection ---
-            estadoSelect.addEventListener('change', function() {
-                const selectedState = this.value;
-
-                // Reset all conditional fields visibility and required status
-                bajaFieldsDiv.style.display = 'none';
-                nombreSolicitanteBajaInput.required = false;
-                razonBajaTextarea.required = false;
-                nombreSolicitanteBajaInput.value = '';
-                razonBajaTextarea.value = '';
-
-                vendidoFieldsDiv.style.display = 'none';
-                nombreSolicitanteVentaInput.required = false;
-                personaVendeSelect.required = false;
-                nombreSolicitanteVentaInput.value = '';
-                populateSelect(personaVendeSelect, [], 'Cargando responsables...'); // Reset personaVende
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(personaVendeSelect, res.data, 'Selecciona persona a vender'); }).getDropdownOptions('BD', 'A2:A');
-
-
-                reasignacionFieldDiv.style.display = 'none';
-                fechaReasignacionInput.required = false;
-                fechaReasignacionInput.value = '';
-                fechaReasignacionError.style.display = 'none';
-
-                // Reset Numero_Telefono and Responsable fields state
-                numeroTelefonoInput.disabled = false;
-                numeroTelefonoInput.classList.remove('disabled-field');
-                numeroTelefonoError.style.display = 'none'; // Clear error if previously shown
-
-                responsableSelect.disabled = false;
-                responsableSelect.classList.remove('disabled-field');
-                responsableError.style.display = 'none'; // Clear error if previously shown
-                responsableSelect.required = false; // Default to not required unless Reasignado
-
-                comentariosTextarea.placeholder = ''; // Clear specific placeholder
-
-                // Apply logic based on selected state
-                if (selectedState === 'Baja') {
-                    bajaFieldsDiv.style.display = 'block';
-                    nombreSolicitanteBajaInput.required = true;
-                    razonBajaTextarea.required = true;
-                } else if (selectedState === 'Stock' || selectedState === 'Robado') {
-                    numeroTelefonoInput.disabled = true;
-                    numeroTelefonoInput.value = '';
-                    numeroTelefonoInput.classList.add('disabled-field');
-
-                    responsableSelect.disabled = true;
-                    responsableSelect.value = '';
-                    responsableSelect.classList.add('disabled-field');
-
-                    if (selectedState === 'Robado') {
-                        comentariosTextarea.placeholder = 'Favor de agregar anotaciones del Robo';
-                    }
-                } else if (selectedState === 'Vendido') {
-                    vendidoFieldsDiv.style.display = 'block';
-                    nombreSolicitanteVentaInput.required = true;
-                    personaVendeSelect.required = true;
-                } else if (selectedState === 'Reasignado') {
-                    reasignacionFieldDiv.style.display = 'block';
-                    fechaReasignacionInput.required = true;
-                    responsableSelect.required = true; // Responsable becomes required for Reasignado
-                    // Set Fecha_Reasignacion to today's date by default when shown
-                    const today = new Date();
-                    const year = today.getFullYear();
-                    const month = String(today.getMonth() + 1).padStart(2, '0');
-                    const day = String(today.getDate()).padStart(2, '0');
-                    fechaReasignacionInput.value = `${year}-${month}-${day}`;
+            if (estadoSelect.value === 'Baja') {
+                if (!nombreSolicitanteBajaSelect.value) {
+                    showMessageBox('El nombre del solicitante de baja es obligatorio.', 'error');
+                    nombreSolicitanteBajaSelect.focus();
+                    isValid = false;
                 }
-            });
-
-
-            // --- Event Listeners ---
-            form.addEventListener('submit', function(e) {
-                e.preventDefault(); // Prevent default form submission
-
-                if (!validateForm()) {
-                    showMessageBox('Por favor, corrige los errores en el formulario.', 'error');
-                    return;
+                if (!razonBajaTextarea.value.trim()) {
+                    showMessageBox('La razón de la baja es obligatoria.', 'error');
+                    razonBajaTextarea.focus();
+                    isValid = false;
                 }
-                
-                setFormEnabled(false); // Disable form and show loading
+            } else if (estadoSelect.value === 'Vendido') {
+                if (!nombreSolicitanteVentaSelect.value) {
+                    showMessageBox('El nombre del solicitante de venta es obligatorio.', 'error');
+                    nombreSolicitanteVentaSelect.focus();
+                    isValid = false;
+                }
+                if (!personaVendeSelect.value) {
+                    showMessageBox('Debe seleccionar la persona a la que se vende.', 'error');
+                    personaVendeSelect.focus();
+                    isValid = false;
+                }
+            }
+            return isValid;
+        }
 
-                // Clean and parse Costo_Equipo
-                const costoEquipoClean = parseFloat(costoEquipoInput.value.replace(/[^0-9.]/g, '')) || 0;
+        // --- Cargar opciones de desplegables al inicio ---
+        function loadAllDropdowns() {
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(estadoSelect, res.data, 'Selecciona un estado'); }).withFailureHandler(err => showMessageBox('Error al cargar estados: ' + err.message, 'error')).getDropdownOptions('Listados', 'B2:B');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(marcaSelect, res.data, 'Selecciona una marca'); }).withFailureHandler(err => showMessageBox('Error al cargar marcas: ' + err.message, 'error')).getDropdownOptions('Listados', 'A2:A');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(modeloSelect, res.data, 'Selecciona un modelo'); }).withFailureHandler(err => showMessageBox('Error al cargar modelos: ' + err.message, 'error')).getDropdownOptions('Listados', 'C2:C');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(ramSelect, res.data, 'Selecciona RAM'); }).withFailureHandler(err => showMessageBox('Error al cargar RAM: ' + err.message, 'error')).getDropdownOptions('Listados', 'D2:D');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(romSelect, res.data, 'Selecciona Almacenamiento'); }).withFailureHandler(err => showMessageBox('Error al cargar ROM: ' + err.message, 'error')).getDropdownOptions('Listados', 'E2:E');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(idSucursalSelect, res.data, 'Selecciona una sucursal'); }).withFailureHandler(err => showMessageBox('Error al cargar sucursales: ' + err.message, 'error')).getDropdownOptions('Listados', 'F2:F');
+            
+            google.script.run.withSuccessHandler(function(response) {
+                if (response.success) {
+                    const employeeList = response.data;
+                    populateSelect(responsableSelect, employeeList, 'Selecciona un responsable');
+                    populateSelect(personaVendeSelect, employeeList, 'Selecciona persona a vender');
+                    populateSelect(nombreSolicitanteBajaSelect, employeeList, 'Selecciona un solicitante');
+                    populateSelect(nombreSolicitanteVentaSelect, employeeList, 'Selecciona un solicitante');
+                } else { showMessageBox('Error al cargar responsables: ' + response.message, 'error'); }
+            }).withFailureHandler(err => showMessageBox('Error de conexión al cargar responsables: ' + err.message, 'error')).getDropdownOptions('BD', 'A2:A');
+        }
 
-                // Gather form data
-                const formData = {
-                    costoEquipo: costoEquipoClean,
-                    fechaCompra: fechaCompraInput.value,
-                    fechaRecoleccion: fechaRecoleccionInput.value,
-                    estado: estadoSelect.value,
-                    observaciones: observacionesTextarea.value,
-                    marca: marcaSelect.value,
-                    modelo: modeloSelect.value,
-                    ram: ramSelect.value,
-                    rom: romSelect.value,
-                    imei: imeiInput.value,
-                    numeroTelefono: numeroTelefonoInput.value,
-                    idSucursal: idSucursalSelect.value,
-                    responsable: responsableSelect.value,
-                    comentarios: comentariosTextarea.value,
-                    
-                    // Conditional fields - send only if visible/applicable
-                    nombreSolicitanteBaja: (estadoSelect.value === 'Baja') ? nombreSolicitanteBajaInput.value : '',
-                    razonBaja: (estadoSelect.value === 'Baja') ? razonBajaTextarea.value : '',
-                    nombreSolicitanteVenta: (estadoSelect.value === 'Vendido') ? nombreSolicitanteVentaInput.value : '',
-                    personaVende: (estadoSelect.value === 'Vendido') ? personaVendeSelect.value : '',
-                    fechaReasignacion: (estadoSelect.value === 'Reasignado') ? fechaReasignacionInput.value : ''
-                };
+        // --- Conditional Field Logic ---
+        estadoSelect.addEventListener('change', function() {
+            const selectedState = this.value;
+            // Reset all
+            bajaFieldsDiv.style.display = 'none';
+            nombreSolicitanteBajaSelect.required = false;
+            razonBajaTextarea.required = false;
+            vendidoFieldsDiv.style.display = 'none';
+            nombreSolicitanteVentaSelect.required = false;
+            personaVendeSelect.required = false;
+            reasignacionFieldDiv.style.display = 'none';
+            fechaReasignacionInput.required = false;
+            numeroTelefonoInput.disabled = false;
+            numeroTelefonoInput.classList.remove('disabled-field');
+            numeroTelefonoInput.placeholder = '';
+            responsableSelect.disabled = false;
+            responsableSelect.classList.remove('disabled-field');
+            responsableSelect.required = false;
+            observacionesTextarea.required = false;
+            observacionesTextarea.placeholder = 'Describa en qué condiciones se está recolectando el equipo...';
 
-                // Call the Apps Script function to process the form
-                google.script.run
-                    .withSuccessHandler(function(response) {
-                        setFormEnabled(true);
-                        if (response.success) {
-                            showMessageBox('Datos enviados correctamente: ' + response.message, 'success');
-                            form.reset(); // Clear form after successful submission
-                            resetFormState(); // Reset conditional fields and dropdowns
-                        } else {
-                            showMessageBox('Error al enviar datos: ' + response.message, 'error');
-                            // Display specific error for IMEI if it's a duplicate or format issue
-                            if (response.message.includes("IMEI ya existe") || response.message.includes("IMEI inválido")) {
-                                imeiError.textContent = response.message; // Set the specific message from server
-                                imeiError.style.display = 'block';
-                            } else {
-                                imeiError.style.display = 'none';
-                            }
-                        }
-                    })
-                    .withFailureHandler(function(error) {
-                        setFormEnabled(true);
-                        showMessageBox('Error de conexión o script: ' + error.message, 'error');
-                        imeiError.style.display = 'none';
-                    })
-                    .procesarRECUFormulario(formData);
-            });
-
-            clearBtn.addEventListener('click', function() {
-                form.reset();
-                resetFormState(); // Reset conditional fields and dropdowns
-                showMessageBox('Formulario limpiado.', 'success', 2000);
-            });
-
-            redirectBtn.addEventListener('click', function() {
-                setFormEnabled(false); // Show loading before redirect
-                google.script.run
-                    .withSuccessHandler(function(url) {
-                        window.top.location.href = url; // Redirect to the obtained URL
-                    })
-                    .withFailureHandler(function(error) {
-                        setFormEnabled(true);
-                        showMessageBox('Error al obtener URL de redirección: ' + error.message, 'error');
-                    })
-                    .redirigirOtraApp(); 
-            });
-
-            imeiInput.addEventListener('input', function() {
-                imeiError.style.display = 'none'; // Oculta el mensaje de error de IMEI mientras el usuario escribe
-            });
-
-            // Function to reset all form state including conditional fields and dropdowns
-            function resetFormState() {
-                // Hide all error messages
-                costoEquipoError.style.display = 'none';
-                fechaCompraError.style.display = 'none';
-                fechaRecoleccionError.style.display = 'none';
-                imeiError.style.display = 'none';
-                numeroTelefonoError.style.display = 'none';
-                fechaReasignacionError.style.display = 'none';
-                responsableError.style.display = 'none';
-
-                // Reset character counters
-                observacionesCharCount.textContent = '0';
-                comentariosCharCount.textContent = '0';
-
-                // Reset conditional fields visibility and required status
-                bajaFieldsDiv.style.display = 'none';
-                nombreSolicitanteBajaInput.required = false;
-                razonBajaTextarea.required = false;
-                nombreSolicitanteBajaInput.value = '';
-                razonBajaTextarea.value = '';
-
-                vendidoFieldsDiv.style.display = 'none';
-                nombreSolicitanteVentaInput.required = false;
-                personaVendeSelect.required = false;
-                nombreSolicitanteVentaInput.value = '';
-                
-                reasignacionFieldDiv.style.display = 'none';
-                fechaReasignacionInput.required = false;
-                fechaReasignacionInput.value = '';
-
-                // Enable Numero_Telefono and Responsable fields and remove styling
-                numeroTelefonoInput.disabled = false;
-                numeroTelefonoInput.classList.remove('disabled-field');
-                responsableSelect.disabled = false;
-                responsableSelect.classList.remove('disabled-field');
-                responsableSelect.required = false; // Default to not required
-
-                comentariosTextarea.placeholder = ''; // Clear specific placeholder
-
-                // Re-populate all dynamic dropdowns
-                populateSelect(estadoSelect, [], 'Cargando estados...');
-                populateSelect(marcaSelect, [], 'Cargando marcas...');
-                populateSelect(modeloSelect, [], 'Selecciona un modelo');
-                populateSelect(ramSelect, [], 'Selecciona RAM');
-                populateSelect(romSelect, [], 'Selecciona Almacenamiento');
-                populateSelect(idSucursalSelect, [], 'Selecciona una sucursal');
-                populateSelect(responsableSelect, [], 'Selecciona un responsable (Opcional)');
-                populateSelect(personaVendeSelect, [], 'Selecciona persona a vender'); // For "Vendido" state
-
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(estadoSelect, res.data, 'Selecciona un estado'); }).getDropdownOptions('Listados', 'B2:B');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(marcaSelect, res.data, 'Selecciona una marca'); }).getDropdownOptions('Listados', 'A2:A');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(modeloSelect, res.data, 'Selecciona un modelo'); }).getDropdownOptions('Listados', 'C2:C');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(ramSelect, res.data, 'Selecciona RAM'); }).getDropdownOptions('Listados', 'D2:D');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(romSelect, res.data, 'Selecciona Almacenamiento'); }).getDropdownOptions('Listados', 'E2:E');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(idSucursalSelect, res.data, 'Selecciona una sucursal'); }).getDropdownOptions('Listados', 'F2:F');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(responsableSelect, res.data, 'Selecciona un responsable (Opcional)'); populateSelect(personaVendeSelect, res.data, 'Selecciona persona a vender'); }).getDropdownOptions('BD', 'A2:A');
-
-                // Initial date setups
-                fechaCompraInput.value = ''; // Ensure it starts empty
+            if (selectedState === 'Baja') {
+                numeroTelefonoInput.disabled = true;
+                numeroTelefonoInput.value = '';
+                numeroTelefonoInput.classList.add('disabled-field');
+                responsableSelect.disabled = true;
+                responsableSelect.value = '';
+                responsableSelect.classList.add('disabled-field');
+                bajaFieldsDiv.style.display = 'block';
+                nombreSolicitanteBajaSelect.required = true;
+                razonBajaTextarea.required = true;
+            } else if (selectedState === 'Stock' || selectedState === 'Robado') {
+                numeroTelefonoInput.disabled = true;
+                numeroTelefonoInput.value = '';
+                numeroTelefonoInput.classList.add('disabled-field');
+                responsableSelect.disabled = true;
+                responsableSelect.value = '';
+                responsableSelect.classList.add('disabled-field');
+                if (selectedState === 'Robado') { comentariosTextarea.placeholder = 'Favor de agregar anotaciones del Robo'; }
+                if (selectedState === 'Stock') {
+                    observacionesTextarea.required = true;
+                    observacionesTextarea.placeholder = 'Describa en qué condiciones se está recolectando el equipo... (OBLIGATORIO)';
+                }
+            } else if (selectedState === 'Vendido') {
+                numeroTelefonoInput.disabled = true;
+                numeroTelefonoInput.value = '';
+                numeroTelefonoInput.classList.add('disabled-field');
+                responsableSelect.disabled = true;
+                responsableSelect.value = '';
+                responsableSelect.classList.add('disabled-field');
+                vendidoFieldsDiv.style.display = 'block';
+                nombreSolicitanteVentaSelect.required = true;
+                personaVendeSelect.required = true;
+            } else if (selectedState === 'Reasignado') {
+                reasignacionFieldDiv.style.display = 'block';
+                fechaReasignacionInput.required = true;
+                numeroTelefonoInput.required = true;
+                numeroTelefonoInput.placeholder = 'Numero de Teléfono OBLIGATORIO';
+                responsableSelect.required = true;
                 const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                fechaRecoleccionInput.value = `${year}-${month}-${day}`; // Set Fecha_Recoleccion to today
+                fechaReasignacionInput.value = today.toISOString().split('T')[0];
             }
+        });
 
-            // Initial setup for dates and character counts
-            resetFormState(); // Call once at the very beginning to set initial state
+        // --- Event Listeners ---
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!validateForm()) { showMessageBox('Por favor, corrige los errores en el formulario.', 'error'); return; }
+            setFormEnabled(false);
+            const formData = {
+                costoEquipo: parseFloat(costoEquipoInput.value.replace(/[^0-9.]/g, '')) || 0,
+                fechaCompra: fechaCompraInput.value,
+                fechaRecoleccion: fechaRecoleccionInput.value,
+                estado: estadoSelect.value,
+                observaciones: observacionesTextarea.value,
+                marca: marcaSelect.value,
+                modelo: modeloSelect.value,
+                ram: ramSelect.value,
+                rom: romSelect.value,
+                imei: imeiInput.value,
+                numeroTelefono: numeroTelefonoInput.value,
+                idSucursal: idSucursalSelect.value,
+                responsable: responsableSelect.value,
+                comentarios: comentariosTextarea.value,
+                nombreSolicitanteBaja: (estadoSelect.value === 'Baja') ? nombreSolicitanteBajaSelect.value : '',
+                razonBaja: (estadoSelect.value === 'Baja') ? razonBajaTextarea.value : '',
+                nombreSolicitanteVenta: (estadoSelect.value === 'Vendido') ? nombreSolicitanteVentaSelect.value : '',
+                personaVende: (estadoSelect.value === 'Vendido') ? personaVendeSelect.value : '',
+                fechaReasignacion: (estadoSelect.value === 'Reasignado') ? fechaReasignacionInput.value : ''
+            };
+            google.script.run.withSuccessHandler(function(response) {
+                setFormEnabled(true);
+                if (response.success) {
+                    showMessageBox('Datos enviados correctamente: ' + response.message, 'success');
+                    form.reset();
+                    resetFormState();
+                } else {
+                    showMessageBox('Error al enviar datos: ' + response.message, 'error');
+                    if (response.message.includes("IMEI")) {
+                        imeiError.textContent = response.message;
+                        imeiError.style.display = 'block';
+                    }
+                }
+            }).withFailureHandler(function(error) {
+                setFormEnabled(true);
+                showMessageBox('Error de conexión o script: ' + error.message, 'error');
+            }).procesarRECUFormulario(formData);
+        });
 
-        } // End of initForm
+        clearBtn.addEventListener('click', function() { form.reset(); resetFormState(); showMessageBox('Formulario limpiado.', 'success', 2000); });
+        redirectBtn.addEventListener('click', function() {
+            setFormEnabled(false);
+            google.script.run.withSuccessHandler(url => window.top.location.href = url)
+            .withFailureHandler(err => { setFormEnabled(true); showMessageBox('Error al obtener URL: ' + err.message, 'error'); })
+            .redirigirOtraApp();
+        });
+        imeiInput.addEventListener('input', () => { imeiError.style.display = 'none'; });
 
-        // Call the initialization function when the window loads
-        window.onload = initForm;
+        function resetFormState() {
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            observacionesCharCount.textContent = '0';
+            comentariosCharCount.textContent = '0';
+            bajaFieldsDiv.style.display = 'none';
+            nombreSolicitanteBajaSelect.required = false;
+            razonBajaTextarea.required = false;
+            vendidoFieldsDiv.style.display = 'none';
+            nombreSolicitanteVentaSelect.required = false;
+            personaVendeSelect.required = false;
+            reasignacionFieldDiv.style.display = 'none';
+            fechaReasignacionInput.required = false;
+            numeroTelefonoInput.disabled = false;
+            numeroTelefonoInput.classList.remove('disabled-field');
+            responsableSelect.disabled = false;
+            responsableSelect.classList.remove('disabled-field');
+            responsableSelect.required = false;
+            comentariosTextarea.placeholder = '';
+            
+            // Re-populate all dynamic dropdowns
+            loadAllDropdowns();
+
+            fechaCompraInput.value = '';
+            const today = new Date();
+            fechaRecoleccionInput.value = today.toISOString().split('T')[0];
+        }
+
+        resetFormState();
+    }
+    window.onload = initForm;
     </script>
 </body>
 </html>

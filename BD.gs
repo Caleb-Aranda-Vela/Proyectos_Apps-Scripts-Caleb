@@ -1,7 +1,4 @@
-//
-// (c) 2021 Hemoeco Renta
-//
-////////////////////////
+//BD.gs
 
 //
 function spreadsheet() {
@@ -51,8 +48,7 @@ function leerTabla(dbUrl, user, pwd) {
   
   var stmt = conn.createStatement();
   
-  var query = "SELECT NOMBRECOMPLETO, IDEMPLEADO, ACTIVO, TELEFONOOFICINA,SUCURSALNOMINA, IDSUCURSAL from IT_Rentas.dbo.CataEmpleados WHERE ACTIVO = 1";
-     
+  var query = "SELECT NOMBRECOMPLETO, IDEMPLEADO, IDPUESTO, ACTIVO, TELEFONOOFICINA,SUCURSALNOMINA, IDSUCURSAL from IT_Rentas.dbo.CataEmpleados WHERE ACTIVO = 1 AND NOMBRECOMPLETO NOT LIKE '%ADM%'AND NOMBRECOMPLETO NOT LIKE '%CAN%'AND NOMBRECOMPLETO NOT LIKE '%TIJ%'AND NOMBRECOMPLETO NOT LIKE '%GDL%'AND NOMBRECOMPLETO NOT LIKE '%MXL%'AND NOMBRECOMPLETO NOT LIKE '%SJD%'AND NOMBRECOMPLETO NOT LIKE '%MEX%'AND NOMBRECOMPLETO NOT LIKE '%MTY%' ORDER BY NOMBRECOMPLETO";     
   // stmt.setMaxRows(1000);  
   var results = stmt.executeQuery(query);
   var metaData = results.getMetaData();
