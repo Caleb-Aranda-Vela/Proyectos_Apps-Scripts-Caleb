@@ -21,8 +21,8 @@ function importar() {
   // Hacer la conexion a SQL Server.
   // Replace the variables in this block with real values.
   var address = 'gw.hemoeco.com:5300'; // '187.189.51.7:5300';
-  var user = 'reportes';
-  var pwd = 'R3p0rt3s';
+  var user = '';
+  var pwd = '';
   var db = 'IT_Rentas';
 
   var dbUrl = 'jdbc:sqlserver://' + address + ';databaseName=' + db;
