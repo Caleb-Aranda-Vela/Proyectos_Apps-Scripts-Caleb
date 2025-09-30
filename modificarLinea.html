@@ -8,15 +8,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         .error-message { color: #dc3545; font-size: 0.875em; margin-top: 0.25em; display: none; }
-        .char-counter { font-size: 0.75em; color: #6c757d; text-align: right; margin-top: 5px; }
         .disabled-field { background-color: #e9ecef !important; color: #6c757d !important; cursor: not-allowed; }
         .readonly-field { background-color: #f7fafc; border: 1px solid #e2e8f0; color: #2d3748; cursor: not-allowed; }
         .readonly-field:focus { box-shadow: none; border-color: #e2e8f0; }
         .form-actions-inline { display: flex; gap: 16px; justify-content: center; }
         .form-actions-inline .btn { width: auto; flex-grow: 1; }
-        details summary { cursor: pointer; font-weight: 600; color: #4a5568; margin-top: 1rem; }
         .search-inline { display: flex; align-items: flex-end; gap: 10px; }
         .search-inline div { flex-grow: 1; }
+        .info-container {display: flex;align-items: center;gap: 8px;}
+        .info-icon {display: inline-block;width: 18px;height: 18px;border-radius: 50%;background-color: #6c757d;color: white;text-align: center;font-size: 12px;font-weight: bold;line-height: 18px;cursor: pointer;position: relative;        }
+        .info-icon .tooltiptext {visibility: hidden;width: 220px;background-color: #333;color: #fff;text-align: center;border-radius: 6px;padding: 8px;position: absolute;z-index: 1;bottom: 125%;left: 50%;margin-left: -110px;opacity: 0;transition: opacity 0.3s;}
+        .info-icon:hover .tooltiptext {visibility: visible;opacity: 1;}
     </style>
 </head>
 <body>
@@ -44,7 +46,7 @@
             <form id="modificacionForm" style="display: none;">
                 
                 <fieldset>
-                    <legend>Sección 2: Datos de la Línea Celular (Modificación)</legend>
+                    <legend>Datos de Línea Celular</legend>
                     <div class="form-grid">
                         <div><label>Región</label><input type="text" id="region" class="readonly-field" readonly></div>
                         <div><label>Cuenta Padre</label><input type="text" id="cuenta_padre" class="readonly-field" readonly></div>
@@ -52,8 +54,8 @@
                         <div><label>Teléfono</label><input type="text" id="telefono" class="readonly-field" readonly></div>
                         <div><label>Clave Plan</label><input type="text" id="clave_plan" class="readonly-field" readonly></div>
                         <div><label>Nombre Plan</label><input type="text" id="nombre_plan" class="readonly-field" readonly></div>
-                        <div class="full-width"><label>Minutos</label><input type="text" id="minutos" class="readonly-field" readonly></div>
-                        <div class="full-width"><label>Mensajes (SMS)</label><input type="text" id="mensajes" class="readonly-field" readonly></div>
+                        <div><label>Minutos</label><input type="text" id="minutos" class="readonly-field" readonly></div>
+                        <div><label>Mensajes (SMS)</label><input type="text" id="mensajes" class="readonly-field" readonly></div>
                         <div><label>Monto Renta</label><input type="text" id="monto_renta" class="readonly-field" readonly></div>
                         <div><label>Duración Plan</label><input type="text" id="duracion_plan" class="readonly-field" readonly></div>
                         <div><label>Fecha Inicio</label><input type="text" id="fecha_inicio" class="readonly-field" readonly></div>
@@ -69,29 +71,57 @@
                     </div>
                 </fieldset>
 
-                <details id="equipoVinculadoSectionContainer">
-                    <summary>Sección 3: Equipo Celular Vinculado Actual (Click para ver)</summary>
-                    <fieldset>
-                        <div id="equipoVinculadoContent" class="form-grid">
-                            <div><label>IMEI</label><input type="text" class="readonly-field" value="123456789012345" readonly></div>
-                            <div><label>Marca</label><input type="text" class="readonly-field" value="Apple" readonly></div>
+                <fieldset id="equipoVinculadoSection" style="display:none;">
+                    <legend>Equipo Celular Vinculado</legend>
+                    <div id="equipoVinculadoContent" class="form-grid">
+                        <input type="hidden" id="vinculadoTipoEquipo">
+
+                        <div><label>IMEI</label><input type="text" id="vinculadoImei" class="readonly-field" readonly></div>
+                        <div><label>Costo Equipo</label><input type="text" id="vinculadoCosto" class="readonly-field" readonly></div>
+                        <div><label>Fecha Compra</label><input type="text" id="vinculadoFechaCompra" class="readonly-field" readonly></div>
+                        <div><label>Estado</label><input type="text" id="vinculadoEstado" class="readonly-field" readonly></div>
+                        <div><label>Marca</label><input type="text" id="vinculadoMarca" class="readonly-field" readonly></div>
+                        <div><label>Modelo</label><input type="text" id="vinculadoModelo" class="readonly-field" readonly></div>
+                        <div class="full-width"><label>Observaciones</label><textarea id="vinculadoObservaciones" class="readonly-field" readonly rows="2"></textarea></div>
+                        
+                        <div class="full-width" id="nuevoEstadoEquipoVinculadoContainer" style="display: none; margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem;">
+                            <label for="nuevoEstadoEquipoVinculado">Selecciona el nuevo estado del equipo actual vinculado</label>
+                            <select id="nuevoEstadoEquipoVinculado" name="nuevoEstadoEquipoVinculado">
+                                <option value="">Selecciona un estado...</option>
+                                <option value="Stock">Stock</option>
+                                <option value="Robado">Robado</option>
+                            </select>
                         </div>
-                    </fieldset>
-                </details>
+                    </div>
+                </fieldset>
 
                 <fieldset>
-                    <legend>Sección 4: Vincular Equipo Usado (Opcional)</legend>
+                    <legend>Reasignar Equipo Usado</legend>
                     <div class="search-inline">
                          <div>
-                            <label for="searchEquipoImei">Buscar IMEI de equipo usado</label>
+                            <label for="searchEquipoImei">Buscar IMEI de equipo usado a vincular (Opcional)</label>
                             <input type="text" id="searchEquipoImei" name="searchEquipoImei" maxlength="16" placeholder="Ingresa IMEI y presiona Buscar...">
                          </div>
                          <button type="button" class="btn btn-secondary" id="searchEquipoBtn">Buscar</button>
                     </div>
-                    <div id="equipoEncontradoContent" class="form-grid" style="display: none; margin-top: 1rem;">
-                        <div><label>Marca</label><input type="text" class="readonly-field" value="Motorola" readonly></div>
-                        <div><label>Modelo</label><input type="text" class="readonly-field" value="G84" readonly></div>
-                        <div class="full-width"><label for="nuevaFechaReasignacion">Nueva Fecha de Reasignación</label><input type="date" id="nuevaFechaReasignacion" name="nuevaFechaReasignacion" required></div>
+                    <div id="equipoEncontradoContent" style="display: none; margin-top: 1rem;">
+                        <hr style="margin: 20px 0; border-top: 1px solid #e2e8f0;">
+                        <div class="form-grid">
+                           <input type="hidden" id="nuevoEquipoId">
+                           <input type="hidden" id="nuevoEquipoImei">
+                           <div><label>Costo Equipo</label><input type="text" id="encontradoCosto" class="readonly-field" readonly></div>
+                           <div><label>Fecha de Compra</label><input type="text" id="encontradoFechaCompra" class="readonly-field" readonly></div>
+                           <div><label>Fecha de Recolección</label><input type="text" id="encontradoFechaRecoleccion" class="readonly-field" readonly></div>
+                           <div><label>Estado</label><input type="text" id="encontradoEstado" class="readonly-field" readonly></div>
+                           <div><label>Marca</label><input type="text" id="encontradoMarca" class="readonly-field" readonly></div>
+                           <div><label>Modelo</label><input type="text" id="encontradoModelo" class="readonly-field" readonly></div>
+                           <div><label>RAM</label><input type="text" id="encontradoRam" class="readonly-field" readonly></div>
+                           <div><label>ROM</label><input type="text" id="encontradoRom" class="readonly-field" readonly></div>
+                           <div><label>Sucursal</label><input type="text" id="encontradoSucursal" class="readonly-field" readonly></div>
+                           <div><label>Responsable Actual</label><input type="text" id="encontradoResponsable" class="readonly-field" readonly></div>
+                           <div class="full-width"><label for="nuevaFechaReasignacion">Nueva Fecha de Reasignación</label><input type="date" id="nuevaFechaReasignacion" name="nuevaFechaReasignacion" required></div>
+                           <div class="full-width"><label for="nuevasObservaciones">Nuevas Observaciones (Opcional)</label><textarea id="nuevasObservaciones" name="nuevasObservaciones" rows="2" maxlength="125"></textarea></div>
+                        </div>
                     </div>
                 </fieldset>
 
@@ -99,7 +129,6 @@
                     <button type="submit" class="btn btn-primary" id="submitBtn">Guardar Modificaciones</button>
                 </div>
                 <div id="submitLoading" class="loading" style="display: none;"><div class="spinner"></div><p>Guardando cambios...</p></div>
-
             </form>
         </div>
     </div>
@@ -123,47 +152,30 @@
         const sucursalSelect = document.getElementById('idsucursal');
         const extensionInput = document.getElementById('extension');
         const notasTextarea = document.getElementById('notas');
-        const equipoVinculadoSection = document.getElementById('equipoVinculadoSectionContainer');
-        const equipoVinculadoContent = document.getElementById('equipoVinculadoContent');
+        const equipoVinculadoSection = document.getElementById('equipoVinculadoSection');
+        const vinculadoImei = document.getElementById('vinculadoImei');
+        const vinculadoCosto = document.getElementById('vinculadoCosto');
+        const vinculadoFechaCompra = document.getElementById('vinculadoFechaCompra');
+        const vinculadoEstado = document.getElementById('vinculadoEstado');
+        const vinculadoMarca = document.getElementById('vinculadoMarca');
+        const vinculadoModelo = document.getElementById('vinculadoModelo');
+        const vinculadoObservaciones = document.getElementById('vinculadoObservaciones');
+        const vinculadoTipoEquipoInput = document.getElementById('vinculadoTipoEquipo');
+        const nuevoEstadoEquipoVinculadoContainer = document.getElementById('nuevoEstadoEquipoVinculadoContainer');
+        const nuevoEstadoEquipoVinculadoSelect = document.getElementById('nuevoEstadoEquipoVinculado');
         const searchEquipoImeiInput = document.getElementById('searchEquipoImei');
         const searchEquipoBtn = document.getElementById('searchEquipoBtn');
         const equipoEncontradoContent = document.getElementById('equipoEncontradoContent');
+        const nuevaFechaReasignacionInput = document.getElementById('nuevaFechaReasignacion');
+        const nuevasObservacionesTextarea = document.getElementById('nuevasObservaciones');
         const messageBox = document.getElementById('messageBox');
         let originalData = {};
 
         // --- 2. FUNCIONES DE UTILIDAD ---
-        function showMessageBox(message, type = 'success', duration = 4000) {
-            messageBox.textContent = message;
-            messageBox.style.backgroundColor = type === 'error' ? '#ef4444' : '#10b981';
-            messageBox.classList.add('show');
-            setTimeout(() => { messageBox.classList.remove('show'); }, duration);
-        }
-
-        function setFormEnabled(formEl, enabled, loadingEl) {
-            const elements = formEl.querySelectorAll('input, select, textarea, button');
-            elements.forEach(el => el.disabled = !enabled);
-            if (loadingEl) loadingEl.style.display = enabled ? 'none' : 'block';
-        }
-
-        function populateSelect(selectEl, data, placeholder) {
-            selectEl.innerHTML = '';
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = placeholder;
-            selectEl.appendChild(defaultOption);
-            data.forEach(optionText => {
-                if (optionText) {
-                    const option = document.createElement('option');
-                    option.value = optionText;
-                    option.textContent = optionText;
-                    selectEl.appendChild(option);
-                }
-            });
-        }
-
-        function allowOnlyNumbers(inputEl) {
-            inputEl.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
-        }
+        function showMessageBox(message, type = 'success', duration = 4000) { /* ...código... */ }
+        function setFormEnabled(formEl, enabled, loadingEl) { /* ...código... */ }
+        function populateSelect(selectEl, data, placeholder) { /* ...código... */ }
+        function allowOnlyNumbers(inputEl) { inputEl.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); }); }
 
         // --- 3. LÓGICA PRINCIPAL DEL FORMULARIO ---
         function initForm() {
@@ -199,10 +211,7 @@
             }
             searchTelefonoError.style.display = 'none';
             setFormEnabled(searchSection, false, searchLoading);
-            google.script.run
-                .withSuccessHandler(onSearchLineaSuccess)
-                .withFailureHandler(onSearchFailure)
-                .buscarLineaPorTelefono(telefono);
+            google.script.run.withSuccessHandler(onSearchLineaSuccess).withFailureHandler(onSearchFailure).buscarLineaPorTelefono(telefono);
         }
 
         function onSearchLineaSuccess(response) {
@@ -217,16 +226,18 @@
                 });
                 
                 if (equipoVinculado && equipoVinculado.IMEI) {
-                    equipoVinculadoContent.innerHTML = `
-                        <div><label>IMEI</label><input type="text" class="readonly-field" value="${equipoVinculado.IMEI || ''}" readonly></div>
-                        <div><label>Marca</label><input type="text" class="readonly-field" value="${equipoVinculado.Marca || ''}" readonly></div>
-                        <div><label>Modelo</label><input type="text" class="readonly-field" value="${equipoVinculado.Modelo || ''}" readonly></div>
-                        <div><label>Estado</label><input type="text" class="readonly-field" value="${equipoVinculado.Estado || ''}" readonly></div>
-                    `;
+                    // ***** LÍNEA AÑADIDA *****
+                    document.getElementById('vinculadoTipoEquipo').value = equipoVinculado.TipoEquipo || '';
+                    document.getElementById('vinculadoImei').value = equipoVinculado.IMEI || '';
+                    document.getElementById('vinculadoCosto').value = equipoVinculado.Costo_Equipo ? '$' + parseFloat(equipoVinculado.Costo_Equipo).toLocaleString('en-US') : '';
+                    document.getElementById('vinculadoFechaCompra').value = equipoVinculado.Fecha_Compra || '';
+                    document.getElementById('vinculadoEstado').value = equipoVinculado.Estado || '';
+                    document.getElementById('vinculadoMarca').value = equipoVinculado.Marca || '';
+                    document.getElementById('vinculadoModelo').value = equipoVinculado.Modelo || '';
+                    document.getElementById('vinculadoObservaciones').value = equipoVinculado.Observaciones || '';
                     equipoVinculadoSection.style.display = 'block';
                 } else {
-                    equipoVinculadoContent.innerHTML = '<p class="full-width">Esta línea no tiene un equipo vinculado actualmente.</p>';
-                    equipoVinculadoSection.style.display = 'block';
+                    equipoVinculadoSection.style.display = 'none';
                 }
 
                 modificacionForm.style.display = 'block';
@@ -248,39 +259,42 @@
                 return;
             }
             showMessageBox('Buscando equipo...', 'success', 2000);
-            google.script.run
-                .withSuccessHandler(onSearchEquipoSuccess)
-                .withFailureHandler(err => showMessageBox('Error: ' + err.message, 'error'))
-                .buscarEquipoPorIMEI(imei);
+            google.script.run.withSuccessHandler(onSearchEquipoSuccess).withFailureHandler(err => showMessageBox('Error: ' + err.message, 'error')).buscarEquipoPorIMEI(imei);
         }
 
         function onSearchEquipoSuccess(response) {
             if (response.success && response.data) {
                 const equipo = response.data;
-                equipoEncontradoContent.innerHTML = `
-                    <input type="hidden" id="nuevoEquipoId" value="${equipo.ID_Equipo}">
-                    <input type="hidden" id="nuevoEquipoImei" value="${searchEquipoImeiInput.value.trim()}">
-                    <div><label>Marca</label><input type="text" class="readonly-field" value="${equipo.Marca || ''}" readonly></div>
-                    <div><label>Modelo</label><input type="text" class="readonly-field" value="${equipo.Modelo || ''}" readonly></div>
-                    <div><label>Estado Actual</label><input type="text" class="readonly-field" value="${equipo.Estado || ''}" readonly></div>
-                    <div><label>Sucursal Actual</label><input type="text" class="readonly-field" value="${equipo.IDSUCURSAL_Name || ''}" readonly></div>
-                    <div class="full-width"><label for="nuevaFechaReasignacion">Nueva Fecha de Reasignación</label><input type="date" id="nuevaFechaReasignacion" name="nuevaFechaReasignacion" required></div>
-                    <div class="full-width"><label for="nuevasObservaciones">Nuevas Observaciones (Opcional)</label><textarea id="nuevasObservaciones" name="nuevasObservaciones" rows="2" maxlength="125"></textarea></div>
-                `;
+                document.getElementById('nuevoEquipoId').value = equipo.ID_Equipo;
+                document.getElementById('nuevoEquipoImei').value = searchEquipoImeiInput.value.trim();
+
+                // CORRECCIÓN: Se usan los nombres de propiedad EXACTOS que devuelve la función buscarEquipoPorIMEI
+                document.getElementById('encontradoCosto').value = equipo.Costo_Equipo ? '$' + parseFloat(equipo.Costo_Equipo).toLocaleString('en-US') : '';
+                document.getElementById('encontradoFechaCompra').value = equipo.Fecha_Compra || '';
+                document.getElementById('encontradoFechaRecoleccion').value = equipo.Fecha_Recoleccion || '';
+                document.getElementById('encontradoEstado').value = equipo.Estado || '';
+                document.getElementById('encontradoMarca').value = equipo.Marca || '';
+                document.getElementById('encontradoModelo').value = equipo.Modelo || '';
+                document.getElementById('encontradoRam').value = equipo.RAM || ''; // Asegúrate que buscarEquipoPorIMEI devuelva RAM/ROM
+                document.getElementById('encontradoRom').value = equipo.ROM || ''; // Asegúrate que buscarEquipoPorIMEI devuelva RAM/ROM
+                document.getElementById('encontradoSucursal').value = equipo.IDSUCURSAL_Name || '';
+                document.getElementById('encontradoResponsable').value = equipo.Responsable || '';
+
                 equipoEncontradoContent.style.display = 'grid';
+
+                if (document.getElementById('vinculadoTipoEquipo').value === 'Nuevo') {
+                    document.getElementById('nuevoEstadoEquipoVinculadoContainer').style.display = 'block';
+                    document.getElementById('nuevoEstadoEquipoVinculadoSelect').required = true;
+                }
             } else {
                 showMessageBox(response.message, 'error');
                 equipoEncontradoContent.style.display = 'none';
-                equipoEncontradoContent.innerHTML = '';
             }
         }
 
         function handleFormSubmit(e) {
             e.preventDefault();
-            if (!validateForm()) {
-                showMessageBox('Por favor, completa todos los campos obligatorios.', 'error');
-                return;
-            }
+            if (!validateForm()) { return; }
             setFormEnabled(modificacionForm, false, submitLoading);
             
             const formData = {
@@ -291,26 +305,22 @@
                 extension: extensionInput.value,
                 notas: notasTextarea.value,
                 vincularEquipo: {
-                    id: document.getElementById('nuevoEquipoId') ? document.getElementById('nuevoEquipoId').value : null,
-                    imei: document.getElementById('nuevoEquipoImei') ? document.getElementById('nuevoEquipoImei').value : null,
-                    fechaReasignacion: document.getElementById('nuevaFechaReasignacion') ? document.getElementById('nuevaFechaReasignacion').value : null,
-                    observaciones: document.getElementById('nuevasObservaciones') ? document.getElementById('nuevasObservaciones').value : null
-                }
+                    id: document.getElementById('nuevoEquipoId').value || null,
+                    imei: document.getElementById('nuevoEquipoImei').value || null,
+                    fechaReasignacion: nuevaFechaReasignacionInput.value,
+                    observaciones: nuevasObservacionesTextarea.value
+                },
+                estadoEquipoAnterior: nuevoEstadoEquipoVinculadoSelect.value || null
             };
             
-            google.script.run
-                .withSuccessHandler(onUpdateSuccess)
-                .withFailureHandler(onUpdateFailure)
-                .procesarModificacionLineaFormulario(formData);
+            google.script.run.withSuccessHandler(onUpdateSuccess).withFailureHandler(onUpdateFailure).procesarModificacionLineaFormulario(formData);
         }
 
         function onUpdateSuccess(response) {
             if(response.success){
                 showMessageBox(response.message, 'success');
                 resetAllForms();
-            } else {
-                onUpdateFailure({message: response.message});
-            }
+            } else { onUpdateFailure({message: response.message}); }
         }
         
         function onUpdateFailure(error) {
@@ -321,22 +331,27 @@
         function validateForm() {
             let isValid = true;
             [tipoSelect, responsableSelect, sucursalSelect].forEach(field => {
-                if (!field.value) {
-                    field.style.borderColor = 'red';
-                    isValid = false;
-                } else {
-                    field.style.borderColor = '#e2e8f0';
-                }
+                if (!field.value) { field.style.borderColor = 'red'; isValid = false; } 
+                else { field.style.borderColor = '#e2e8f0'; }
             });
             
-            const fechaReasignacion = document.getElementById('nuevaFechaReasignacion');
-            if (equipoEncontradoContent.style.display !== 'none' && fechaReasignacion && !fechaReasignacion.value) {
-                 fechaReasignacion.style.borderColor = 'red';
+            if (equipoEncontradoContent.style.display !== 'none' && !nuevaFechaReasignacionInput.value) {
+                 nuevaFechaReasignacionInput.style.borderColor = 'red';
                  isValid = false;
-            } else if (fechaReasignacion) {
-                 fechaReasignacion.style.borderColor = '#e2e8f0';
+            } else {
+                 nuevaFechaReasignacionInput.style.borderColor = '#e2e8f0';
+            }
+            
+            if (nuevoEstadoEquipoVinculadoContainer.style.display !== 'none' && !nuevoEstadoEquipoVinculadoSelect.value) {
+                nuevoEstadoEquipoVinculadoSelect.style.borderColor = 'red';
+                isValid = false;
+            } else {
+                nuevoEstadoEquipoVinculadoSelect.style.borderColor = '#e2e8f0';
             }
 
+            if(!isValid){
+                showMessageBox('Por favor, completa todos los campos obligatorios marcados en rojo.', 'error');
+            }
             return isValid;
         }
         
@@ -351,10 +366,41 @@
             modificacionForm.reset();
             modificacionForm.style.display = 'none';
             equipoEncontradoContent.style.display = 'none';
-            equipoEncontradoContent.innerHTML = '';
             searchEquipoImeiInput.value = '';
+            nuevoEstadoEquipoVinculadoContainer.style.display = 'none';
+            nuevoEstadoEquipoVinculadoSelect.required = false;
             setFormEnabled(searchSection, true);
             setFormEnabled(modificacionForm, false);
+        }
+        
+        // --- Pegar aquí los cuerpos de las funciones de utilidad ---
+        showMessageBox = function(message, type = 'success', duration = 4000) {
+            messageBox.textContent = message;
+            messageBox.style.backgroundColor = type === 'error' ? '#ef4444' : '#10b981';
+            messageBox.classList.add('show');
+            setTimeout(() => { messageBox.classList.remove('show'); }, duration);
+        }
+        setFormEnabled = function(formEl, enabled, loadingEl) {
+            const elements = formEl.querySelectorAll('input, select, textarea, button');
+            elements.forEach(el => el.disabled = !enabled);
+            if (loadingEl) loadingEl.style.display = enabled ? 'none' : 'block';
+        }
+        populateSelect = function(selectEl, data, placeholder) {
+            selectEl.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = placeholder;
+            selectEl.appendChild(defaultOption);
+            if(data && Array.isArray(data)){
+                data.forEach(optionText => {
+                    if (optionText) {
+                        const option = document.createElement('option');
+                        option.value = optionText;
+                        option.textContent = optionText;
+                        selectEl.appendChild(option);
+                    }
+                });
+            }
         }
         
         window.onload = initForm;

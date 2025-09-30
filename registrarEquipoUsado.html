@@ -8,23 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Estilo para campos deshabilitados/oscurecidos */
-        .disabled-field {
-            background-color: #e9ecef !important; /* Un gris más oscuro */
-            color: #6c757d !important; /* Texto más oscuro */
-            cursor: not-allowed;
-        }
-        .error-message {
-            color: #dc3545; /* Rojo de error */
-            font-size: 0.875em;
-            margin-top: 0.25em;
-            display: none; /* Oculto por defecto */
-        }
-        .char-counter {
-            font-size: 0.75em;
-            color: #6c757d;
-            text-align: right;
-            margin-top: 5px;
-        }
+        .disabled-field {background-color: #e9ecef !important;color: #6c757d !important; cursor: not-allowed;}
+        .error-message {color: #dc3545;font-size: 0.875em;margin-top: 0.25em; display: none;}
+        .char-counter {font-size: 0.75em;color: #6c757d;text-align: right;margin-top: 5px;}
+        .info-container {display: flex;align-items: center;gap: 8px;}
+        .info-icon {display: inline-block;width: 18px;height: 18px;border-radius: 50%;background-color: #6c757d;color: white;text-align: center;font-size: 12px;font-weight: bold;line-height: 18px;cursor: pointer;position: relative;        }
+        .info-icon .tooltiptext {visibility: hidden;width: 220px;background-color: #333;color: #fff;text-align: center;border-radius: 6px;padding: 8px;position: absolute;z-index: 1;bottom: 125%;left: 50%;margin-left: -110px;opacity: 0;transition: opacity 0.3s;}
+        .info-icon:hover .tooltiptext {visibility: visible;opacity: 1;}
     </style>
 </head>
 <body>
@@ -36,19 +26,28 @@
                     <legend>Datos del Equipo Usado</legend>
                     <div class="form-grid">
                         <div>
-                            <label for="costoEquipo">Costo del Equipo (MXN)</label>
+                            <div class="info-container">
+                                <label for="costoEquipo">Costo del Equipo (MXN)</label>
+                                <span class="info-icon">i<span class="tooltiptext">El costo aparece en el ultivo archivo de la renovación o compra de la línea cuando de adquirio el Equipo, aparece como "PRECIO DE CONTADO". Ejemplo: $28499.00 (Si no conoce el costo deje el precio en $1.00)</span></span>
+                            </div>
                             <input type="text" id="costoEquipo" name="costoEquipo" placeholder="$0.00" required>
                             <p id="costoEquipoError" class="error-message">El costo debe ser mayor a $1.00.</p>
                         </div>
 
                         <div>
-                            <label for="fechaCompra">Fecha de Compra</label>
+                            <div class="info-container">
+                                <label for="fechaCompra">Fecha de Compra</label>
+                                <span class="info-icon">i<span class="tooltiptext">La fecha de compra es la fecha de inicio de la ultima renovación de la línea con el equipo.</span></span>
+                            </div>
                             <input type="date" id="fechaCompra" name="fechaCompra" required>
                             <p id="fechaCompraError" class="error-message">La fecha de compra no puede ser futura.</p>
                         </div>
 
                         <div>
-                            <label for="fechaRecoleccion">Fecha de Recolección</label>
+                            <div class="info-container">
+                                <label for="fechaRecoleccion">Fecha de Recolección</label>
+                                <span class="info-icon">i<span class="tooltiptext">El día en que el administrador recogió el equipo para su resguardo</span></span>
+                            </div>
                             <input type="date" id="fechaRecoleccion" name="fechaRecoleccion" required>
                             <p id="fechaRecoleccionError" class="error-message">La fecha de recolección no puede ser futura.</p>
                         </div>
@@ -58,6 +57,21 @@
                             <select id="estado" name="estado" required>
                                 <option value="">Cargando estados...</option>
                             </select>
+                        </div>
+
+                        <div>
+                            <label for="idSucursal">Sucursal</label>
+                            <select id="idSucursal" name="idSucursal" required>
+                                <option value="">Cargando sucursales...</option>
+                            </select>
+                        </div>
+
+                        <div id="responsableField" style="display: none;">
+                            <label for="responsable">Responsable</label>
+                            <select id="responsable" name="responsable">
+                                <option value="">Cargando solicitantes...</option>
+                            </select>
+                            <p id="responsableError" class="error-message" style="display: none;">El campo Responsable es obligatorio para Reasignación.</p>
                         </div>
 
                         <div class="full-width">
@@ -74,54 +88,56 @@
                         </div>
 
                         <div>
-                            <label for="modelo">Modelo</label>
+                            <div class="info-container">
+                                <label for="modelo">Modelo</label>
+                                <span class="info-icon">i<span class="tooltiptext">Si el modelo del Equipo no aparece en la lista, favor de contactar al equipo de Soporte</span></span>
+                            </div>
                             <select id="modelo" name="modelo" required>
                                 <option value="">Cargando modelos...</option>
                             </select>
                         </div>
 
                         <div>
-                            <label for="ram">RAM</label>
+                            <div class="info-container">
+                                <label for="ram">RAM</label>
+                                <span class="info-icon">i<span class="tooltiptext">Capacidad de procesamiento del Equipo Celular. Debe aparecer en la caja del Equipo Celular o en la información del sistema del equipo.</span></span>
+                            </div>
                             <select id="ram" name="ram" required>
                                 <option value="">Cargando RAM...</option>
                             </select>
                         </div>
 
                         <div>
-                            <label for="rom">ROM (Almacenamiento)</label>
+                            <div class="info-container">
+                                <label for="rom">ROM (Almacenamiento)</label>
+                                <span class="info-icon">i<span class="tooltiptext">Capacidad de Almacenamiento interno. Se especifica en el modelo o en la caja del equipo celular o en la información del sistema del Equipo.</span></span>
+                            </div>
                             <select id="rom" name="rom" required>
                                 <option value="">Cargando ROM...</option>
                             </select>
                         </div>
 
                         <div>
-                            <label for="imei">IMEI</label>
+                            <div class="info-container">
+                                <label for="imei">IMEI</label>
+                                <span class="info-icon">i<span class="tooltiptext">El IMEI (identificador unico) se compone de 15 a 16 números, aparece en la información del sistema del equipo.</span></span>
+                            </div>
                             <input type="text" id="imei" name="imei" maxlength="16" required>
                             <p id="imeiError" class="error-message">IMEI inválido (debe ser numérico, 15 o 16 dígitos) o ya existe.</p>
                         </div>
                         
-                        <div>
-                            <label for="numeroTelefono">Número de Teléfono</label>
-                            <input type="tel" id="numeroTelefono" name="numeroTelefono" maxlength="10">
+                        <div id="telefonoField" style="display: none;">
+                            <div class="info-container">
+                                <label for="numeroTelefono">Número de Teléfono</label>
+                                <span class="info-icon">i<span class="tooltiptext">El número de télefono tiene que ser el mismo número de una línea activa perteneciente a Hemoeco. Si el responsable no cuenta con línea de Hemoeco use el "checkbox" para poder registrar una línea personal. </span></span>
+                            </div>
+                            <select id="numeroTelefono" name="numeroTelefono">
+                                <option value="">Selecciona una sucursal primero...</option>
+                            </select>
                             <p id="numeroTelefonoError" class="error-message">Número de Teléfono inválido (debe ser numérico, 10 dígitos).</p>
                         </div>
 
-                        <div>
-                            <label for="idSucursal">Sucursal</label>
-                            <select id="idSucursal" name="idSucursal" required>
-                                <option value="">Cargando sucursales...</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="responsable">Responsable</label>
-                            <select id="responsable" name="responsable">
-                                <option value="">Cargando solicitantes...</option>
-                            </select>
-                            <p id="responsableError" class="error-message" style="display: none;">El campo Responsable es obligatorio para Reasignación.</p>
-                        </div>
-
-                        <div class="full-width">
+                        <div class="full-width" id="comentariosField" style="display: none;">
                             <label for="comentarios">Comentarios (Máximo 125 caracteres)</label>
                             <textarea id="comentarios" name="comentarios" rows="3" maxlength="125"></textarea>
                             <p class="char-counter"><span id="comentariosCharCount">0</span>/125</p>
@@ -131,14 +147,27 @@
                             <hr style="margin: 20px 0; border-top: 1px solid #e2e8f0;">
                             <h3 style="font-size: 1.1rem; font-weight: 600; color: #4a5568; margin-bottom: 15px;">Detalles de Baja</h3>
                             <div>
-                                <label for="nombreSolicitanteBaja">Nombre del Solicitante de Baja</label>
+                                <div class="info-container">
+                                    <label for="nombreSolicitanteBaja">Nombre del Solicitante de Baja</label>
+                                    <span class="info-icon">i<span class="tooltiptext">Selección el nombre del Administrador o Gerente que esté realizando la solicitud (Tu nombre).</span></span>
+                                </div>
                                 <select id="nombreSolicitanteBaja" name="nombreSolicitanteBaja">
                                     <option value="">Cargando solicitantes...</option>
                                 </select>
                             </div>
                             <div class="full-width">
-                                <label for="razonBaja">Razón de la Baja</label>
+                                <div class="info-container">
+                                    <label for="razonBaja">Razón de la Baja</label>
+                                    <span class="info-icon">i<span class="tooltiptext">Si la baja es por daños fisicos especificar, si es por obsolescencia, especificar los meses o años que tiene el equipo, si es por fallo en el sistema igual es necesario especificar. </span></span>
+                                </div>
                                 <textarea id="razonBaja" name="razonBaja" rows="3"></textarea>
+                            </div>
+                            <div class="full-width">
+                                <div class="info-container">
+                                    <label for="archivosBaja">Evidencia para Baja (PDF, PNG, JPG)</label>
+                                    <span class="info-icon">i<span class="tooltiptext">Adjunta archivos de evidencia que ayuden a justificar la baja del equipo para su aprobación.</span></span>
+                                </div>
+                                <input type="file" id="archivosBaja" name="archivosBaja" multiple accept=".pdf,.png,.jpg,.jpeg">
                             </div>
                         </div>
 
@@ -146,13 +175,19 @@
                             <hr style="margin: 20px 0; border-top: 1px solid #e2e8f0;">
                             <h3 style="font-size: 1.1rem; font-weight: 600; color: #4a5568; margin-bottom: 15px;">Detalles de Venta</h3>
                             <div>
-                                <label for="nombreSolicitanteVenta">Nombre del Solicitante de Venta</label>
+                                <div class="info-container">
+                                    <label for="nombreSolicitanteVenta">Nombre del Solicitante de Venta</label>
+                                    <span class="info-icon">i<span class="tooltiptext">Selección el nombre del Administrador o Gerente que esté realizando la solicitud (Tu nombre).</span></span>
+                                </div>
                                 <select id="nombreSolicitanteVenta" name="nombreSolicitanteVenta">
                                     <option value="">Cargando solicitantes...</option>
                                 </select>
                             </div>
                             <div>
-                                <label for="personaVende">Persona a la que se Vende</label>
+                                <div class="info-container">
+                                    <label for="personaVende">Persona a la que se Vende</label>
+                                    <span class="info-icon">i<span class="tooltiptext">Selección el nombre de colaborador de Hemoeco al que se realizara la venta..</span></span>
+                                </div>
                                 <select id="personaVende" name="personaVende">
                                     <option value="">Cargando responsables...</option>
                                 </select>
@@ -160,7 +195,10 @@
                         </div>
 
                         <div id="reasignacionField" style="display: none;">
-                            <label for="fechaReasignacion">Fecha de Reasignación</label>
+                            <div class="info-container">
+                                <label for="fechaReasignacion">Fecha de Reasignación</label>
+                                <span class="info-icon">i<span class="tooltiptext">La fecha en que se entrego el equipo celular a algún otro colaborador de Hemoeco.</span></span>
+                            </div>
                             <input type="date" id="fechaReasignacion" name="fechaReasignacion">
                             <p id="fechaReasignacionError" class="error-message">La fecha de reasignación no puede ser futura.</p>
                         </div>
@@ -168,7 +206,7 @@
                 </fieldset>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary" id="submitBtn">Registrar Equipo Usado</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Guardar Registro de Equipo</button>
                     <button type="button" class="btn btn-secondary" id="clearBtn">Limpiar Formulario</button>
                     <button type="button" class="btn btn-tertiary" id="redirectBtn">Volver al Menú</button>
                 </div>
@@ -190,6 +228,7 @@
             return;
         }
 
+        const archivosBajaInput = document.getElementById('archivosBaja');
         const form = document.getElementById('altaEquipoUsadoForm');
         const clearBtn = document.getElementById('clearBtn');
         const redirectBtn = document.getElementById('redirectBtn');
@@ -234,6 +273,253 @@
         const fechaReasignacionInput = document.getElementById('fechaReasignacion');
         const fechaReasignacionError = document.getElementById('fechaReasignacionError');
         const responsableError = document.getElementById('responsableError');
+
+        const responsableFieldDiv = document.getElementById('responsableField');
+        const telefonoFieldDiv = document.getElementById('telefonoField');
+        const comentariosFieldDiv = document.getElementById('comentariosField');
+
+        // --- Funciones de Callbacks de Google Apps Script ---
+        function onSubmitSuccess(response) {
+            setFormEnabled(true);
+            if (response.success) {
+                showMessageBox(response.message || 'Registro guardado con éxito.', 'success');
+                resetAllForms(); // Llama a la función resetAllForms
+            } else {
+                showMessageBox(response.message || 'Error al guardar el registro.', 'error');
+            }
+        }
+
+        // --- Funciones de Lógica de Formulario ---
+        function applyConditionalLogic() {
+            const selectedState = estadoSelect.value;
+            // --- 1. RESETEO GENERAL ---
+            bajaFieldsDiv.style.display = 'none';
+            vendidoFieldsDiv.style.display = 'none';
+            reasignacionFieldDiv.style.display = 'none';
+            
+            responsableFieldDiv.style.display = 'block';
+            telefonoFieldDiv.style.display = 'block';
+            comentariosFieldDiv.style.display = 'block';
+
+            // Asegurarse de que los elementos existan antes de manipularlos
+            const allConditionalFields = [
+                nombreSolicitanteBajaSelect, razonBajaTextarea, nombreSolicitanteVentaSelect, 
+                personaVendeSelect, fechaReasignacionInput, responsableSelect, 
+                numeroTelefonoInput, observacionesTextarea
+            ];
+            allConditionalFields.forEach(el => { if (el) el.required = false; });
+            
+            const fieldsToEnable = [numeroTelefonoInput, responsableSelect, comentariosTextarea];
+            fieldsToEnable.forEach(el => {
+                if (el) {
+                    el.disabled = false;
+                    el.classList.remove('disabled-field');
+                }
+            });
+            
+            if (observacionesTextarea) observacionesTextarea.placeholder = 'Describa en qué condiciones se está recolectando el equipo...';
+            if (comentariosTextarea) comentariosTextarea.placeholder = '';
+
+            // --- 2. LÓGICA ESPECÍFICA PARA CADA ESTADO ---
+            if (selectedState === 'Baja') {
+                [telefonoFieldDiv, responsableFieldDiv, comentariosFieldDiv].forEach(el => { if (el) el.style.display = 'none'; });
+                if (bajaFieldsDiv) bajaFieldsDiv.style.display = 'block';
+                if (nombreSolicitanteBajaSelect) nombreSolicitanteBajaSelect.required = true;
+                if (razonBajaTextarea) razonBajaTextarea.required = true;
+            } else if (selectedState === 'Stock' || selectedState === 'Robado' || selectedState === 'Nuevo' ) {
+                [telefonoFieldDiv, responsableFieldDiv].forEach(el => { if (el) el.style.display = 'none'; });
+                
+                if (selectedState === 'Robado' && comentariosTextarea) { comentariosTextarea.placeholder = 'Favor de agregar anotaciones del Robo'; }
+                if (selectedState === 'Stock') {
+                    if (observacionesTextarea) {
+                        observacionesTextarea.required = true;
+                        observacionesTextarea.placeholder = 'Describa en qué condiciones se está recolectando el equipo... (OBLIGATORIO)';
+                    }
+                    if (comentariosFieldDiv) comentariosFieldDiv.style.display = 'none';
+                }
+                if(selectedState === 'Nuevo'){
+                    if (comentariosTextarea) comentariosTextarea.classList.add('disabled-field');
+                    if (observacionesTextarea) {
+                        observacionesTextarea.required = true;
+                        observacionesTextarea.placeholder = 'Describa el caso del registro de Equipo como Nuevo';
+                    }
+                    if (comentariosFieldDiv) comentariosFieldDiv.style.display = 'none';
+                }
+            } else if (selectedState === 'Vendido') {
+                [telefonoFieldDiv, responsableFieldDiv].forEach(el => { if (el) el.style.display = 'none'; });
+                if (vendidoFieldsDiv) vendidoFieldsDiv.style.display = 'block';
+                if (nombreSolicitanteVentaSelect) nombreSolicitanteVentaSelect.required = true;
+                if (personaVendeSelect) personaVendeSelect.required = true;
+            } else if (selectedState === 'Reasignado') {
+                if (numeroTelefonoInput) {
+                    numeroTelefonoInput.disabled = false;
+                    numeroTelefonoInput.classList.remove('disabled-field');
+                }
+                if (responsableSelect) {
+                    responsableSelect.disabled = false;
+                    responsableSelect.classList.remove('disabled-field');
+                }
+                
+                if (reasignacionFieldDiv) reasignacionFieldDiv.style.display = 'block';
+                if (fechaReasignacionInput) fechaReasignacionInput.required = true;
+                if (numeroTelefonoInput) numeroTelefonoInput.required = true;
+                if (responsableSelect) responsableSelect.required = true;
+                
+                if (fechaReasignacionInput) {
+                    const today = new Date();
+                    fechaReasignacionInput.value = today.toISOString().split('T')[0];
+                }
+            }
+        }
+
+        function resetAllForms() {
+            form.reset();
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            
+            // Limpiar contadores de caracteres
+            if (observacionesCharCount) observacionesCharCount.textContent = '0';
+            if (comentariosCharCount) comentariosCharCount.textContent = '0';
+
+            // Deshabilita y limpia selectores dependientes
+            const dependentSelects = [modeloSelect, responsableSelect, numeroTelefonoInput, 
+                                      nombreSolicitanteBajaSelect, nombreSolicitanteVentaSelect, personaVendeSelect];
+            dependentSelects.forEach(sel => {
+                if (sel) {
+                    populateSelect(sel, [], 'Selecciona una sucursal primero'); // O un texto más genérico
+                    sel.disabled = true;
+                    sel.classList.add('disabled-field'); // Añadir clase de estilo si es necesario
+                }
+            });
+            
+            // Resetear las fechas si es necesario
+            if (fechaCompraInput) fechaCompraInput.value = '';
+            if (fechaRecoleccionInput) {
+                const today = new Date();
+                fechaRecoleccionInput.value = today.toISOString().split('T')[0];
+            }
+
+            // Volver a cargar los dropdowns principales y aplicar la lógica condicional
+            loadAllDropdowns();
+            applyConditionalLogic(); 
+            showMessageBox('Formulario limpiado.', 'success', 1500);
+        }
+        
+        function uploadFilesSequentially(recordId, filesArray, index) {
+            if (index < filesArray.length) {
+                const file = filesArray[index];
+                setFormEnabled(false); // Mantener el formulario deshabilitado durante la subida
+                loading.style.display = 'block';
+                showMessageBox(`Subiendo archivo ${index + 1} de ${filesArray.length}...`, 'info', 5000);
+
+                google.script.run
+                    .withSuccessHandler(function(response) {
+                        if (response.success) {
+                            // Continuar con el siguiente archivo
+                            uploadFilesSequentially(recordId, filesArray, index + 1);
+                        } else {
+                            setFormEnabled(true);
+                            showMessageBox(`Error al subir archivo ${file.fileName}: ${response.message}`, 'error');
+                            loading.style.display = 'none'; // Detener el indicador de carga en caso de error
+                        }
+                    })
+                    .withFailureHandler(err => {
+                        setFormEnabled(true);
+                        showMessageBox(`Error de conexión al subir archivo ${file.fileName}: ${err.message}`, 'error');
+                        loading.style.display = 'none'; // Detener el indicador de carga en caso de error
+                    })
+                    .adjuntarArchivoARegistro(recordId, file); // Nueva función del servidor
+            } else {
+                // Todos los archivos se subieron
+                setFormEnabled(true);
+                loading.style.display = 'none';
+                showMessageBox('Todos los archivos subidos con éxito.', 'success');
+                resetAllForms(); // Opcional: limpiar el formulario después de que todo se haya subido
+            }
+        }
+
+        /**
+         * MEJORA: Maneja el cambio de marca para filtrar los modelos.
+         */
+        function handleMarcaChange() {
+            const marcaSeleccionada = marcaSelect.value;
+            modeloSelect.disabled = true;
+            populateSelect(modeloSelect, [], 'Cargando modelos...');
+
+            if (marcaSeleccionada) {
+                google.script.run
+                    .withSuccessHandler(response => {
+                        if (response.success) {
+                            populateSelect(modeloSelect, response.data, 'Selecciona un modelo');
+                        }
+                        modeloSelect.disabled = false;
+                    })
+                    .getModelosPorMarca(marcaSeleccionada);
+            }
+        }
+
+        /**
+         * MEJORA: Maneja el cambio de sucursal para filtrar responsables y teléfonos.
+         */
+        function handleSucursalChange() {
+            const sucursalSeleccionada = idSucursalSelect.value;
+            
+            // Deshabilitar y limpiar listas dependientes
+            [responsableSelect, nombreSolicitanteBajaSelect, nombreSolicitanteVentaSelect, personaVendeSelect, numeroTelefonoInput].forEach(el => {
+                el.disabled = true;
+                populateSelect(el, [], 'Cargando...');
+            });
+
+            if (sucursalSeleccionada) {
+                // Cargar responsables
+                google.script.run.withSuccessHandler(response => {
+                    if (response.success) {
+                        const employeeList = response.data;
+                        populateSelect(responsableSelect, employeeList, 'Selecciona un responsable');
+                        populateSelect(nombreSolicitanteBajaSelect, employeeList, 'Selecciona un solicitante');
+                        populateSelect(nombreSolicitanteVentaSelect, employeeList, 'Selecciona un solicitante');
+                        populateSelect(personaVendeSelect, employeeList, 'Selecciona comprador');
+                    }
+                    [responsableSelect, nombreSolicitanteBajaSelect, nombreSolicitanteVentaSelect, personaVendeSelect].forEach(el => el.disabled = false);
+                }).getResponsablesPorSucursal(sucursalSeleccionada);
+
+                // Cargar números de teléfono
+                google.script.run.withSuccessHandler(response => {
+                    if (response.success) {
+                        populateSelect(numeroTelefonoInput, response.data, 'Selecciona un teléfono');
+                    }
+                    numeroTelefonoInput.disabled = false;
+                }).getTelefonosPorSucursal(sucursalSeleccionada);
+            }
+        }
+
+        /**
+         * MEJORA: Lee los archivos seleccionados por el usuario y los convierte a Base64.
+         */
+        function handleFileUpload(files, callback) {
+            const fileArray = [];
+            if (files.length === 0) {
+                callback(null); // No hay archivos, continuar
+                return;
+            }
+            let filesProcessed = 0;
+            
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const fileContent = e.target.result.split(',');
+                    fileArray.push({
+                        fileName: file.name,
+                        mimeType: file.type,
+                        data: fileContent[1] // Solo los datos en Base64
+                    });
+                    filesProcessed++;
+                    if (filesProcessed === files.length) {
+                        callback(fileArray);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
 
         // --- Utility Functions ---
         function showMessageBox(message, type = 'success', duration = 3000) {
@@ -316,6 +602,8 @@
         comentariosTextarea.addEventListener('input', function() { comentariosCharCount.textContent = this.value.length; });
         imeiInput.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); validateIMEI(); });
         numeroTelefonoInput.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); validateNumeroTelefono(); });
+        marcaSelect.addEventListener('change', handleMarcaChange);
+        idSucursalSelect.addEventListener('change', handleSucursalChange);
 
         // --- Client-side Validation Functions ---
         function validateCostoEquipo() {
@@ -443,132 +731,86 @@
 
         // --- Cargar opciones de desplegables al inicio ---
         function loadAllDropdowns() {
-            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(estadoSelect, res.data, 'Selecciona un estado'); }).withFailureHandler(err => showMessageBox('Error al cargar estados: ' + err.message, 'error')).getDropdownOptions('Listados', 'B2:B');
-            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(marcaSelect, res.data, 'Selecciona una marca'); }).withFailureHandler(err => showMessageBox('Error al cargar marcas: ' + err.message, 'error')).getDropdownOptions('Listados', 'A2:A');
-            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(modeloSelect, res.data, 'Selecciona un modelo'); }).withFailureHandler(err => showMessageBox('Error al cargar modelos: ' + err.message, 'error')).getDropdownOptions('Listados', 'C2:C');
-            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(ramSelect, res.data, 'Selecciona RAM'); }).withFailureHandler(err => showMessageBox('Error al cargar RAM: ' + err.message, 'error')).getDropdownOptions('Listados', 'D2:D');
-            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(romSelect, res.data, 'Selecciona Almacenamiento'); }).withFailureHandler(err => showMessageBox('Error al cargar ROM: ' + err.message, 'error')).getDropdownOptions('Listados', 'E2:E');
-            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(idSucursalSelect, res.data, 'Selecciona una sucursal'); }).withFailureHandler(err => showMessageBox('Error al cargar sucursales: ' + err.message, 'error')).getDropdownOptions('Listados', 'F2:F');
-            
-            google.script.run.withSuccessHandler(function(response) {
-                if (response.success) {
-                    const employeeList = response.data;
-                    populateSelect(responsableSelect, employeeList, 'Selecciona un responsable');
-                    populateSelect(personaVendeSelect, employeeList, 'Selecciona persona a vender');
-                    populateSelect(nombreSolicitanteBajaSelect, employeeList, 'Selecciona un solicitante');
-                    populateSelect(nombreSolicitanteVentaSelect, employeeList, 'Selecciona un solicitante');
-                } else { showMessageBox('Error al cargar responsables: ' + response.message, 'error'); }
-            }).withFailureHandler(err => showMessageBox('Error de conexión al cargar responsables: ' + err.message, 'error')).getDropdownOptions('BD', 'A2:A');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(estadoSelect, res.data, 'Selecciona un estado'); }).getDropdownOptions('Listados', 'B2:B');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(marcaSelect, res.data, 'Selecciona una marca'); }).getDropdownOptions('Listados', 'A2:A');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(ramSelect, res.data, 'Selecciona RAM'); }).getDropdownOptions('Listados', 'D2:D');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(romSelect, res.data, 'Selecciona Almacenamiento'); }).getDropdownOptions('Listados', 'E2:E');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(idSucursalSelect, res.data, 'Selecciona una sucursal'); }).getDropdownOptions('Listados', 'F2:F');
         }
 
         // --- Conditional Field Logic ---
-        estadoSelect.addEventListener('change', function() {
-            const selectedState = this.value;
-            // Reset all
-            bajaFieldsDiv.style.display = 'none';
-            nombreSolicitanteBajaSelect.required = false;
-            razonBajaTextarea.required = false;
-            vendidoFieldsDiv.style.display = 'none';
-            nombreSolicitanteVentaSelect.required = false;
-            personaVendeSelect.required = false;
-            reasignacionFieldDiv.style.display = 'none';
-            fechaReasignacionInput.required = false;
-            numeroTelefonoInput.disabled = false;
-            numeroTelefonoInput.classList.remove('disabled-field');
-            numeroTelefonoInput.placeholder = '';
-            responsableSelect.disabled = false;
-            responsableSelect.classList.remove('disabled-field');
-            responsableSelect.required = false;
-            observacionesTextarea.required = false;
-            observacionesTextarea.placeholder = 'Describa en qué condiciones se está recolectando el equipo...';
-
-            if (selectedState === 'Baja') {
-                numeroTelefonoInput.disabled = true;
-                numeroTelefonoInput.value = '';
-                numeroTelefonoInput.classList.add('disabled-field');
-                responsableSelect.disabled = true;
-                responsableSelect.value = '';
-                responsableSelect.classList.add('disabled-field');
-                bajaFieldsDiv.style.display = 'block';
-                nombreSolicitanteBajaSelect.required = true;
-                razonBajaTextarea.required = true;
-            } else if (selectedState === 'Stock' || selectedState === 'Robado') {
-                numeroTelefonoInput.disabled = true;
-                numeroTelefonoInput.value = '';
-                numeroTelefonoInput.classList.add('disabled-field');
-                responsableSelect.disabled = true;
-                responsableSelect.value = '';
-                responsableSelect.classList.add('disabled-field');
-                if (selectedState === 'Robado') { comentariosTextarea.placeholder = 'Favor de agregar anotaciones del Robo'; }
-                if (selectedState === 'Stock') {
-                    observacionesTextarea.required = true;
-                    observacionesTextarea.placeholder = 'Describa en qué condiciones se está recolectando el equipo... (OBLIGATORIO)';
-                }
-            } else if (selectedState === 'Vendido') {
-                numeroTelefonoInput.disabled = true;
-                numeroTelefonoInput.value = '';
-                numeroTelefonoInput.classList.add('disabled-field');
-                responsableSelect.disabled = true;
-                responsableSelect.value = '';
-                responsableSelect.classList.add('disabled-field');
-                vendidoFieldsDiv.style.display = 'block';
-                nombreSolicitanteVentaSelect.required = true;
-                personaVendeSelect.required = true;
-            } else if (selectedState === 'Reasignado') {
-                reasignacionFieldDiv.style.display = 'block';
-                fechaReasignacionInput.required = true;
-                numeroTelefonoInput.required = true;
-                numeroTelefonoInput.placeholder = 'Numero de Teléfono OBLIGATORIO';
-                responsableSelect.required = true;
-                const today = new Date();
-                fechaReasignacionInput.value = today.toISOString().split('T')[0];
-            }
-        });
+        // REEMPLAZA TU BLOQUE addEventListener COMPLETO CON ESTE:
+        estadoSelect.addEventListener('change', applyConditionalLogic);
 
         // --- Event Listeners ---
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            if (!validateForm()) { showMessageBox('Por favor, corrige los errores en el formulario.', 'error'); return; }
+            if (!validateForm()) { 
+                showMessageBox('Por favor, corrige los errores en el formulario.', 'error');
+                return;
+            }
             setFormEnabled(false);
-            const formData = {
-                costoEquipo: parseFloat(costoEquipoInput.value.replace(/[^0-9.]/g, '')) || 0,
-                fechaCompra: fechaCompraInput.value,
-                fechaRecoleccion: fechaRecoleccionInput.value,
-                estado: estadoSelect.value,
-                observaciones: observacionesTextarea.value,
-                marca: marcaSelect.value,
-                modelo: modeloSelect.value,
-                ram: ramSelect.value,
-                rom: romSelect.value,
-                imei: imeiInput.value,
-                numeroTelefono: numeroTelefonoInput.value,
-                idSucursal: idSucursalSelect.value,
-                responsable: responsableSelect.value,
-                comentarios: comentariosTextarea.value,
-                nombreSolicitanteBaja: (estadoSelect.value === 'Baja') ? nombreSolicitanteBajaSelect.value : '',
-                razonBaja: (estadoSelect.value === 'Baja') ? razonBajaTextarea.value : '',
-                nombreSolicitanteVenta: (estadoSelect.value === 'Vendido') ? nombreSolicitanteVentaSelect.value : '',
-                personaVende: (estadoSelect.value === 'Vendido') ? personaVendeSelect.value : '',
-                fechaReasignacion: (estadoSelect.value === 'Reasignado') ? fechaReasignacionInput.value : ''
-            };
-            google.script.run.withSuccessHandler(function(response) {
-                setFormEnabled(true);
-                if (response.success) {
-                    showMessageBox('Datos enviados correctamente: ' + response.message, 'success');
-                    form.reset();
-                    resetFormState();
-                } else {
-                    showMessageBox('Error al enviar datos: ' + response.message, 'error');
-                    if (response.message.includes("IMEI")) {
-                        imeiError.textContent = response.message;
-                        imeiError.style.display = 'block';
-                    }
-                }
-            }).withFailureHandler(function(error) {
-                setFormEnabled(true);
-                showMessageBox('Error de conexión o script: ' + error.message, 'error');
-            }).procesarRECUFormulario(formData);
+
+            // Lógica para manejar la carga de archivos si es necesario
+            if (estadoSelect.value === 'Baja' && document.getElementById('archivosBaja').files.length > 0) {
+                handleFileUpload(document.getElementById('archivosBaja').files, (fileData) => {
+                    collectAndSubmitData(fileData);
+                });
+            } else {
+                collectAndSubmitData(null); // Enviar sin archivos
+            }
         });
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            if (!validateForm()) {
+                showMessageBox('Por favor, corrige los errores en el formulario.', 'error');
+                return;
+            }
+
+            // CORRECCIÓN: Primero recolectamos los datos mientras el form está habilitado
+            const formData = new FormData(form);
+            const formObject = Object.fromEntries(formData.entries());
+            formObject.costoEquipo = formObject.costoEquipo.replace(/[^0-9.]/g, '');
+
+            // AHORA sí, deshabilitamos el formulario
+            setFormEnabled(false);
+
+            // Finalmente, manejamos los archivos (si los hay) y enviamos los datos YA recolectados
+            if (estadoSelect.value === 'Baja' && document.getElementById('archivosBaja').files.length > 0) {
+                handleFileUpload(document.getElementById('archivosBaja').files, (fileData) => {
+                    collectAndSubmitData(formObject, fileData); // Pasamos el objeto de datos
+                });
+            } else {
+                collectAndSubmitData(formObject, null); // Pasamos el objeto de datos sin archivos
+            }
+        }
+
+        function collectAndSubmitData(formObject, fileDataArray) {
+            // Ya no adjuntamos 'archivos' directamente aquí
+            // formObject.archivos = fileDataArray; // ELIMINA O COMENTA ESTA LÍNEA
+
+            google.script.run
+                .withSuccessHandler(function(response) {
+                    onSubmitSuccess(response); // Llama al éxito general del formulario
+                    if (response.success && response.recordId && fileDataArray.length > 0) {
+                        // Si el registro se creó con éxito y hay archivos, subirlos
+                        uploadFilesSequentially(response.recordId, fileDataArray, 0);
+                    } else if (response.success && fileDataArray.length === 0) {
+                        // Si no hay archivos, no se necesita hacer nada más
+                        // onSubmitSuccess ya ha mostrado el mensaje
+                    } else if (!response.success) {
+                        // Manejar el error si el registro principal falló
+                        setFormEnabled(true); // Ya se hace en onSubmitSuccess, pero por si acaso.
+                        showMessageBox(response.message || 'Error al guardar el registro principal.', 'error');
+                    }
+                })
+                .withFailureHandler(err => {
+                    setFormEnabled(true);
+                    showMessageBox('Error de conexión o en el servidor al guardar datos principales: ' + err.message, 'error');
+                })
+                .procesarRECUFormulario(formObject); // Ahora solo envía el objeto del formulario (sin archivos)
+        }
 
         clearBtn.addEventListener('click', function() { form.reset(); resetFormState(); showMessageBox('Formulario limpiado.', 'success', 2000); });
         redirectBtn.addEventListener('click', function() {
@@ -597,7 +839,21 @@
             responsableSelect.classList.remove('disabled-field');
             responsableSelect.required = false;
             comentariosTextarea.placeholder = '';
-            
+
+            // Resetea y deshabilita las listas dependientes
+            populateSelect(modeloSelect, [], 'Selecciona una marca primero');
+            modeloSelect.disabled = true;
+            populateSelect(responsableSelect, [], 'Selecciona una sucursal primero');
+            responsableSelect.disabled = true;
+            populateSelect(numeroTelefonoInput, [], 'Selecciona una sucursal primero');
+            numeroTelefonoInput.disabled = true;
+            populateSelect(nombreSolicitanteBajaSelect, [], 'Selecciona una sucursal primero');
+            populateSelect(nombreSolicitanteVentaSelect, [], 'Selecciona una sucursal primero');
+            populateSelect(personaVendeSelect, [], 'Selecciona una sucursal primero');
+
+            // Llama a la lógica condicional para asegurar que todo esté en su estado inicial
+            estadoSelect.dispatchEvent(new Event('change'));
+                    
             // Re-populate all dynamic dropdowns
             loadAllDropdowns();
 

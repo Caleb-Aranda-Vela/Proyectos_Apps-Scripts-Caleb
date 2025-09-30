@@ -1,5 +1,4 @@
 <!-- darAltaLineaEquipo.html -->
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,6 +19,10 @@
             text-align: right;
             margin-top: 5px;
         }
+        .info-container {display: flex;align-items: center;gap: 8px;}
+        .info-icon {display: inline-block;width: 18px;height: 18px;border-radius: 50%;background-color: #6c757d;color: white;text-align: center;font-size: 12px;font-weight: bold;line-height: 18px;cursor: pointer;position: relative;        }
+        .info-icon .tooltiptext {visibility: hidden;width: 220px;background-color: #333;color: #fff;text-align: center;border-radius: 6px;padding: 8px;position: absolute;z-index: 1;bottom: 125%;left: 50%;margin-left: -110px;opacity: 0;transition: opacity 0.3s;}
+        .info-icon:hover .tooltiptext {visibility: visible;opacity: 1;}
     </style>
 </head>
 <body>
@@ -31,50 +34,89 @@
                     <legend>Datos de Línea Celular</legend>
                     <div class="form-grid">
                         <div>
-                            <label for="region">Región</label>
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
                             <input type="text" id="region" name="region" maxlength="3" required>
                         </div>
                         <div>
-                            <label for="cuenta_padre">Cuenta Padre</label>
+                           
+                            <div class="info-container">
+                                <label for="cuenta_padre">Cuenta Padre</label>
+                                <span class="info-icon">i<span class="tooltiptext">La cuenta padre se compone solo de números de entre 7 y 9 digitos. Se Anexa en el contrato como "No. DE CUENTA", Cuenta y Cuenta Padre sera el mismo numero.</span></span>
+                            </div>
                             <input type="text" id="cuenta_padre" name="cuenta_padre" maxlength="15" required>
                             <p id="cuenta_padreError" class="error-message">Solo números enteros.</p>
                         </div>
                         <div>
-                            <label for="cuenta">Cuenta</label>
+                            
+                            <div class="info-container">
+                                <label for="cuenta">Cuenta</label>
+                                <span class="info-icon">i<span class="tooltiptext">La cuenta se compone solo de números de entre 7 y 9 digitos. Se Anexa en el contrato como "No. DE CUENTA".</span></span>
+                            </div>
                             <input type="text" id="cuenta" name="cuenta" maxlength="15" required>
                             <p id="cuentaError" class="error-message">Solo números enteros.</p>
                         </div>
                         <div>
-                            <label for="telefono">Teléfono</label>
+                            
+                            <div class="info-container">
+                                <label for="telefono">Teléfono</label>
+                                <span class="info-icon">i<span class="tooltiptext">El campo se compone solo por 10 números sin espacios. Se Anexa en el contrato como "No. DE LÍNEA"</span></span>
+                            </div>
                             <input type="tel" id="telefono" name="telefono" maxlength="10" required>
                             <p id="telefonoError" class="error-message">Teléfono inválido (10 dígitos numéricos) o ya existe.</p>
                         </div>
                         <div>
-                            <label for="clave_plan">Clave Plan</label>
+                            
+                            <div class="info-container">
+                                <label for="clave_plan">Clave Plan</label>
+                                <span class="info-icon">i<span class="tooltiptext">El campo se compone de letras en mayuscula y numero, se Anexa en el contrato. Ejemplo: VPN3</span></span>
+                            </div>
                             <input type="text" id="clave_plan" name="clave_plan" maxlength="10" required>
                         </div>
                         <div>
-                            <label for="nombre_plan">Nombre Plan</label>
+                            
+                            <div class="info-container">
+                                <label for="nombre_plan">Nombre Plan</label>
+                                <span class="info-icon">i<span class="tooltiptext">El campo se compone de letras en mayuscula y numero, se Anexa en el contrato. Ejemplo: VPN3</span></span>
+                            </div>
                             <input type="text" id="nombre_plan" name="nombre_plan" maxlength="12" required>
                         </div>
                         <div class="full-width">
-                            <label for="minutos">Minutos</label>
+                            
+                            <div class="info-container">
+                                <label for="minutos">Minutos</label>
+                                <span class="info-icon">i<span class="tooltiptext">El campo debe llevar letras en mayuscula, se Anexa en el contrato. Ejemplo: ILIMITADOS</span></span>
+                            </div>
                             <input type="text" id="minutos" name="minutos" maxlength="50" required>
                             <p id="minutosError" class="error-message">Este campo es obligatorio.</p>
                         </div>
                         <div class="full-width">
-                            <label for="mensajes">Mensajes (SMS)</label>
+                            
+                            <div class="info-container">
+                                <label for="mensajes">Mensajes (SMS)</label>
+                                <span class="info-icon">i<span class="tooltiptext">El campo debe llevar letras en mayuscula, se Anexa en el contrato. Ejemplo: ILIMITADOS.</span></span>
+                            </div>
                             <input type="text" id="mensajes" name="mensajes" maxlength="50" required>
                             <p id="mensajesError" class="error-message">Este campo es obligatorio.</p>
                             
                         </div>
                         <div>
-                            <label for="monto_renta">Monto Renta</label>
+                            
+                            <div class="info-container">
+                                <label for="monto_renta">Monto Renta</label>
+                                <span class="info-icon">i<span class="tooltiptext">El contenido es el monto con decimales del pago mensual de la renta. Se Anexa en el contrato como "CARGO EQUIPO MENSUAL". Ejemplo: 329.61</span></span>
+                            </div>
                             <input type="text" id="monto_renta" name="monto_renta" placeholder="$0.00" required>
                             <p id="monto_rentaError" class="error-message">Monto de renta inválido (mayor a 0).</p>
                         </div>
                         <div>
-                            <label for="duracion_plan">Duración Plan (Meses)</label>
+                            
+                            <div class="info-container">
+                                <label for="duracion_plan">Duración Plan (Meses)</label>
+                                <span class="info-icon">i<span class="tooltiptext">Es el número de meses. Se Anexa en el contrato como "No. DE PARCIALIDADES". Ejemplo: 24</span></span>
+                            </div>
                             <input type="text" id="duracion_plan" name="duracion_plan" required>
                             <p id="duracion_planError" class="error-message">Solo números enteros.</p>
                         </div>
@@ -89,7 +131,11 @@
                             <p id="fecha_terminoError" class="error-message">La fecha de término debe ser mayor a la fecha de inicio.</p>
                         </div>
                         <div>
-                            <label for="sim">SIM</label>
+                            
+                            <div class="info-container">
+                                <label for="sim">SIM</label>
+                                <span class="info-icon">i<span class="tooltiptext">Es el identificador de la línea, son 19 numeros, se Anexa en el contrato. Ejemplo: </span></span>
+                            </div>
                             <input type="text" id="sim" name="sim" minlength="19" required>
                             <p id="simError" class="error-message">SIM inválido (mínimo 19 dígitos numéricos).</p>
                         </div>
@@ -99,11 +145,11 @@
                                 <option value="">Cargando tipos...</option>
                             </select>
                         </div>
-                        <div>
-                            <label for="responsable">Responsable</label>
-                            <select id="responsable" name="responsable" required>
-                                <option value="">Cargando responsables...</option>
-                            </select>
+                        <div id="lineaSinequipoContainer" style="display: none;">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="lineaSinequipo" name="lineaSinequipo">
+                                <span>Alta de Línea sin Equipo</span>
+                            </label>
                         </div>
                         <div>
                             <label for="idsucursal">Sucursal</label>
@@ -111,54 +157,89 @@
                                 <option value="">Cargando sucursales...</option>
                             </select>
                         </div>
+                        <div>
+                            <label for="responsable">Responsable</label>
+                            <select id="responsable" name="responsable" required>
+                                <option value="">Cargando responsables...</option>
+                            </select>
+                        </div>
+                        
                         <div class="full-width">
-                            <label for="notas">Datos (GB)</label>
-                            <input type="text" id="notas" name="notas" required>
-                            <p id="notasError" class="error-message">Este campo es obligatorio.</p>
+                            
+                            <div class="info-container">
+                                <label for="datos">Datos (GB)</label>
+                                <span class="info-icon">i<span class="tooltiptext">La cantidad de megas de navegación en GB, se Anexa en el contrato. Ejemplo: 10.5</span></span>
+                            </div>
+                            <input type="text" id="datos" name="datos" required>
+                            <p id="datosError" class="error-message">Este campo es obligatorio.</p>
                         </div>
                         <div>
-                            <label for="extension">Extensión</label>
+                            
+                            <div class="info-container">
+                                <label for="extension">Extensión</label>
+                                <span class="info-icon">i<span class="tooltiptext">Número de extension interno de Hemoeco, se encuentra en Score. Ejemplo: 2020</span></span>
+                            </div>
                             <input type="text" id="extension" name="extension">
                         </div>
                         
                     </div>
                 </fieldset>
 
-                <fieldset>
+                <fieldset id="equipoNuevoSection" style="display: none;">
                     <legend>Datos de Equipo Celular Nuevo</legend>
                     <div class="form-grid">
                         <div>
-                            <label for="costo_equipo_nuevo">Costo del Equipo (MXN)</label>
-                            <input type="text" id="costo_equipo_nuevo" name="costo_equipo_nuevo" placeholder="$0.00" required>
+                            
+                            <div class="info-container">
+                                <label for="costo_equipo_nuevo">Costo del Equipo (MXN)</label>
+                                <span class="info-icon">i<span class="tooltiptext">El costo del equipo aparece en el Anexo como "PRECIO DE CONTADO". Ejemplo: $28499.00 </span></span>
+                            </div>
+                            <input type="text" id="costo_equipo_nuevo" name="costo_equipo_nuevo" placeholder="$0.00" >
                             <p id="costo_equipo_nuevoError" class="error-message">El costo debe ser numérico y mayor a $0.00.</p>
                         </div>
                         <div>
                             <label for="marca_nuevo">Marca</label>
-                            <select id="marca_nuevo" name="marca_nuevo" required>
+                            <select id="marca_nuevo" name="marca_nuevo" >
                                 <option value="">Cargando marcas...</option>
                             </select>
                         </div>
                         <div>
-                            <label for="modelo_nuevo">Modelo</label>
-                            <select id="modelo_nuevo" name="modelo_nuevo" required>
+                            
+                            <div class="info-container">
+                                <label for="modelo_nuevo">Modelo</label>
+                                <span class="info-icon">i<span class="tooltiptext">El nombre del modelo puedo variar del contrato, favor de comparar el modelo del equipo en su caja original</span></span>
+                            </div>
+                            <select id="modelo_nuevo" name="modelo_nuevo" >
                                 <option value="">Cargando modelos...</option>
                             </select>
                         </div>
                         <div>
-                            <label for="ram_nuevo">RAM</label>
-                            <select id="ram_nuevo" name="ram_nuevo" required>
+                            
+                            <div class="info-container">
+                                <label for="ram_nuevo">RAM</label>
+                                <span class="info-icon">i<span class="tooltiptext">Capacidad de procesamiento del Equipo Celular. Debe aparecer en la caja del Equipo Celular</span></span>
+                            </div>
+                            <select id="ram_nuevo" name="ram_nuevo" >
                                 <option value="">Cargando RAM...</option>
                             </select>
                         </div>
                         <div>
-                            <label for="rom_nuevo">ROM (Almacenamiento)</label>
-                            <select id="rom_nuevo" name="rom_nuevo" required>
+                            
+                            <div class="info-container">
+                                <label for="rom_nuevo">ROM (Almacenamiento)</label>
+                                <span class="info-icon">i<span class="tooltiptext">Capacidad de Almacenamiento interno. Se especifica en el modelo o en la caja del equipo celular. </span></span>
+                            </div>
+                            <select id="rom_nuevo" name="rom_nuevo" >
                                 <option value="">Cargando ROM...</option>
                             </select>
                         </div>
                         <div>
-                            <label for="imei_equipo_nuevo">IMEI</label>
-                            <input type="text" id="imei_equipo_nuevo" name="imei_equipo_nuevo" minlength="15" maxlength="16" required>
+                            
+                            <div class="info-container">
+                                <label for="imei_equipo_nuevo">IMEI</label>
+                                <span class="info-icon">i<span class="tooltiptext">Se Anexa en el contrato como "IMEI", favor de comparar el IMEI en el contrato con el IMEI que aparece en la caja del Equipo Celular</span></span>
+                            </div>
+                            <input type="text" id="imei_equipo_nuevo" name="imei_equipo_nuevo" minlength="15" maxlength="16">
                             <p id="imei_equipo_nuevoError" class="error-message">IMEI inválido (15 o 16 dígitos numéricos) o ya existe.</p>
                         </div>
                         <div class="full-width">
@@ -170,7 +251,7 @@
                 </fieldset>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary" id="submitBtn">Registrar Línea y Equipo</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Guardar Registro de Alta</button>
                     <button type="button" class="btn btn-secondary" id="clearBtn">Limpiar Formulario</button>
                     <button type="button" class="btn btn-tertiary" id="redirectBtn">Volver al Menú</button>
                 </div>
@@ -183,105 +264,68 @@
     </div>
 
     <div id="messageBox" class="message-box"></div>
-
     <script>
-        function initForm() {
-            if (typeof google === 'undefined' || typeof google.script === 'undefined' || typeof google.script.run === 'undefined') {
-                console.error("google.script.run is not defined. Retrying form initialization...");
-                setTimeout(initForm, 100);
-                return;
-            }
+    (function() {
+        // --- 1. REFERENCIAS A ELEMENTOS DEL DOM ---
+        const form = document.getElementById('altaLineaEquipoForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const redirectBtn = document.getElementById('redirectBtn');
+        const loading = document.getElementById('loading');
+        const messageBox = document.getElementById('messageBox');
 
-            const form = document.getElementById('altaLineaEquipoForm');
-            const submitBtn = document.getElementById('submitBtn');
-            const clearBtn = document.getElementById('clearBtn');
-            const redirectBtn = document.getElementById('redirectBtn');
-            const loading = document.getElementById('loading');
-            const messageBox = document.getElementById('messageBox');
+        // Sección de Línea
+        const tipoSelect = document.getElementById('tipo');
+        const duracionPlanInput = document.getElementById('duracion_plan');
+        const fechaInicioInput = document.getElementById('fecha_inicio');
+        const fechaTerminoInput = document.getElementById('fecha_termino');
+        const telefonoInput = document.getElementById('telefono');
+        const telefonoError = document.getElementById('telefonoError');
+        const sucursalSelect = document.getElementById('idsucursal');
+        const responsableSelect = document.getElementById('responsable');
+        
+        // Contenedores y campos condicionales
+        const lineaSinequipoContainer = document.getElementById('lineaSinequipoContainer');
+        const lineaSinequipoCheckbox = document.getElementById('lineaSinequipo');
+        const equipoNuevoSection = document.getElementById('equipoNuevoSection');
 
-            // Form fields and error messages
-            const cuentaPadreInput = document.getElementById('cuenta_padre');
-            const cuentaPadreError = document.getElementById('cuenta_padreError');
-            const cuentaInput = document.getElementById('cuenta');
-            const cuentaError = document.getElementById('cuentaError');
-            const telefonoInput = document.getElementById('telefono');
-            const telefonoError = document.getElementById('telefonoError');
-            const montoRentaInput = document.getElementById('monto_renta');
-            const montoRentaError = document.getElementById('monto_rentaError');
-            const fechaInicioInput = document.getElementById('fecha_inicio');
-            const fechaInicioError = document.getElementById('fecha_inicioError');
-            const fechaTerminoInput = document.getElementById('fecha_termino');
-            const fechaTerminoError = document.getElementById('fecha_terminoError');
-            const simInput = document.getElementById('sim');
-            const simError = document.getElementById('simError');
-            const notasInput = document.getElementById('notas');
-            const notasError = document.getElementById('notasError');
-            const costoEquipoNuevoInput = document.getElementById('costo_equipo_nuevo');
-            const costoEquipoNuevoError = document.getElementById('costo_equipo_nuevoError');
-            const imeiEquipoNuevoInput = document.getElementById('imei_equipo_nuevo');
-            const imeiEquipoNuevoError = document.getElementById('imei_equipo_nuevoError');
-            const observacionesEquipoNuevoTextarea = document.getElementById('observaciones_equipo_nuevo');
-            const observacionesEquipoNuevoCharCount = document.getElementById('observaciones_equipo_nuevoCharCount');
-            //const datosInput = document.getElementById('datos');
-            const extensionInput = document.getElementById('extension');
-            const duracionPlanInput = document.getElementById('duracion_plan');
-            const minutosTextarea  = document.getElementById('minutos');
-            const minutosError = document.getElementById('minutosError');
-            const mensajesTextarea = document.getElementById('mensajes');
-            const mensajeError = document.getElementById('mensajesError');
-            const regionInput = document.getElementById('region');
-            const clavePlanInput = document.getElementById('clave_plan');
-            const nombrePlanInput = document.getElementById('nombre_plan');
-            //const equipoIlimitadoInput = document.getElementById('equipo_ilimitado');
-            //const servicioCartaInput = document.getElementById('servicio_a_la_carta');
-            //const servicioBlackberryInput = document.getElementById('servicio_blackberry');
-            const responsableSelect = document.getElementById('responsable');
+        // Campos dentro de la sección de equipo
+        const costoEquipoNuevoInput = document.getElementById('costo_equipo_nuevo');
+        const marcaNuevoSelect = document.getElementById('marca_nuevo');
+        const modeloNuevoSelect = document.getElementById('modelo_nuevo');
+        const ramNuevoSelect = document.getElementById('ram_nuevo');
+        const romNuevoSelect = document.getElementById('rom_nuevo');
+        const imeiEquipoNuevoInput = document.getElementById('imei_equipo_nuevo');
+        const imeiEquipoNuevoError = document.getElementById('imei_equipo_nuevoError');
 
-            // Dropdown elements
-            const tipoSelect = document.getElementById('tipo');
-            const marcaSelect = document.getElementById('marca_nuevo');
-            const modeloSelect = document.getElementById('modelo_nuevo');
-            const ramSelect = document.getElementById('ram_nuevo');
-            const romSelect = document.getElementById('rom_nuevo');
-            const sucursalSelect = document.getElementById('idsucursal');
-            
-            // --- Utility Functions ---
-            function showMessageBox(message, type = 'success', duration = 3000) {
-                messageBox.textContent = message;
-                if (type === 'success') {
-                    messageBox.style.backgroundColor = '#10b981';
-                } else if (type === 'error') {
-                    messageBox.style.backgroundColor = '#ef4444';
-                }
-                messageBox.classList.add('show');
-                setTimeout(() => { messageBox.classList.remove('show'); }, duration);
-            }
+        const equipoFields = [costoEquipoNuevoInput, marcaNuevoSelect, modeloNuevoSelect, ramNuevoSelect, romNuevoSelect, imeiEquipoNuevoInput];
+        
+        // --- 2. FUNCIONES DE UTILIDAD (completas) ---
+        function showMessageBox(message, type = 'success', duration = 3000) {
+            messageBox.textContent = message;
+            messageBox.style.backgroundColor = type === 'error' ? '#ef4444' : '#10b981';
+            messageBox.classList.add('show');
+            setTimeout(() => { messageBox.classList.remove('show'); }, duration);
+        }
 
-            function setFormEnabled(enabled) {
-                const elements = form.elements;
-                for (let i = 0; i < elements.length; i++) {
-                    elements[i].disabled = !enabled;
-                }
-                submitBtn.disabled = !enabled;
-                clearBtn.disabled = !enabled;
-                redirectBtn.disabled = !enabled;
-                if (enabled) {
-                    loading.style.display = 'none';
-                } else {
-                    loading.style.display = 'block';
-                }
-            }
+        function setFormEnabled(enabled) {
+            const elements = form.elements;
+            for (let i = 0; i < elements.length; i++) { elements[i].disabled = !enabled; }
+            submitBtn.disabled = !enabled;
+            clearBtn.disabled = !enabled;
+            redirectBtn.disabled = !enabled;
+            loading.style.display = enabled ? 'none' : 'block';
+        }
 
-            function populateSelect(selectElement, optionsData, placeholderText) {
-                selectElement.innerHTML = '';
-                const defaultOption = document.createElement('option');
-                defaultOption.value = '';
-                defaultOption.textContent = placeholderText;
-                defaultOption.disabled = true;
-                defaultOption.selected = true;
-                selectElement.appendChild(defaultOption);
+        function populateSelect(selectElement, optionsData, placeholderText) {
+            selectElement.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = placeholderText;
+            selectElement.appendChild(defaultOption);
+            if (optionsData && Array.isArray(optionsData)) {
                 optionsData.forEach(optionText => {
-                    if (optionText && String(optionText).trim() !== '') {
+                    if (optionText) {
                         const option = document.createElement('option');
                         option.value = optionText;
                         option.textContent = optionText;
@@ -289,271 +333,273 @@
                     }
                 });
             }
+        }
 
-            function resetFormState() {
-                // Reset errors
-                const errors = document.querySelectorAll('.error-message');
-                errors.forEach(err => err.style.display = 'none');
-                
-                // Reset counters
-                observacionesEquipoNuevoCharCount.textContent = '0';
+        function allowOnlyNumbers(inputEl) {
+            inputEl.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, ''); });
+        }
 
-                // Re-populate dropdowns
-                populateSelect(tipoSelect, [], 'Cargando tipos...');
-                populateSelect(marcaSelect, [], 'Cargando marcas...');
-                populateSelect(modeloSelect, [], 'Cargando modelos...');
-                populateSelect(ramSelect, [], 'Cargando RAM...');
-                populateSelect(romSelect, [], 'Cargando ROM...');
-                populateSelect(sucursalSelect, [], 'Cargando sucursales...');
-                populateSelect(responsableSelect, [], 'Cargando responsables...');
-
-                loadDropdowns();
-                costoEquipoNuevoInput.value = '';
-                montoRentaInput.value = '';
-            }
-
-            // --- Real-time Formatting and Validation ---
-            function formatCurrencyInput(inputElement) {
-
-                // Evento que se dispara con cada tecla que presionas
-                inputElement.addEventListener('input', function() {
-                    let value = this.value.replace(/[^0-9.]/g, '');
-                    const firstPeriodIndex = value.indexOf('.');
-                    if (firstPeriodIndex !== -1) {
-                        let integerPart = value.substring(0, firstPeriodIndex);
-                        let decimalPart = value.substring(firstPeriodIndex + 1).replace(/\./g, ''); // Quita puntos adicionales
-                        value = integerPart + '.' + decimalPart;
-                    }
-                    let parts = value.split('.');
-                    let integerPart = parts[0];
-                    let decimalPart = parts[1];
-                    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                    if (decimalPart && decimalPart.length > 2) {
-                        decimalPart = decimalPart.substring(0, 2);
-                    }
-                    let finalValue = '$' + integerPart;
-                    if (value.includes('.')) {
-                        finalValue += '.' + (decimalPart || ''); // Añade el punto y la parte decimal (o nada si aún no hay)
-                    }
-                    
-                    this.value = finalValue;
-                });
-                inputElement.addEventListener('blur', function() {
-                    let value = this.value.replace(/[^0-9.]/g, '');
-                    
-                    // Si el valor no está vacío, lo formatea a dos decimales fijos.
-                    if (value) {
-                        // Se asegura de que termine en .00 si no tiene decimales
-                        const number = parseFloat(value);
-                        this.value = '$' + number.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        });
-                    } else {
-                        // Si el campo se deja vacío, se limpia
-                        this.value = '';
-                    }
-                });
-            }
-            formatCurrencyInput(montoRentaInput);
-            formatCurrencyInput(costoEquipoNuevoInput);
-
-            // Number-only validation on input
-            function allowOnlyNumbers(inputElement) {
-                inputElement.addEventListener('input', function() {
-                    this.value = this.value.replace(/[^0-9]/g, '');
-                });
-            }
-            allowOnlyNumbers(cuentaPadreInput);
-            allowOnlyNumbers(cuentaInput);
-            allowOnlyNumbers(telefonoInput);
-            //allowOnlyNumbers(datosInput);
-            allowOnlyNumbers(extensionInput);
-            allowOnlyNumbers(duracionPlanInput);
-            allowOnlyNumbers(simInput);
-            allowOnlyNumbers(imeiEquipoNuevoInput);
-            
-            // Character counters
-            observacionesEquipoNuevoTextarea.addEventListener('input', function() { observacionesEquipoNuevoCharCount.textContent = this.value.length; });
-
-            // --- Load Dropdown Options on Initialization ---
-            function loadDropdowns() {
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(marcaSelect, res.data, 'Selecciona una marca'); }).withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar marca: ' + error.message, 'error');
-                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
-                }).getDropdownOptions('Listas2', 'A2:A');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(modeloSelect, res.data, 'Selecciona un modelo'); }).withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar modelo: ' + error.message, 'error');
-                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
-                }).getDropdownOptions('Listas2', 'B2:B');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(ramSelect, res.data, 'Selecciona RAM'); }).withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar RAM: ' + error.message, 'error');
-                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
-                }).getDropdownOptions('Listas2', 'C2:C');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(romSelect, res.data, 'Selecciona ROM'); }).withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar ROM: ' + error.message, 'error');
-                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
-                }).getDropdownOptions('Listas2', 'D2:D');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(sucursalSelect, res.data, 'Cargando sucursales...'); }).withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar sucursales: ' + error.message, 'error');
-                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
-                }).getDropdownOptions('Listas2', 'E2:E');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(tipoSelect, res.data, 'Selecciona un tipo'); }).withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar tipo: ' + error.message, 'error');
-                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
-                }).getDropdownOptions('Listas2', 'F2:F');
-                google.script.run.withSuccessHandler(function(res) { if (res.success) populateSelect(responsableSelect, res.data, 'Cargando responsables...'); }).withFailureHandler(function(error) {
-                    showMessageBox('Error de conexión al cargar responsables: ' + error.message, 'error');
-                    estadoSelect.innerHTML = '<option value="">Error de red</option>';
-                }).getDropdownOptions('BD', 'A2:A');
-            }
-
-            // --- Form-level Validation ---
-            function validateForm() {
-                let isValid = true;
-                const today = new Date(); today.setHours(0,0,0,0);
-                const montoRentaValue = parseFloat(montoRentaInput.value.replace(/[^0-9.]/g, ''));
-                const costoEquipoNuevoValue = parseFloat(costoEquipoNuevoInput.value.replace(/[^0-9.]/g, ''));
-                
-                // Monto_renta validation
-                if (isNaN(montoRentaValue) || montoRentaValue <= 0) { montoRentaError.style.display = 'block'; isValid = false; } else { montoRentaError.style.display = 'none'; }
-                
-                // Costo_equipo_nuevo validation
-                if (isNaN(costoEquipoNuevoValue) || costoEquipoNuevoValue <= 0) { costoEquipoNuevoError.style.display = 'block'; isValid = false; } else { costoEquipoNuevoError.style.display = 'none'; }
-                
-                // Fecha_inicio validation
-                const fechaInicio = new Date(fechaInicioInput.value);
-                if (fechaInicioInput.value === '' || isNaN(fechaInicio.getTime()) || fechaInicio > today) { fechaInicioError.style.display = 'block'; isValid = false; } else { fechaInicioError.style.display = 'none'; }
-
-                // Fecha_termino validation
-                const fechaTermino = new Date(fechaTerminoInput.value);
-                if (fechaTerminoInput.value === '' || isNaN(fechaTermino.getTime()) || fechaTermino <= fechaInicio) { fechaTerminoError.style.display = 'block'; isValid = false; } else { fechaTerminoError.style.display = 'none'; }
-
-                // IMEI validation
-                const imeiValue = imeiEquipoNuevoInput.value.trim();
-                const imeiRegex = /^\d{15,16}$/;
-                if (!imeiRegex.test(imeiValue)) { imeiEquipoNuevoError.style.display = 'block'; isValid = false; } else { imeiEquipoNuevoError.style.display = 'none'; }
-
-                // SIM validation
-                const simValue = simInput.value.trim();
-                const simRegex = /^\d{19,}$/;
-                if (!simRegex.test(simValue)) { simError.style.display = 'block'; isValid = false; } else { simError.style.display = 'none'; }
-                
-                // Teléfono validation
-                const telefonoValue = telefonoInput.value.trim();
-                const telefonoRegex = /^\d{10}$/;
-                if (!telefonoRegex.test(telefonoValue)) { telefonoError.style.display = 'block'; isValid = false; } else { telefonoError.style.display = 'none'; }
-                
-                // Notas validation (required)
-                if (notasInput.value.trim() === '') { notasError.style.display = 'block'; isValid = false; } else { notasError.style.display = 'none'; }
-
-                // Check other required fields with browser's built-in validation
-                const requiredSelects = [regionInput, sucursalSelect, tipoSelect, marcaSelect, modeloSelect, ramSelect, romSelect, responsableSelect];
-                requiredSelects.forEach(select => { if (!select.value) { select.reportValidity(); isValid = false; }});
-
-                return isValid;
-            }
-
-            // --- Event Listeners ---
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                if (!validateForm()) {
-                    showMessageBox('Por favor, corrige los errores en el formulario.', 'error');
-                    return;
+        function formatCurrencyInput(inputElement) {
+            // Evento que se dispara con cada tecla que presionas
+            inputElement.addEventListener('input', function() {
+                let value = this.value.replace(/[^0-9.]/g, '');
+                const firstPeriodIndex = value.indexOf('.');
+                if (firstPeriodIndex !== -1) {
+                    let integerPart = value.substring(0, firstPeriodIndex);
+                    let decimalPart = value.substring(firstPeriodIndex + 1).replace(/\./g, ''); // Quita puntos adicionales
+                    value = integerPart + '.' + decimalPart;
+                }
+                let parts = value.split('.');
+                let integerPart = parts[0];
+                let decimalPart = parts[1];
+                integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                if (decimalPart && decimalPart.length > 2) {
+                    decimalPart = decimalPart.substring(0, 2);
+                }
+                let finalValue = '$' + integerPart;
+                if (value.includes('.')) {
+                    finalValue += '.' + (decimalPart || ''); // Añade el punto y la parte decimal (o nada si aún no hay)
                 }
                 
-                setFormEnabled(false);
+                this.value = finalValue;
+            });
+            inputElement.addEventListener('blur', function() {
+                let value = this.value.replace(/[^0-9.]/g, '');
+                
+                // Si el valor no está vacío, lo formatea a dos decimales fijos.
+                if (value) {
+                    // Se asegura de que termine en .00 si no tiene decimales
+                    const number = parseFloat(value);
+                    this.value = '$' + number.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                } else {
+                    // Si el campo se deja vacío, se limpia
+                    this.value = '';
+                }
+            });
+        }
 
-                const formData = {
-                    region: regionInput.value,
-                    cuenta_padre: cuentaPadreInput.value,
-                    cuenta: cuentaInput.value,
-                    telefono: telefonoInput.value,
-                    clave_plan: clavePlanInput.value,
-                    nombre_plan: nombrePlanInput.value,
-                    minutos: minutosTextarea.value,
-                    mensajes: mensajesTextarea.value,
-                    monto_renta: parseFloat(montoRentaInput.value.replace(/[^0-9.]/g, '')),
-                    //equipo_ilimitado: parseFloat(costoEquipoNuevoInput.value.replace(/[^0-9.]/g, '')), // As per spec
-                    duracion_plan: duracionPlanInput.value,
-                    fecha_inicio: fechaInicioInput.value,
-                    fecha_termino: fechaTerminoInput.value,
-                    sim: simInput.value,
-                    tipo: tipoSelect.value,
-                    responsable: responsableSelect.value,
-                    idsucursal: sucursalSelect.value,
-                    datos: parseFloat(notasInput.value.replace(/[^0-9.]/g, '')),
-                    extension: extensionInput.value,
-                    //notas: notasTextarea.value,
+        // --- 3. LÓGICA PRINCIPAL DEL FORMULARIO ---
+        function initForm() {
+            if (typeof google === 'undefined') { setTimeout(initForm, 100); return; }
+            
+            loadDropdowns();
+            setupEventListeners();
+            resetAllForms();
+        }
 
-                    // Equipo Nuevo Fields
-                    costo_equipo_nuevo: parseFloat(costoEquipoNuevoInput.value.replace(/[^0-9.]/g, '')),
-                    marca_nuevo: marcaSelect.value,
-                    modelo_nuevo: modeloSelect.value,
-                    ram_nuevo: ramSelect.value,
-                    rom_nuevo: romSelect.value,
-                    imei_equipo_nuevo: imeiEquipoNuevoInput.value,
-                    observaciones_equipo_nuevo: observacionesEquipoNuevoTextarea.value
-                };
+        function setupEventListeners() {
+            form.addEventListener('submit', handleFormSubmit);
+            clearBtn.addEventListener('click', resetAllForms);
+            redirectBtn.addEventListener('click', handleRedirect);
+            
+            // NUEVOS LISTENERS PARA LAS MEJORAS
+            tipoSelect.addEventListener('change', applyConditionalLogic);
+            lineaSinequipoCheckbox.addEventListener('change', applyConditionalLogic);
+            fechaInicioInput.addEventListener('change', updateFechaTermino);
+            duracionPlanInput.addEventListener('input', updateFechaTermino);
 
+            // NUEVOS LISTENERS PARA LISTAS DEPENDIENTES
+            sucursalSelect.addEventListener('change', handleSucursalChange);
+            marcaNuevoSelect.addEventListener('change', handleMarcaChange);
+
+            // Listeners existentes
+            formatCurrencyInput(document.getElementById('monto_renta'));
+            formatCurrencyInput(costoEquipoNuevoInput);
+            allowOnlyNumbers(document.getElementById('cuenta_padre'));
+            allowOnlyNumbers(document.getElementById('cuenta'));
+            allowOnlyNumbers(telefonoInput);
+            allowOnlyNumbers(duracionPlanInput);
+            allowOnlyNumbers(document.getElementById('sim'));
+            allowOnlyNumbers(imeiEquipoNuevoInput);
+            allowOnlyNumbers(document.getElementById('extension'));
+            document.getElementById('observaciones_equipo_nuevo').addEventListener('input', (e) => {
+                document.getElementById('observaciones_equipo_nuevoCharCount').textContent = e.target.value.length;
+            });
+        }
+
+        function loadDropdowns() {
+            // Carga solo las listas principales. Las dependientes se cargarán al seleccionar.
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(tipoSelect, res.data, 'Selecciona un tipo'); }).getDropdownOptions('Listas2', 'F2:F');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(sucursalSelect, res.data, 'Selecciona una sucursal'); }).getDropdownOptions('Listas2', 'E2:E'); // Corregido a Listas2
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(marcaNuevoSelect, res.data, 'Selecciona una marca'); }).getDropdownOptions('Listas2', 'A2:A');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(ramNuevoSelect, res.data, 'Selecciona RAM'); }).getDropdownOptions('Listas2', 'C2:C');
+            google.script.run.withSuccessHandler(res => { if (res.success) populateSelect(romNuevoSelect, res.data, 'Selecciona ROM'); }).getDropdownOptions('Listas2', 'D2:D');
+        }
+        
+        // --- 4. NUEVAS FUNCIONES DE LÓGICA ---
+        // MEJORA 6: Maneja el cambio de sucursal para filtrar responsables
+        function handleSucursalChange() {
+            const sucursalSeleccionada = sucursalSelect.value;
+            responsableSelect.disabled = true;
+            populateSelect(responsableSelect, [], 'Cargando responsables...');
+
+            if (sucursalSeleccionada) {
                 google.script.run
-                    .withSuccessHandler(function(response) {
-                        setFormEnabled(true);
+                    .withSuccessHandler(response => {
                         if (response.success) {
-                            showMessageBox('Datos enviados correctamente: ' + response.message, 'success');
-                            form.reset();
-                            resetFormState();
-                        } else {
-                            showMessageBox('Error al enviar datos: ' + response.message, 'error');
-                            if (response.message.includes("Teléfono") || response.message.includes("IMEI")) {
-                                if (response.message.includes("Teléfono")) telefonoError.style.display = 'block';
-                                if (response.message.includes("IMEI")) imeiEquipoNuevoError.style.display = 'block';
-                                showMessageBox(response.message, 'error');
-                            }
+                            populateSelect(responsableSelect, response.data, 'Selecciona un responsable');
                         }
+                        responsableSelect.disabled = false;
                     })
-                    .withFailureHandler(function(error) {
-                        setFormEnabled(true);
-                        showMessageBox('Error de conexión o script: ' + error.message, 'error');
-                    })
-                    .procesarALyEFormulario(formData);
-            });
+                    .getResponsablesPorSucursal(sucursalSeleccionada);
+            }
+        }
 
-            clearBtn.addEventListener('click', function() {
-                form.reset();
-                resetFormState();
-                showMessageBox('Formulario limpiado.', 'success', 2000);
-            });
+        // MEJORA 5: Maneja el cambio de marca para filtrar modelos
+        function handleMarcaChange() {
+            const marcaSeleccionada = marcaNuevoSelect.value;
+            modeloNuevoSelect.disabled = true;
+            populateSelect(modeloNuevoSelect, [], 'Cargando modelos...');
 
-            redirectBtn.addEventListener('click', function() {
-                setFormEnabled(false);
+            if (marcaSeleccionada) {
                 google.script.run
-                    .withSuccessHandler(function(url) { window.top.location.href = url; })
-                    .withFailureHandler(function(error) { setFormEnabled(true); showMessageBox('Error al obtener URL: ' + error.message, 'error'); })
-                    .redirigirOtraApp();
-            });
+                    .withSuccessHandler(response => {
+                        if (response.success) {
+                            populateSelect(modeloNuevoSelect, response.data, 'Selecciona un modelo');
+                        }
+                        modeloNuevoSelect.disabled = false;
+                    })
+                    .getModelosPorMarca(marcaSeleccionada);
+            }
+        }
 
-            function resetFormState() {
-                const errors = document.querySelectorAll('.error-message');
-                errors.forEach(err => err.style.display = 'none');
-                observacionesEquipoNuevoCharCount.textContent = '0';
-                
-                const today = new Date();
-                const yyyy = today.getFullYear();
-                const mm = String(today.getMonth() + 1).padStart(2, '0');
-                const dd = String(today.getDate()).padStart(2, '0');
-                fechaInicioInput.value = `${yyyy}-${mm}-${dd}`;
-                fechaTerminoInput.value = '';
-                
-                loadDropdowns();
+        // MEJORA 2: Calcula automáticamente la fecha de término
+        function updateFechaTermino() {
+            const fechaInicio = fechaInicioInput.value;
+            const duracionMeses = parseInt(duracionPlanInput.value, 10);
+
+            if (fechaInicio && !isNaN(duracionMeses) && duracionMeses > 0) {
+                const fecha = new Date(fechaInicio + 'T00:00:00'); // Asegura que se interprete como local
+                fecha.setMonth(fecha.getMonth() + duracionMeses);
+                fechaTerminoInput.value = fecha.toISOString().split('T')[0];
+            }
+        }
+
+        // MEJORAS 3 y 4: Muestra/oculta secciones según las selecciones
+        function applyConditionalLogic() {
+            const tipoServicio = tipoSelect.value;
+            const sinEquipo = lineaSinequipoCheckbox.checked;
+
+            // Lógica para el checkbox
+            if (tipoServicio === 'Smartphone') {
+                lineaSinequipoContainer.style.display = 'block';
+            } else {
+                lineaSinequipoContainer.style.display = 'none';
+                lineaSinequipoCheckbox.checked = false; // Desmarcar si se cambia el tipo
             }
 
-            // Initial load of dropdowns
-            loadDropdowns();
-            resetFormState();
+            // Lógica para la sección del equipo
+            if (tipoServicio === 'Smartphone' && !sinEquipo) {
+                equipoNuevoSection.style.display = 'block';
+                equipoFields.forEach(field => field.required = true);
+            } else {
+                equipoNuevoSection.style.display = 'none';
+                equipoFields.forEach(field => {
+                    field.required = false;
+                    if (field.tagName === 'SELECT') field.selectedIndex = 0;
+                    else field.value = '';
+                });
+            }
         }
+
+        // --- 5. FUNCIONES PRINCIPALES ACTUALIZADAS ---
+
+        function validateForm() {
+            let isValid = true;
+            // Valida todos los campos que son requeridos y visibles
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    isValid = false;
+                    field.reportValidity();
+                }
+            });
+            
+            // Validaciones específicas de formato
+            if (!/^\d{10}$/.test(telefonoInput.value)) {
+                telefonoError.textContent = 'Teléfono inválido (10 dígitos numéricos) o ya existe.';
+                telefonoError.style.display = 'block';
+                isValid = false;
+            } else {
+                telefonoError.style.display = 'none';
+            }
+
+            if (equipoNuevoSection.style.display !== 'none' && !/^\d{15,16}$/.test(imeiEquipoNuevoInput.value)) {
+                imeiEquipoNuevoError.textContent = 'IMEI inválido (15 o 16 dígitos numéricos) o ya existe.';
+                imeiEquipoNuevoError.style.display = 'block';
+                isValid = false;
+            } else {
+                imeiEquipoNuevoError.style.display = 'none';
+            }
+
+            return isValid;
+        }
+
+        // En el <script> de darAltaLineaEquipo.html
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            if (!validateForm()) {
+                showMessageBox('Por favor, corrige los errores en el formulario.', 'error');
+                return;
+            }
+            
+            // CORRECCIÓN: Primero leemos y preparamos los datos
+            const formData = new FormData(form);
+            const formObject = Object.fromEntries(formData.entries());
+
+            // Limpiamos los datos de moneda ANTES de deshabilitar el formulario
+            formObject.costo_equipo_nuevo = formObject.costo_equipo_nuevo.replace(/[^0-9.]/g, '');
+            formObject.monto_renta = formObject.monto_renta.replace(/[^0-9.]/g, '');
+
+            // AHORA sí, deshabilitamos el formulario y mostramos el "cargando"
+            setFormEnabled(false);
+
+            // Finalmente, enviamos los datos ya preparados al servidor
+            google.script.run
+                .withSuccessHandler(response => {
+                    setFormEnabled(true);
+                    if (response.success) {
+                        showMessageBox(response.message, 'success');
+                        resetAllForms();
+                    } else {
+                        showMessageBox('Error: ' + response.message, 'error');
+                        if (response.message.includes("IMEI")) imeiEquipoNuevoError.style.display = 'block';
+                        if (response.message.includes("Teléfono")) telefonoError.style.display = 'block';
+                    }
+                })
+                .withFailureHandler(err => {
+                    setFormEnabled(true);
+                    showMessageBox('Error de conexión: ' + err.message, 'error');
+                })
+                .procesarALyEFormulario(formObject);
+        }
+        
+        function handleRedirect() {
+            setFormEnabled(false);
+            google.script.run.withSuccessHandler(url => window.top.location.href = url).redirigirOtraApp();
+        }
+        
+        function resetAllForms() {
+            form.reset();
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            applyConditionalLogic();
+            
+            // Deshabilitar y limpiar listas dependientes
+            populateSelect(modeloNuevoSelect, [], 'Selecciona una marca primero');
+            modeloNuevoSelect.disabled = true;
+            populateSelect(responsableSelect, [], 'Selecciona una sucursal primero');
+            responsableSelect.disabled = true;
+
+            showMessageBox('Formulario limpiado.', 'success', 1500);
+        }
+        
         window.onload = initForm;
+    })();
     </script>
+    
 </body>
 </html>

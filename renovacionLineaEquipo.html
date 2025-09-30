@@ -12,9 +12,13 @@
         .disabled-field { background-color: #e9ecef !important; color: #6c757d !important; cursor: not-allowed; }
         .readonly-field { background-color: #f7fafc; border: 1px solid #e2e8f0; color: #2d3748; cursor: not-allowed; }
         .readonly-field:focus { box-shadow: none; border-color: #e2e8f0; }
+        /* MEJORA: Estilo para botones en línea */
         .form-actions-inline { display: flex; gap: 16px; justify-content: center; }
         .form-actions-inline .btn { width: auto; flex-grow: 1; }
-        details summary { cursor: pointer; font-weight: 600; color: #4a5568; margin-top: 1rem; }
+        .info-container {display: flex;align-items: center;gap: 8px;}
+        .info-icon {display: inline-block;width: 18px;height: 18px;border-radius: 50%;background-color: #6c757d;color: white;text-align: center;font-size: 12px;font-weight: bold;line-height: 18px;cursor: pointer;position: relative;        }
+        .info-icon .tooltiptext {visibility: hidden;width: 220px;background-color: #333;color: #fff;text-align: center;border-radius: 6px;padding: 8px;position: absolute;z-index: 1;bottom: 125%;left: 50%;margin-left: -110px;opacity: 0;transition: opacity 0.3s;}
+        .info-icon:hover .tooltiptext {visibility: visible;opacity: 1;}
     </style>
 </head>
 <body>
@@ -26,7 +30,12 @@
                 <legend>Buscar Línea a Renovar</legend>
                 <div class="form-grid" style="grid-template-columns: 1fr;">
                     <div>
-                        <label for="searchTelefono">Número de Teléfono (10 dígitos)</label>
+                        <label for="searchTelefono">Número de Teléfono</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
                         <input type="tel" id="searchTelefono" name="searchTelefono" maxlength="10" required>
                         <p id="searchTelefonoError" class="error-message"></p>
                     </div>
@@ -42,61 +51,145 @@
             <form id="renovacionForm" style="display: none;">
                 
                 <fieldset>
-                    <legend>Sección 2: Datos de la Línea Celular (Renovación)</legend>
+                    <legend>Datos de la Línea Celular</legend>
                     <div class="form-grid">
-                        <div><label>Región</label><input type="text" id="region" class="readonly-field" readonly></div>
+                        <div><label>Región</label>
+                        <input type="text" id="region" class="readonly-field" readonly></div>
                         <div><label>Cuenta Padre</label><input type="text" id="cuenta_padre" class="readonly-field" readonly></div>
                         <div><label>Cuenta</label><input type="text" id="cuenta" class="readonly-field" readonly></div>
                         <div><label>Teléfono</label><input type="text" id="telefono" class="readonly-field" readonly></div>
-                        <div><label for="clave_plan">Clave Plan</label><input type="text" id="clave_plan" name="clave_plan" maxlength="10" required></div>
-                        <div><label for="nombre_plan">Nombre Plan</label><input type="text" id="nombre_plan" name="nombre_plan" maxlength="12" required></div>
-                        
+                        <div><label for="clave_plan">Clave Plan</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <input type="text" id="clave_plan" name="clave_plan" maxlength="10" required></div>
+                        <div><label for="nombre_plan">Nombre Plan</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <input type="text" id="nombre_plan" name="nombre_plan" maxlength="12" required></div>
                         <div class="full-width" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                            <div><label for="minutos">Minutos</label><input type="text" id="minutos" name="minutos" maxlength="50" required></div>
-                            <div><label for="mensajes">Mensajes (SMS)</label><input type="text" id="mensajes" name="mensajes" maxlength="50" required></div>
+                            <div><label for="minutos">Minutos</label>
+                            //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                            <input type="text" id="minutos" name="minutos" maxlength="50" required></div>
+                            <div><label for="mensajes">Mensajes (SMS)</label>
+                            //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                            <input type="text" id="mensajes" name="mensajes" maxlength="50" required></div>
                         </div>
-
-                        <div><label for="monto_renta">Monto Renta</label><input type="text" id="monto_renta" name="monto_renta" placeholder="$0.00" required></div>
-                        <div><label for="duracion_plan">Duración Plan (Meses)</label><input type="text" id="duracion_plan" name="duracion_plan" maxlength="8" required></div>
+                        <div><label for="monto_renta">Monto Renta</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <input type="text" id="monto_renta" name="monto_renta" placeholder="$0.00" required></div>
+                        <div><label for="duracion_plan">Duración Plan (Meses)</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <input type="text" id="duracion_plan" name="duracion_plan" maxlength="8" required></div>
                         <div><label for="fecha_inicio">Nueva Fecha Inicio</label><input type="date" id="fecha_inicio" name="fecha_inicio" required></div>
                         <div><label for="fecha_termino">Nueva Fecha Término</label><input type="date" id="fecha_termino" name="fecha_termino" required></div>
                         <div><label>SIM</label><input type="text" id="sim" class="readonly-field" readonly></div>
                         <div><label>Tipo</label><input type="text" id="tipo" class="readonly-field" readonly></div>
                         <div><label for="responsable">Responsable</label><select id="responsable" name="responsable" required></select></div>
                         <div><label for="idsucursal">Sucursal</label><select id="idsucursal" name="idsucursal" required></select></div>
-                        <div><label for="extension">Extensión</label><input type="text" id="extension" name="extension" maxlength="4"></div>
-                        <div><label for="datos">Datos (GB)</label><input type="text" id="datos" name="datos" maxlength="8" required></div>
-                        <div class="full-width"><label for="notas">Notas</label><textarea id="notas" name="notas" rows="3" maxlength="125"></textarea></div>
+                        <div><label for="extension">Extensión</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <input type="text" id="extension" name="extension" maxlength="4"></div>
+                        <div><label for="datos">Datos (GB)</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <input type="text" id="datos" name="datos" maxlength="8" required></div>
+                        <div class="full-width"><label for="notas">Notas</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <textarea id="notas" name="notas" rows="3" maxlength="125"></textarea></div>
                     </div>
                 </fieldset>
 
-                <details id="equipoVinculadoSectionContainer">
-                    <summary>Sección 3: Equipo Celular Vinculado Actual (Click para ver)</summary>
-                    <fieldset>
-                        <div id="equipoVinculadoContent" class="form-grid">
-                            <div><label>IMEI</label><input type="text" class="readonly-field" value="123456789012345" readonly></div>
-                            <div><label>Marca</label><input type="text" class="readonly-field" value="Samsung" readonly></div>
-                            <div><label>Modelo</label><input type="text" class="readonly-field" value="Galaxy S23" readonly></div>
-                            <div><label>Estado</label><input type="text" class="readonly-field" value="Asignado" readonly></div>
-                        </div>
-                    </fieldset>
-                </details>
+                <fieldset id="equipoVinculadoSection" style="display:none;">
+                    <legend>Equipo Celular Vinculado</legend>
+                    <div id="equipoVinculadoContent" class="form-grid">
+                        <div><label>IMEI</label><input type="text" id="vinculadoImei" class="readonly-field" readonly></div>
+                        <div><label>Costo Equipo</label><input type="text" id="vinculadoCosto" class="readonly-field" readonly></div>
+                        <div><label>Fecha Compra</label><input type="text" id="vinculadoFechaCompra" class="readonly-field" readonly></div>
+                        <div><label>Estado</label><input type="text" id="vinculadoEstado" class="readonly-field" readonly></div>
+                        <div><label>Marca</label><input type="text" id="vinculadoMarca" class="readonly-field" readonly></div>
+                        <div><label>Modelo</label><input type="text" id="vinculadoModelo" class="readonly-field" readonly></div>
+                        <div class="full-width"><label>Observaciones</label><textarea id="vinculadoObservaciones" class="readonly-field" readonly rows="2"></textarea></div>
+                    </div>
+                </fieldset>
 
                 <fieldset>
                     <legend>Sección 4: Datos de Equipo Celular Nuevo</legend>
                     <div class="form-grid">
-                        <div><label for="costo_equipo_nuevo">Costo del Equipo (MXN)</label><input type="text" id="costo_equipo_nuevo" name="costo_equipo_nuevo" placeholder="$0.00" required></div>
+                        <div><label for="costo_equipo_nuevo">Costo del Equipo (MXN)</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <input type="text" id="costo_equipo_nuevo" name="costo_equipo_nuevo" placeholder="$0.00" required></div>
                         <div><label for="marca_nuevo">Marca</label><select id="marca_nuevo" name="marca_nuevo" required></select></div>
-                        <div><label for="modelo_nuevo">Modelo</label><select id="modelo_nuevo" name="modelo_nuevo" required></select></div>
-                        <div><label for="ram_nuevo">RAM</label><select id="ram_nuevo" name="ram_nuevo" required></select></div>
-                        <div><label for="rom_nuevo">ROM</label><select id="rom_nuevo" name="rom_nuevo" required></select></div>
-                        <div><label for="imei_equipo_nuevo">IMEI</label><input type="text" id="imei_equipo_nuevo" name="imei_equipo_nuevo" minlength="15" maxlength="16" required></div>
+                        <div><label for="modelo_nuevo">Modelo</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <select id="modelo_nuevo" name="modelo_nuevo" required></select></div>
+                        <div><label for="ram_nuevo">RAM</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <select id="ram_nuevo" name="ram_nuevo" required></select></div>
+                        <div><label for="rom_nuevo">ROM (Almacenamiento) </label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <select id="rom_nuevo" name="rom_nuevo" required></select></div>
+                        <div><label for="imei_equipo_nuevo">IMEI</label>
+                        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            <div class="info-container">
+                                <label for="region">Región</label>
+                                <span class="info-icon">i<span class="tooltiptext">La Región se Compone de 3 caracteres, la sigla de region y el numero de la región a 2 cifras, Ejemplo: R05. Se Anexa en el contrato como "REGIÓN"</span></span>
+                            </div>
+                        <input type="text" id="imei_equipo_nuevo" name="imei_equipo_nuevo" minlength="15" maxlength="16" required></div>
                         <div class="full-width"><label for="observaciones_equipo_nuevo">Observaciones</label><textarea id="observaciones_equipo_nuevo" name="observaciones_equipo_nuevo" maxlength="125"></textarea></div>
                     </div>
                 </fieldset>
 
                 <div class="form-actions" style="margin-top: 30px;">
-                    <button type="submit" class="btn btn-primary" id="submitBtn">Registrar Renovación</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Guardar Registro de Renovación</button>
                 </div>
                 <div id="submitLoading" class="loading" style="display: none;"><div class="spinner"></div><p>Registrando renovación...</p></div>
 
@@ -137,7 +230,7 @@
         const extensionInput = document.getElementById('extension');
         const datosInput = document.getElementById('datos');
         const notasTextarea = document.getElementById('notas');
-        const equipoVinculadoSection = document.getElementById('equipoVinculadoSectionContainer');
+        const equipoVinculadoSection = document.getElementById('equipoVinculadoSection');
         const equipoVinculadoContent = document.getElementById('equipoVinculadoContent');
         const costoEquipoNuevoInput = document.getElementById('costo_equipo_nuevo');
         const marcaNuevoSelect = document.getElementById('marca_nuevo');
@@ -240,31 +333,30 @@
             if (response.success) {
                 const { linea, equipoVinculado } = response.data;
                 
-                // Llenar Sección 2 con placeholders de valores actuales
+                // Llenar Sección 2 (sin cambios, esto ya funciona)
                 Object.keys(linea).forEach(key => {
                     const element = document.getElementById(key.toLowerCase());
                     if (element) {
-                        if (element.tagName === 'INPUT' && element.type !== 'date') {
-                           if (element.classList.contains('readonly-field')) {
-                               element.value = linea[key] || '';
-                           } else {
-                               element.placeholder = `Actual: ${linea[key] || ''}`;
-                           }
+                        if (element.classList.contains('readonly-field')) {
+                            element.value = linea[key] || '';
                         } else if (element.tagName === 'SELECT') {
-                           element.value = linea[key] || '';
+                            element.value = linea[key] || '';
                         } else {
-                           element.value = linea[key] || '';
+                            element.placeholder = `Actual: ${linea[key] || ''}`;
                         }
                     }
                 });
 
-                // Llenar Sección 3 (Equipo Vinculado)
+                // Llenar Sección 3 (Equipo Vinculado) - VERSIÓN CORREGIDA Y COMPLETA
                 if (equipoVinculado && equipoVinculado.IMEI) {
                     equipoVinculadoContent.innerHTML = `
                         <div><label>IMEI</label><input type="text" class="readonly-field" value="${equipoVinculado.IMEI || ''}" readonly></div>
+                        <div><label>Costo Equipo</label><input type="text" class="readonly-field" value="${equipoVinculado.Costo_Equipo ? '$' + parseFloat(equipoVinculado.Costo_Equipo).toLocaleString('en-US') : ''}" readonly></div>
+                        <div><label>Fecha Compra</label><input type="text" class="readonly-field" value="${equipoVinculado.Fecha_Compra || ''}" readonly></div>
+                        <div><label>Estado</label><input type="text" class="readonly-field" value="${equipoVinculado.Estado || ''}" readonly></div>
                         <div><label>Marca</label><input type="text" class="readonly-field" value="${equipoVinculado.Marca || ''}" readonly></div>
                         <div><label>Modelo</label><input type="text" class="readonly-field" value="${equipoVinculado.Modelo || ''}" readonly></div>
-                        <div><label>Estado</label><input type="text" class="readonly-field" value="${equipoVinculado.Estado || ''}" readonly></div>
+                        <div class="full-width"><label>Observaciones</label><textarea class="readonly-field" readonly>${equipoVinculado.Observaciones || ''}</textarea></div>
                     `;
                     equipoVinculadoSection.style.display = 'block';
                 } else {
